@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 public class SampleAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
 	/**
-	 * The constructor.
+	 * The constructo
 	 */
 	public SampleAction() {
 	}
