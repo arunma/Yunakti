@@ -1,10 +1,15 @@
 package sg.edu.nus.iss.yunakti.ui.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
+
+import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -33,6 +38,13 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 			window.getShell(),
 			"Yunakti",
 			"Hello, Eclipse world");
+		HelperDialog helperDialog=new HelperDialog(window.getShell());
+		
+		List<String> listItems=new ArrayList<String>();
+		listItems.add("Helper1");
+		listItems.add("Helper2");
+		helperDialog.setListItems(listItems);
+		
 	}
 
 	/**
