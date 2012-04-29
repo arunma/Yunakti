@@ -34,7 +34,7 @@ public void setListItems(List<String> listItems) {
 	public HelperDialog(Shell parent) {
 		super(parent);
 		// TODO Auto-generated constructor stub
-		this.setAddCancelButton(true);
+		
 
 		this.setContentProvider(new ArrayContentProvider());
 
