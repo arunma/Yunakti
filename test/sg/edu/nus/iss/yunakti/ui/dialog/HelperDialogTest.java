@@ -11,29 +11,40 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.junit.Test;
 
+import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
 
 public class HelperDialogTest extends TestCase{
 	MyHelperDialog helperDialog;
-	List<String> lstHelperClass;
+	List<YClass> lstHelperClass;
 	protected void setUp() throws Exception {
         super.setUp();
-        lstHelperClass=new ArrayList<String>();
-        lstHelperClass.add("Helper1");
-        lstHelperClass.add("Helper2");
-        lstHelperClass.add("Helper3");
-        lstHelperClass.add("Helper4");
-        lstHelperClass.add("Helper5");
-        openDialog(lstHelperClass);
+        lstHelperClass=new ArrayList<YClass>();
+        YClass cls1=new YClass();
+		cls1.setFullyQualifiedName("Helper1.class");
+		YClass cls2=new YClass();
+		cls2.setFullyQualifiedName("Helper2.class");
+		YClass cls3=new YClass();
+		cls3.setFullyQualifiedName("Helper3.class");
+		YClass cls4=new YClass();
+		cls4.setFullyQualifiedName("Helper4.class");
+		YClass cls5=new YClass();
+		cls5.setFullyQualifiedName("Helper5.class");
+        lstHelperClass.add(cls1);
+        lstHelperClass.add(cls2);
+        lstHelperClass.add(cls3);
+        lstHelperClass.add(cls4);
+        lstHelperClass.add(cls5);
+        openDialog();
     }
-	private void openDialog(List<String> lstHelperClass) {
+	private void openDialog() {
        
 		try
 		{if (helperDialog != null) {
         	helperDialog.close();
         }
         helperDialog = new MyHelperDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-        helperDialog.setListItems(lstHelperClass);
+        helperDialog.setLstYClass(lstHelperClass);
         helperDialog.setBlockOnOpen(false);
         helperDialog.open();
         System.out.println("helper"+helperDialog);
