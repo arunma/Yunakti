@@ -31,7 +31,7 @@ public void setListItems(List<String> listItems) {
 
 	this.setTitle("Helper Classes");
 
-	this.open();
+	//this.open();
 }
 
 
@@ -41,13 +41,12 @@ public void setListItems(List<String> listItems) {
 }
 
 public void setLstYClass(List<YClass> lstYClass) {
-	if(!lstYClass.isEmpty())
+	if(lstYClass !=null && !lstYClass.isEmpty())
 	{
 	this.lstYClass = lstYClass;
 	this.setInput(lstYClass.toArray());
 
 	this.setInitialSelections(lstYClass.toArray());
-
 	this.setTitle("Helper Classes");
 
 	this.open();
