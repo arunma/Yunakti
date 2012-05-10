@@ -50,5 +50,11 @@ public class YClass extends YJavaElement{
 		this.annotations = annotations;
 	}
 
+	@Override
+	public String toString() {
+		return getFullyQualifiedName();
+				
+	}
+
 	
 }
