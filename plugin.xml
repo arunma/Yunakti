@@ -26,5 +26,25 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <command
+               commandId="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
+               label="Yunakti"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
+            id="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
+            name="YunaktiCommand">
+      </command>
+   </extension>
 
 </plugin>
