@@ -12,4 +12,9 @@ public class YJavaElement {
 	public void setFullyQualifiedName(String fullyQualifiedName) {
 		this.fullyQualifiedName = fullyQualifiedName;
 	}
+
+	@Override
+	public String toString() {
+		return "YJavaElement [fullyQualifiedName=" + fullyQualifiedName + "]";
+	}
 }

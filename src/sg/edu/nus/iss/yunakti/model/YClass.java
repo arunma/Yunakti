@@ -5,6 +5,11 @@ import java.util.Collection;
 public class YClass extends YJavaElement{
 	
 	private YTYPE yClassType; //test/helper/cut
+	@Override
+	public String toString() {
+		return "YClass [yClassType=" + yClassType + "]";
+	}
+
 	private Collection<YMODIFIER> accessModifiers;
 	private Collection<YMethod> methods;
 	private Collection<YClass> members; //common name for helpers/instance primitives in testcases and instance variables in normal classes
