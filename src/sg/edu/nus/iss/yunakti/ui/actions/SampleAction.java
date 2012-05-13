@@ -9,6 +9,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
 
+import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
 
 /**
@@ -40,10 +41,19 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 			"Hello, Eclipse world");
 		HelperDialog helperDialog=new HelperDialog(window.getShell());
 		
-		List<String> listItems=new ArrayList<String>();
+		/*List<String> listItems=new ArrayList<String>();
 		listItems.add("Helper1");
 		listItems.add("Helper2");
-		helperDialog.setListItems(listItems);
+		helperDialog.setListItems(listItems);*/
+		
+		List<YClass> lstYClass=new ArrayList<YClass>();
+		/*YClass cls1=new YClass();
+		cls1.setFullyQualifiedName("Helper1.class");
+		YClass cls2=new YClass();
+		cls2.setFullyQualifiedName("Helper2.class");
+		lstYClass.add(cls1);
+		lstYClass.add(cls2);*/
+		helperDialog.setLstYClass(lstYClass);
 		
 	}
 

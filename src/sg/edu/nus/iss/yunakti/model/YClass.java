@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.yunakti.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class YClass extends YJavaElement{
@@ -11,9 +12,17 @@ public class YClass extends YJavaElement{
 	}
 
 	private Collection<YMODIFIER> accessModifiers;
-	private Collection<YMethod> methods;
-	private Collection<YClass> members; //common name for helpers/instance primitives in testcases and instance variables in normal classes
-	private Collection<YAnnotation> annotations;
+	private Collection<YMethod> methods=new ArrayList<YMethod>();
+	private Collection<YClass> members=new ArrayList<YClass>(); //common name for helpers/instance primitives in testcases and instance variables in normal classes
+	private Collection<YAnnotation> annotations=new ArrayList<YAnnotation>();
+	
+	public YClass() {
+	}
+	
+	public YClass(String fullyQualifiedName) {
+		super(fullyQualifiedName);
+	}
+
 	
 	public YTYPE getyClassType() {
 		return yClassType;
@@ -54,6 +63,5 @@ public class YClass extends YJavaElement{
 	public void setAnnotations(Collection<YAnnotation> annotations) {
 		this.annotations = annotations;
 	}
-
 	
 }
