@@ -6,6 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: sg.edu.nus.iss.yunakti.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.junit
+ org.junit,
+ org.eclipse.search;bundle-version="3.7.0",
+ org.eclipse.jface.text;bundle-version="3.7.2"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

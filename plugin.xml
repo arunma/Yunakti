@@ -46,7 +46,22 @@
                toolbarPath="Yunakti.SubuGroup"
                tooltip="Subu">
          </action>
+         <action
+               id="Yunakti.action1"
+               label="Search"
+               state="false"
+               style="push">
+         </action>
       </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.search.searchPages">
+      <page
+            class="sg.edu.nus.iss.yunakti.ui.dialog.SearchPage1"
+            enabled="true"
+            id="Yunakti.page1"
+            label="Yunakti">
+      </page>
    </extension>
 
 </plugin>

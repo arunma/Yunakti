@@ -7,7 +7,7 @@ public class YClass extends YJavaElement{
 	private YTYPE yClassType; //test/helper/cut
 	@Override
 	public String toString() {
-		return "YClass [yClassType=" + yClassType + "]";
+		return super.getFullyQualifiedName();
 	}
 
 	private Collection<YMODIFIER> accessModifiers;

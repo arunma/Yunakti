@@ -1,7 +1,6 @@
 package sg.edu.nus.iss.yunakti.ui.actions;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -32,16 +31,31 @@ public class R2Action implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		MessageDialog.openInformation(
-			window.getShell(),
-			"R2Action",
-			"Hello, Eclipse world");
-		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell());
+	    TestCaseDialog dialog = new TestCaseDialog(this.window.getShell());
 		dialog.create();
 		if (dialog.open() == Window.OK) {
 
 		}
 		
+//		 Shell shell = new Shell();
+//		 List<Person> persons = new ArrayList<Person>();
+//		   Person p1 = new Person("Subu");
+//		   Person p2 = new Person("Arun");
+//		   Person p3 = new Person("Kovalan");
+//		   Person p4 = new Person("Alphy");
+//		   Person p5 = new Person("Suriya");
+//		   persons.add(p1);
+//		   persons.add(p2);
+//		   persons.add(p3);
+//		   persons.add(p4);
+//		   persons.add(p5);
+//		   
+//		   YTestCaseCollection collection = new YTestCaseCollection();   
+//		   
+//		   List<YClass> testCases = collection.getTestCases();
+//		   FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(this.window.getShell(), testCases);
+//		   dialog.setInitialPattern("?");
+//		   dialog.open();		
 	}
 
 	/**
@@ -72,3 +86,5 @@ public class R2Action implements IWorkbenchWindowActionDelegate {
 		this.window = window;
 	}
 }
+
+
