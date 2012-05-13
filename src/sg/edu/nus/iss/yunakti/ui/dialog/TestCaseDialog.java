@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -22,9 +24,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.ui.dialog.filter.TestCaseFilter;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.TestCaseLabelProvider;
-import sg.edu.nus.iss.yunakti.ui.dialog.helper.TestCaseModel;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
 
 public class TestCaseDialog extends TitleAreaDialog {
@@ -163,13 +165,20 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 				// ModelProvider testCases = ModelProvider.INSTANCE;
 				
-				AddPersonDialog dialog = new AddPersonDialog(getShell(), collection.getTestCases());
-				dialog.open();
-				tableViewer.refresh();
-				if (dialog.getTestCase() != null) {
-
-					System.out.println(dialog.getTestCase());
-				}
+//				AddPersonDialog dialog = new AddPersonDialog(getShell(), collection.getTestCases());
+//				dialog.open();
+//				tableViewer.refresh();
+//				if (dialog.getTestCase() != null) {
+//
+//					System.out.println(dialog.getTestCase());
+//				}
+				
+				 YTestCaseCollection collection = new YTestCaseCollection();   
+				   
+				   List<YClass> testCases = collection.getTestCases();
+				   FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(getShell(), testCases);
+				   dialog.setInitialPattern("?");
+				   dialog.open();		
 
 			}
 
