@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.yunakti.command;
 
+import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -23,7 +25,7 @@ public class YunaktiCommand extends AbstractHandler{
 		System.out.println("Execution event fired :::::"+event);
 		IStructuredSelection selection=(IStructuredSelection) HandlerUtil.getActiveMenuSelection(event);
 		
-		YModel model=engine.populateModel(selection);
+		List<YModel> models=engine.populateModel(selection);
 		
 		return null;
 	}

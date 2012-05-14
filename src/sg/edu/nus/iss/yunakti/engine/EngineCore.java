@@ -5,9 +5,7 @@ import java.util.List;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-import sg.edu.nus.iss.yunakti.engine.search.ResultSetMapperBase;
-import sg.edu.nus.iss.yunakti.engine.search.ResultSetMapperImpl;
-import sg.edu.nus.iss.yunakti.engine.util.SearchUtil;
+import sg.edu.nus.iss.yunakti.engine.util.YSearch;
 import sg.edu.nus.iss.yunakti.model.YModel;
 
 public class EngineCore {
@@ -17,15 +15,15 @@ public class EngineCore {
 		
 	}
 	
-	public YModel populateModel(IStructuredSelection selection) {
+	public List<YModel> populateModel(IStructuredSelection selection) {
 		
 		
+		YSearch search=new YSearch();
+		List<IJavaElement> allSearchElements = search.gatherAllSearchElementsFromSelection(selection);
+		search.search(allSearchElements);
 		
-		List<IJavaElement> allSelectedElements = SearchUtil.gatherAllSearchElementsFromSelection(selection);
+		return search.getModels();
 		
-		ResultSetMapperBase resultSetMapper=new ResultSetMapperImpl();
-		SearchUtil.search(allSelectedElements, resultSetMapper);
-		return null;
 	}
 	
 
