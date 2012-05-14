@@ -8,6 +8,8 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,17 +31,25 @@ import sg.edu.nus.iss.yunakti.ui.dialog.filter.TestCaseFilter;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.TestCaseLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
 
+/**
+ * Dialog used to display all the testcases for a CUT.
+ * Also used to add or delete an existing testcases for a CUT
+ * @author subu
+ *
+ */
 public class TestCaseDialog extends TitleAreaDialog {
 
-	private Table testCasesTable;
 	private TableViewer tableViewer;
 	private Text searchText;
 	private TestCaseFilter filter;
-	YTestCaseCollection collection;
+	private YTestCaseCollection collection;
+	private TestCaseDialog dialog;
 
 	public TestCaseDialog(Shell parentShell) {
 		super(parentShell);
+		dialog = this;
 		collection = new YTestCaseCollection();
+
 	}
 
 	@Override
@@ -49,6 +59,20 @@ public class TestCaseDialog extends TitleAreaDialog {
 		setTitle("Select Test Classes");
 		// Set the message
 		setMessage("Select Test Classes", IMessageProvider.INFORMATION);
+
+		// This is done to refresh the tableviewer everytime the dialog gets
+		// focus.
+		this.getShell().addFocusListener(new FocusListener() {
+
+			public void focusLost(FocusEvent e) {
+
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				dialog.refresh();
+			}
+		});
 
 	}
 
@@ -84,7 +108,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 		tableViewer.setContentProvider(new ArrayContentProvider());
 
-		tableViewer.setInput(collection.getTestCases());
+		setTableData(collection.getTestCases());
 
 		// Layout the viewer
 		GridData gridData = new GridData();
@@ -94,8 +118,6 @@ public class TestCaseDialog extends TitleAreaDialog {
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		tableViewer.getControl().setLayoutData(gridData);
-		// Make the selection available to other views
-		// ((Object) getShell()).setSelectionProvider(tableViewer);
 
 		searchText.addModifyListener(new ModifyListener() {
 			@Override
@@ -109,6 +131,10 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 		return parent;
 
+	}
+	
+	public void setTableData(List<YClass> testClasses){
+		tableViewer.setInput(testClasses);
 	}
 
 	@Override
@@ -125,18 +151,6 @@ public class TestCaseDialog extends TitleAreaDialog {
 		// Create Add button
 		// Own method as we need to overview the SelectionAdapter
 		createOkButton(parent, OK, "Add", true);
-		// Add a SelectionListener
-
-		// Create Reresh button
-		Button refreshButton = createButton(parent, SWT.PUSH , "Refresh", false);
-		// Add a SelectionListener
-		refreshButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.refresh();
-				this.notify();
-			}
-		});
-		
 
 		// Create Cancel button
 		Button cancelButton = createButton(parent, CANCEL, "Cancel", false);
@@ -145,6 +159,24 @@ public class TestCaseDialog extends TitleAreaDialog {
 			public void widgetSelected(SelectionEvent e) {
 				setReturnCode(CANCEL);
 				close();
+			}
+		});
+
+		// Create Refresh button
+		Button refreshButton = createButton(parent, SWT.PUSH, "Refresh", false);
+		// Add a SelectionListener
+		refreshButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.refresh();
+			}
+		});
+
+		// Create Refresh button
+		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
+		// Add a SelectionListener
+		deleteButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				
 			}
 		});
 	}
@@ -162,24 +194,10 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
-				// ModelProvider testCases = ModelProvider.INSTANCE;
-				
-//				AddPersonDialog dialog = new AddPersonDialog(getShell(), collection.getTestCases());
-//				dialog.open();
-//				tableViewer.refresh();
-//				if (dialog.getTestCase() != null) {
-//
-//					System.out.println(dialog.getTestCase());
-//				}
-				
-				 YTestCaseCollection collection = new YTestCaseCollection();   
-				   
-				   List<YClass> testCases = collection.getTestCases();
-				   FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(getShell(), testCases);
-				   dialog.setInitialPattern("?");
-				   dialog.open();		
-
+				FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
+						getShell(), collection);
+				dialog.setInitialPattern("?");
+				dialog.open();
 			}
 
 			@Override
@@ -197,8 +215,8 @@ public class TestCaseDialog extends TitleAreaDialog {
 		setButtonLayoutData(button);
 		return button;
 	}
-	
-	public void refresh(){
+
+	public void refresh() {
 		tableViewer.refresh();
 	}
 
