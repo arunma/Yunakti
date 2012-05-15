@@ -83,7 +83,6 @@ public class YSearch {
 		public void acceptSearchMatch(SearchMatch eachSearchMatch) throws CoreException {
 	
 			model=new YModel();
-			//streamUtil.print(eachSearchMatch.getClass().toString());
 			
 			if (eachSearchMatch.getClass().equals(TypeReferenceMatch.class)){
 	
@@ -123,7 +122,6 @@ public class YSearch {
 				
 			
 				String[][] type = eachTestCaseField.getDeclaringType().resolveType(Signature.toString(eachTestCaseField.getTypeSignature()));
-				//String eachFieldSignature = Signature.toString(eachTestCaseField.getTypeSignature());
 				
 				if ((type==null) || (type!=null && StringUtils.startsWith(type[0][0],YConstants.JAVA))) { 
 					//streamUtil.print("\t\t Skipping Field type  because it is inbuilt : " +eachFieldSignature); 
@@ -132,25 +130,13 @@ public class YSearch {
 				else{
 					
 					String typeSignature = eachTestCaseField.getTypeSignature();
-					//IType eachTestCaseFieldIType = eachTestCaseField.getJavaProject().findType(Signature.toString(typeSignature));
-					//streamUtil.print("Each test case field FQN" +eachTestCaseFieldIType.getFullyQualifiedName());
 					
 					String[][] ss = eachTestCaseField.getDeclaringType().resolveType(Signature.toString(typeSignature));
 					String eachTestCaseFieldFQN = ss[0][0]+"."+ss[0][1]; //full path
 					
 					testCase.getMembers().add(new YClass(eachTestCaseFieldFQN));
-					//streamUtil.print("\t\t Field type taken into account : " +eachFieldSignature);
 				}
 				
-				//streamUtil.print("IField fully qualified name : "+type);
-				//String signature = Signature.toString(iField.getTypeSignature());
-				/*streamUtil.print("streamUtil.printing type signature :"+Signature.getElementType(eachTestCaseField.getTypeSignature()));
-				streamUtil.print("Signature qualifier "+Signature.getSignatureQualifier(eachTestCaseField.getTypeSignature()));
-				streamUtil.print("Signature simple name "+Signature.getSimpleName(eachTestCaseField.getTypeSignature()));
-				streamUtil.print("Signature toString  "+Signature.toString(eachTestCaseField.getTypeSignature()));
-				
-				streamUtil.print("\t\t Field name  : " +eachTestCaseField.getElementName());
-				streamUtil.print("\t\t**********************************************");*/
 			}
 		}
 	}
