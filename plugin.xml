@@ -16,17 +16,54 @@
             </separator>
          </menu>
          <action
-               label="&amp;Sample Action"
-               icon="icons/sample.gif"
                class="sg.edu.nus.iss.yunakti.ui.actions.SampleAction"
-               tooltip="Hello, Eclipse world"
+               icon="icons/sample.gif"
+               id="sg.edu.nus.iss.yunakti.ui.actions.SampleAction"
+               label="&amp;Sample Action"
                menubarPath="sampleMenu/sampleGroup"
+               style="radio"
                toolbarPath="sampleGroup"
-               id="sg.edu.nus.iss.yunakti.ui.actions.SampleAction">
+               tooltip="Hello, Eclipse world">
+         </action>
+      </actionSet>
+      <actionSet
+            id="Yunakti.SubuActionSet"
+            label="SubuActionSet"
+            visible="true">
+         <menu
+               id="Yunakti.SubuMenu"
+               label="Subu">
+            <separator
+                  name="Yunakti.SubuGroup">
+            </separator>
+         </menu>
+         <action
+               class="sg.edu.nus.iss.yunakti.ui.actions.R2Action"
+               id="sg.edu.nus.iss.yunakti.ui.actions.SubuActions"
+               label="Open R2"
+               menubarPath="Yunakti.SubuMenu/Yunakti.SubuGroup"
+               style="push"
+               toolbarPath="Yunakti.SubuGroup"
+               tooltip="Subu">
+         </action>
+         <action
+               id="Yunakti.action1"
+               label="Search"
+               state="false"
+               style="push">
          </action>
       </actionSet>
    </extension>
    <extension
+         point="org.eclipse.search.searchPages">
+      <page
+            class="sg.edu.nus.iss.yunakti.ui.dialog.SearchPage1"
+            enabled="true"
+            id="Yunakti.page1"
+            label="Yunakti">
+      </page>
+      </extension>
+         <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
@@ -45,6 +82,6 @@
             id="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
             name="YunaktiCommand">
       </command>
-   </extension>
+  </extension>
 
 </plugin>
