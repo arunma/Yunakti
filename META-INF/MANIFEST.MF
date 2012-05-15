@@ -1,14 +1,23 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Yunakti
-Bundle-SymbolicName: yunakti;singleton:=true
+Bundle-SymbolicName: Yunakti;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: sg.edu.nus.iss.yunakti.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit,
- org.eclipse.jdt.core
+ org.eclipse.search;bundle-version="3.7.0",
+ org.eclipse.jface.text;bundle-version="3.7.2"
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.jdt.core;bundle-version="3.7.3",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.jdt.ui;bundle-version="3.7.2",
+ org.eclipse.ui.console;bundle-version="3.5.100",
+ org.junit,
+ org.apache.commons.lang;bundle-version="2.4.0",
+ org.eclipse.jface.text;bundle-version="3.7.2",
+ org.eclipse.search;bundle-version="3.7.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.resources,
- org.eclipse.jdt.core
