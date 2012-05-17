@@ -82,8 +82,8 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
 			throws CoreException {
 		progressMonitor
-				.beginTask("Searching", collection.getTestCases().size()); //$NON-NLS-1$
-		for (Iterator<YClass> iter = collection.getTestCases().iterator(); iter
+				.beginTask("Searching", collection.getAllTestCases().size()); //$NON-NLS-1$
+		for (Iterator<YClass> iter = collection.getAllTestCases().iterator(); iter
 				.hasNext();) {
 			contentProvider.add(iter.next(), itemsFilter);
 			progressMonitor.worked(1);
@@ -120,7 +120,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 				parentShell.forceFocus();
 				super.okPressed();
 			}else{
-				 MessageDialog.openError(getShell(), "Error", "Are you blind, dude ??  This class has been already added");
+				 MessageDialog.openError(getShell(), "Error", "Duplicate Class: Selected Test Class has been already added");
 			}
 		
 		}

@@ -3,6 +3,7 @@ package sg.edu.nus.iss.yunakti.ui.dialog;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -32,10 +33,11 @@ import sg.edu.nus.iss.yunakti.ui.dialog.helper.TestCaseLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
 
 /**
- * Dialog used to display all the testcases for a CUT.
- * Also used to add or delete an existing testcases for a CUT
+ * Dialog used to display all the testcases for a CUT. Also used to add or
+ * delete an existing testcases for a CUT
+ * 
  * @author subu
- *
+ * 
  */
 public class TestCaseDialog extends TitleAreaDialog {
 
@@ -44,12 +46,20 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private TestCaseFilter filter;
 	private YTestCaseCollection collection;
 	private TestCaseDialog dialog;
-
-	public TestCaseDialog(Shell parentShell) {
+	private List<YClass> testClassForCUT;
+	
+	public TestCaseDialog(Shell parentShell){
 		super(parentShell);
 		dialog = this;
+		//TODO : Replace with the original data. 
 		collection = new YTestCaseCollection();
+	}
 
+	public TestCaseDialog(Shell parentShell, YTestCaseCollection collection) {
+		super(parentShell);
+		dialog = this;
+		// this.collection = new YTestCaseCollection();
+		this.collection = collection;
 	}
 
 	@Override
@@ -108,7 +118,10 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 		tableViewer.setContentProvider(new ArrayContentProvider());
 
-		setTableData(collection.getTestCases());
+		if (collection != null) {
+			testClassForCUT =  collection.getTestCases();
+			setTableData(testClassForCUT);
+		}
 
 		// Layout the viewer
 		GridData gridData = new GridData();
@@ -132,9 +145,10 @@ public class TestCaseDialog extends TitleAreaDialog {
 		return parent;
 
 	}
-	
-	public void setTableData(List<YClass> testClasses){
+
+	public void setTableData(List<YClass> testClasses) {
 		tableViewer.setInput(testClasses);
+		this.refresh();
 	}
 
 	@Override
@@ -171,14 +185,14 @@ public class TestCaseDialog extends TitleAreaDialog {
 			}
 		});
 
-		// Create Refresh button
-		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
-		// Add a SelectionListener
-		deleteButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				
-			}
-		});
+//		// Create Delete button
+//		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
+//		// Add a SelectionListener
+//		deleteButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				System.out.println(tableViewer.getSelection());
+//			}
+//		});
 	}
 
 	protected Button createOkButton(Composite parent, int id, String label,
@@ -194,10 +208,14 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
-						getShell(), collection);
-				dialog.setInitialPattern("?");
-				dialog.open();
+			   if (collection != null) {
+					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
+							getShell(), collection);
+					dialog.setInitialPattern("?");
+					dialog.open();
+				}else{
+					MessageDialog.openError(getShell(), "Error", "There are no testclasses in the selected project");
+				}
 			}
 
 			@Override
