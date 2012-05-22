@@ -1,2 +1,5 @@
 /bin
 /${junit.output.dir}
+/.settings
+/.classpath
+/.settings
