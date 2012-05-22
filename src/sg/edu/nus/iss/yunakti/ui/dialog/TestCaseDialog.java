@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -47,11 +48,11 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private YTestCaseCollection collection;
 	private TestCaseDialog dialog;
 	private List<YClass> testClassForCUT;
-	
-	public TestCaseDialog(Shell parentShell){
+
+	public TestCaseDialog(Shell parentShell) {
 		super(parentShell);
 		dialog = this;
-		//TODO : Replace with the original data. 
+		// TODO : Replace with the original data.
 		collection = new YTestCaseCollection();
 	}
 
@@ -119,7 +120,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 		tableViewer.setContentProvider(new ArrayContentProvider());
 
 		if (collection != null) {
-			testClassForCUT =  collection.getTestCases();
+			testClassForCUT = collection.getTestCases();
 			setTableData(testClassForCUT);
 		}
 
@@ -185,14 +186,29 @@ public class TestCaseDialog extends TitleAreaDialog {
 			}
 		});
 
-//		// Create Delete button
-//		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
-//		// Add a SelectionListener
-//		deleteButton.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent e) {
-//				System.out.println(tableViewer.getSelection());
-//			}
-//		});
+		// Create Delete button
+		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
+		// Add a SelectionListener
+		deleteButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				List<YClass> testClasses = collection.getTestCases();
+				System.out.println("remove selection listener");
+				for (YClass yClass : testClasses) {
+
+					if (tableViewer.getSelection().toString()
+							.contains(yClass.getFullyQualifiedName())) {
+						try {
+							testClasses.remove(yClass);
+							tableViewer.refresh();
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+
+		this.setTableData(collection.getTestCases());
 	}
 
 	protected Button createOkButton(Composite parent, int id, String label,
@@ -208,13 +224,14 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-			   if (collection != null) {
+				if (collection != null) {
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
 							getShell(), collection);
 					dialog.setInitialPattern("?");
 					dialog.open();
-				}else{
-					MessageDialog.openError(getShell(), "Error", "There are no testclasses in the selected project");
+				} else {
+					MessageDialog.openError(getShell(), "Error",
+							"There are no testclasses in the selected project");
 				}
 			}
 
