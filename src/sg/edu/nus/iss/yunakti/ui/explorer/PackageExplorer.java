@@ -41,7 +41,7 @@ public class PackageExplorer extends AbstractHandler {
 				
 				for (ICompilationUnit tmpUnit : unitList){
 					
-					SelectionParser.listHelperClassForUnit((ICompilationUnit)firstElement, allUnitList);
+					SelectionParser.listHelperClassForUnit(tmpUnit, allUnitList);
 				}
 			}
 			
