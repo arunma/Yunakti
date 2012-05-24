@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -22,6 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -30,6 +33,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.part.ViewPart;
 
+import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
@@ -40,16 +44,20 @@ import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
 import sg.edu.nus.iss.yunakti.ui.dialog.TestCaseDialog;
 import sg.edu.nus.iss.yunakti.view.YunaktiTextView;
 
-public class YunaktiGridView extends PageBookView{
+public class YunaktiGridView extends PageBookView implements  ISelectionListener{
 	
 	public static final String ID = "sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView";
 	private TreeViewer viewer;
+	
+	EngineCore engineCore = new EngineCore();
 
 	@Override
 	public void createPartControl(Composite parent) {
 		// TODO Auto-generated method stub
 		
 		setUpView(parent);
+		
+		getViewSite().getPage().addSelectionListener(this);
 		
 		try {
 			//YunaktiTextView vw=(YunaktiTextView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(YunaktiTextView.ID);
@@ -151,55 +159,14 @@ public class YunaktiGridView extends PageBookView{
 	            		  
 	            	  }
 	              
-	              }
-
-	              
-	              
-	              
-	              
-	              /*Point pt = new Point(event.x, event.y);
-	              TableItem item = tree.get
-	              if (item == null)
-	               return;
-	              for (int i = 0; i < columnCount; i++) {
-	               Rectangle rect = item.getBounds(i);
-	               if (rect.contains(pt)) {
-	                int index = tree.indexOf(item);
-	                System.out.println("Item " + index + "-" + i);
-	               }
-	              }*/
-	              
-	              
-	              
-	              
-	              
-	              
-
-
-	              
-	             			
-				/*TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell());
-								
-				caseDialog.create();
-				
-				caseDialog.setTableData((List<YClass>)getModel().get(0).getTestCases());
-				
-				caseDialog.open();*/
-	            /*  
-	              HelperDialog dialog = new HelperDialog(parent.getShell());
-	              
-	              dialog.setLstYClass((List<YClass>)((List<YClass>)getModel().get(0).getTestCases()).get(0).getMembers());
-				*/
-				
+	              }	       
+	            
 			}
 			 }); 
 		
 	
 		
-		
-		
-		
-		
+				
 		
 		
 		
@@ -380,6 +347,58 @@ private List<YClass> getHelperClasses(String className, int colNum){
 		
 		return helperClasses;
 	}
+
+@Override
+public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+	
+	if (part != null &&
+            selection instanceof IStructuredSelection) {
+            
+		System.out.println("selector invoked");
+		
+		
+		
+		List<YModel> yModels= 	engineCore.populateModel((IStructuredSelection)selection);
+		
+		if(yModels != null && !yModels.isEmpty())
+		{
+		
+		viewer.setInput(getParentModel(yModels).toArray());
+		}
+		
+		
+		
+		
+            }
+	
+	
+}
+
+public List<YParentModel> getParentModel(List<YModel> yModels){
+	
+	
+	// parent model
+	List<YParentModel> parentModelList = new ArrayList<YParentModel>();
+	
+	
+	YParentModel parentModel = new YParentModel();						
+	parentModel.setClassList(yModels);						
+	parentModel.setParentName("Package1");
+	parentModelList.add(parentModel);
+	
+	
+	parentModel = new YParentModel();						
+	parentModel.setClassList(yModels);						
+	parentModel.setParentName("Package2");
+	parentModelList.add(parentModel);
+	
+						
+	
+	
+	return parentModelList;
+	
+	
+}
 
 
 
