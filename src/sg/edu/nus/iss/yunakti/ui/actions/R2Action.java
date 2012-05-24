@@ -33,7 +33,7 @@ public class R2Action implements IWorkbenchWindowActionDelegate {
 	 */
 	public void run(IAction action) {
 		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell());
-		dialog.create();
+	    dialog.create();
 		if (dialog.open() == Window.OK) {
 
 		}

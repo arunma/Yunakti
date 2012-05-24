@@ -1,10 +1,8 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-
-import javax.management.openmbean.OpenDataException;
 
 import org.eclipse.ui.PlatformUI;
 import org.junit.After;
@@ -12,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sg.edu.nus.iss.yunakti.model.YClass;
-import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialogTest.MyHelperDialog;
+import sg.edu.nus.iss.yunakti.ui.dialog.TestCaseDialog;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
 
 public class TestCaseDialogTest {
