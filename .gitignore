@@ -1,2 +1,6 @@
 /bin
 /${junit.output.dir}
+/.classpath
+/.settings
+/META-INF
+/.project
