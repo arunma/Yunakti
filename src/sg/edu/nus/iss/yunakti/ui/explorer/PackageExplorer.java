@@ -2,14 +2,10 @@ package sg.edu.nus.iss.yunakti.ui.explorer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -17,16 +13,18 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 public class PackageExplorer extends AbstractHandler {
+	
 
-	@Override
+	/*@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		/*
+		
 		 * IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		 * IProject iProject = root.getProject();
 		 * 
@@ -37,7 +35,7 @@ public class PackageExplorer extends AbstractHandler {
 		 * System.out.println("Root package name ======> " + i + " is " +
 		 * rootList[i].getElementName()); } } catch (JavaModelException e1) { //
 		 * TODO Auto-generated catch block e1.printStackTrace(); }
-		 */
+		 
 
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
@@ -92,7 +90,7 @@ public class PackageExplorer extends AbstractHandler {
 				}
 			}
 			
-			/*
+			
 			try {
 				if (pack.hasChildren()) {
 					System.out.println("Has sub packages? =====> "
@@ -116,14 +114,14 @@ public class PackageExplorer extends AbstractHandler {
 			} catch (Exception e) {
 				System.out.println("Error enountered ======> " + e.getMessage());
 			}
-			*/
+			
 
 		}else if(firstElement instanceof ICompilationUnit){
 			
 			//System.out.println("You have chosen a JAVA file");
 			ICompilationUnit unit = (ICompilationUnit) firstElement;
 			CompilationUnit comUnit = parse(unit);
-			CompilationUnitVisitor visitor = new CompilationUnitVisitor();
+			CompilationUnitVisitor visitor = new CompilationUnitVisitor(null);
 			comUnit.accept(visitor);
 			Set<String> objectList = visitor.getInvokedObjects();
 			
@@ -148,7 +146,7 @@ public class PackageExplorer extends AbstractHandler {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			/*
+			
 			for (MethodDeclaration method : visitor.getMethods()) {
 				//method.r
 				System.out.println("Method name: " + method.getName()
@@ -168,13 +166,13 @@ public class PackageExplorer extends AbstractHandler {
 				System.out.println("The " + len + " type TYPE is ======> " + typeList[len].getElementType());
 				
 			}
-			*/
+			
 			
 		}else {
 			System.out.println("You have NOT selected a package");
 		}
 		return null;
-	}
+	}*/
 	
 	private CompilationUnit parse(ICompilationUnit unit) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -288,6 +286,12 @@ public class PackageExplorer extends AbstractHandler {
 		
 		IType[] tmpTypeList = tmpUnit.getTypes();
 		return tmpTypeList[0].getFullyQualifiedName();
+	}
+
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*

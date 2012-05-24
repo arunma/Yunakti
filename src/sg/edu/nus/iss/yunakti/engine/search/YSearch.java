@@ -1,8 +1,10 @@
 package sg.edu.nus.iss.yunakti.engine.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -63,8 +65,41 @@ public class YSearch {
 	
 
 	public List<YModel> getResults() {
+		
+		models=groupModels(models);
 		ConsoleStreamUtil.println("Returning results +"+models);
 		return models;
+	}
+
+
+	private List<YModel> groupModels(List<YModel> models) {
+
+		Map<String,YModel> groupedModels=new HashMap<String,YModel>();
+		if (models!=null && models.size()>0){
+			
+			YModel tempYModel=null;
+			for (YModel yModel : models) {
+				
+				if (groupedModels.containsKey(yModel.getClassUnderTest().getFullyQualifiedName())){
+					tempYModel=groupedModels.get(yModel.getClassUnderTest().getFullyQualifiedName());
+					tempYModel.addAllTestCase(yModel.getTestCases());
+					
+				}
+				else{
+					groupedModels.put(yModel.getClassUnderTest().getFullyQualifiedName(), yModel);
+				}
+				
+			}
+			
+			models.clear();
+			models.addAll(groupedModels.values());
+			
+			
+		}
+		
+		return models;
+		
+		
 	}
 
 
@@ -99,63 +134,11 @@ public class YSearch {
 					
 				}
 				
-				/*if (testCaseElement.getElementType()==IJavaElement.TYPE){
-					
-					//ICompilationUnit icompilationUnit=(ICompilationUnit)testCaseElement;
-					//streamUtil.print("Yaaaay.. icompilationunit"+icompilationUnit);
-					
-					IType testCaseType=(IType)testCaseElement;
-					YClass testCase=new YClass( testCaseType.getFullyQualifiedName());
-					
-					String fqnClassUnderTest=getClassUnderTest(testCaseElement.getJavaProject(), testCaseType);
-					model.setClassUnderTest(new YClass(fqnClassUnderTest));
-					
-					gatherHelpers(testCaseType, testCase);
-					
-					model.getTestCases().add(testCase);
-				}
-				streamUtil.print("Model :"+model.toString());*/
-				
 			}
 			streamUtil.println("Adding model...... to models");
 			//streamUtil.print("Model record : "+model.toString());
 			models.add(model);
 		}
 	
-		/*
-		private String getClassUnderTest(IJavaProject javaProject, IType testCaseType) throws JavaModelException {
-			
-			IAnnotation annotation = testCaseType.getAnnotation(YConstants.TEST_CASE_ANNOTATION);
-			IMemberValuePair[] annotationMemberValuePairs = annotation.getMemberValuePairs();
-			IType classUnderTestType = javaProject.findType(annotationMemberValuePairs[0].getValue().toString());
-			return classUnderTestType.getFullyQualifiedName();
-			
-		}
-	
-		private void gatherHelpers(IType testCaseType, YClass testCase)	throws JavaModelException {
-			IField[] testCaseFields = testCaseType.getFields();
-			
-			for (IField eachTestCaseField : testCaseFields) {
-				
-			
-				String[][] type = eachTestCaseField.getDeclaringType().resolveType(Signature.toString(eachTestCaseField.getTypeSignature()));
-				
-				if ((type==null) || (type!=null && StringUtils.startsWith(type[0][0],YConstants.JAVA))) { 
-					//streamUtil.print("\t\t Skipping Field type  because it is inbuilt : " +eachFieldSignature); 
-				}
-				//TODO Negate the "if" block and insert the following section
-				else{
-					
-					String typeSignature = eachTestCaseField.getTypeSignature();
-					
-					String[][] ss = eachTestCaseField.getDeclaringType().resolveType(Signature.toString(typeSignature));
-					String eachTestCaseFieldFQN = ss[0][0]+"."+ss[0][1]; //full path
-					
-					testCase.getMembers().add(new YClass(eachTestCaseFieldFQN));
-				}
-				
-			}
-		}
-		*/
 	}
 }

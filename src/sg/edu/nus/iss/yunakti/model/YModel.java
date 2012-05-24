@@ -1,22 +1,21 @@
 package sg.edu.nus.iss.yunakti.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-public class YModel {
+@SuppressWarnings("serial")
+public class YModel implements Serializable{
 	
 	private YClass classUnderTest;
-	private Collection<YClass> testCases=new ArrayList<YClass>();
+	private List<YClass> testCases=new ArrayList<YClass>();
 	
-	public Collection<YClass> getTestCases() {
+	public List<YClass> getTestCases() {
 		return testCases;
 	}
 
-	public void setTestCases(Collection<YClass> testCases) {
-		this.testCases = testCases;
-	}
 
 	public YClass getClassUnderTest() {
 		return classUnderTest;
@@ -26,7 +25,13 @@ public class YModel {
 		this.classUnderTest = classUnderTest;
 	}
 
+	public void addTestCase(YClass testCase){
+		this.testCases.add(testCase);
+	}
 	
+	public void addAllTestCase(List<YClass> testCases){
+		this.testCases.addAll(testCases);
+	}
 	
 	
 	@Override

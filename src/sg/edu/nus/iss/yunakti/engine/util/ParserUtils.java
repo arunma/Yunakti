@@ -5,14 +5,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTRequestor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 public class ParserUtils {
@@ -54,4 +52,18 @@ public class ParserUtils {
 			parser.setResolveBindings(true);
 	        return parser;
 	 }
+	 
+	 
+
+	public static String getClassName(String className) {
+
+		System.out.println("Class Name : "+className);
+		if (StringUtils.isNotBlank(className)){
+			String paramType = Signature.getSignatureSimpleName(className);
+			int indexOfLt = paramType.indexOf("<");
+			return paramType.substring(0, (indexOfLt == -1 ? (paramType.length()): indexOfLt));
+		}
+		
+		return StringUtils.EMPTY;
+	}
 }

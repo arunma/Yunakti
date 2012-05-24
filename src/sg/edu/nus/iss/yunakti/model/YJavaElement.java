@@ -1,9 +1,12 @@
 package sg.edu.nus.iss.yunakti.model;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 
-public class YJavaElement {
+@SuppressWarnings("serial")
+public class YJavaElement implements Serializable{
 
 	public YJavaElement() {
 	}

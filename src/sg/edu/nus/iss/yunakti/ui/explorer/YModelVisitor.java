@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -18,12 +19,19 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
+
+import com.sun.xml.internal.ws.wsdl.parser.ParserUtil;
 
 import sg.edu.nus.iss.yunakti.engine.parser.YModelSource;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
+import sg.edu.nus.iss.yunakti.engine.util.ParserUtils;
+import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 
@@ -47,16 +55,33 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	
 	@Override
 	public boolean visit(FieldDeclaration node) {
-		List<VariableDeclarationStatement> variableDeclarations = node.fragments();
 		
-		for (VariableDeclarationStatement eachVariable : variableDeclarations) {
+		
+		node.getType().resolveBinding().getQualifiedName();
+		
+		if (node.getType().isSimpleType()){
 			
-			//eachVariable.get
+			SimpleType simpleFieldType=(SimpleType) node.getType();
+			
+			streamUtil.println("SimpleField Type"+simpleFieldType.resolveBinding().getQualifiedName());
+			
+			System.out.println("SimpleField Type"+simpleFieldType.resolveBinding().getQualifiedName());
+			
+			addToModel(simpleFieldType.resolveBinding().getQualifiedName());
+			
 		}
 		
-		
-		
 		return super.visit(node); 
+		
+	}
+
+	private void addToModel(String qualifiedName) {
+		
+		for(String filterPackage:YConstants.FILTER_PACKAGES){
+			if (!qualifiedName.startsWith(filterPackage)){
+				model.getTestCases().get(0).addMember(new YClass(qualifiedName));	
+			}
+		}
 		
 	}
 
@@ -67,6 +92,18 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		
 		return super.visit(node);
 	}
+	
+	@Override
+	public boolean visit(TypeDeclaration node) {
+		
+		streamUtil.println("Field Class name : "+node.getName().toString());
+		
+		model.addTestCase(new YClass(node.resolveBinding().getQualifiedName()));
+		//model.addTestCase(new YClass(ParserUtils.getClassName(node.getName().toString())));
+		return super.visit(node);
+		
+	}
+	
 
 	private void resolveClassUnderTest(NormalAnnotation node) {
 		if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION)){
@@ -79,6 +116,8 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 			
 		}
 	}
+	
+	
 	
 	public List<MethodDeclaration> getMethods() {
 		return methods;
@@ -153,7 +192,6 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	            }
 			}
 		}
-		
 		
 		return objectList;
 	}
