@@ -17,6 +17,7 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 
 import sg.edu.nus.iss.yunakti.Activator;
 import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
 
 public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
@@ -24,11 +25,13 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	private List<YClass> allTestClasses;
 	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 	Shell parentShell;
+	private YModel model;
 
-	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses) {
+	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestClasses = allTestClasses;
+		this.model = model;
 		setTitle("Add new Test Class");
 	}
 
@@ -116,7 +119,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			}
 			
 			if(found == false){
-//				allTestClasses.addTestCase(class1);
+				model.addTestCase(class1);
 				parentShell.forceFocus();
 				super.okPressed();
 			}else{

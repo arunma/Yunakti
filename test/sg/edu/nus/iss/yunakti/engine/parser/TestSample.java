@@ -31,7 +31,7 @@ public class TestSample {
 		testCase1.addMember(helper1);
 		testCase1.addMember(helper2);
 		
-		yModel.setClassUnderTest(classUnderTest)
+		yModel.setClassUnderTest(classUnderTest);
 	}
 
 }

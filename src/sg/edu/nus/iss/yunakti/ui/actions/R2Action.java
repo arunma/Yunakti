@@ -56,10 +56,32 @@ public class R2Action implements IWorkbenchWindowActionDelegate {
 		testClasses.add(testClass2);
 		testClasses.add(testClass3);
 		model.addAllTestCase(testClasses);
+		
+		YClass testClass5 = new YClass("com.subu.testClass1");
+		testClass5.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass6 = new YClass("com.subu.testClass2");
+		testClass6.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass7 = new YClass("com.subu.testClass3");
+		testClass7.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass8 = new YClass("com.subu.testClass4");
+		testClass8.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass9 = new YClass("com.subu.testClass5");
+		testClass9.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass10 = new YClass("com.subu.testClass6");
+		testClass10.setyClassType(YTYPE.TEST_CASE);
+	
+		List<YClass> allTestClasses = new ArrayList<YClass>();
+		allTestClasses.add(testClass5);
+		allTestClasses.add(testClass6);
+		allTestClasses.add(testClass7);
+		allTestClasses.add(testClass8);
+		allTestClasses.add(testClass9);
+		allTestClasses.add(testClass10);
+		
 		System.out.println(model);
 		
 		
-		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell(), model );
+		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell(), model, allTestClasses);
 
 		  dialog.create();
 		if (dialog.open() == Window.OK) {

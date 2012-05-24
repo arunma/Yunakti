@@ -49,7 +49,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private YModel model;
 	private TestCaseDialog dialog;
 	private List<YClass> testClassForCUT;
-	private List<YClass> allTestClasses;
+	private List<YClass> uniqueTestClasses;
 
 	public TestCaseDialog(Shell parentShell) {
 		super(parentShell);
@@ -57,11 +57,12 @@ public class TestCaseDialog extends TitleAreaDialog {
 		// TODO : Replace with the original data.
 	}
 
-	public TestCaseDialog(Shell parentShell, YModel model) {
+	public TestCaseDialog(Shell parentShell, YModel model, List<YClass> uniqueTestClasses) {
 		super(parentShell);
 		dialog = this;
 		// this.collection = new YTestCaseCollection();
 		this.model = model;
+		this.uniqueTestClasses = uniqueTestClasses;
 	}
 
 	@Override
@@ -229,9 +230,9 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (collection != null) {
+				if (uniqueTestClasses != null) {
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
-							getShell(), allTestClasses);
+							getShell(), uniqueTestClasses, model);
 					dialog.setInitialPattern("?");
 					dialog.open();
 				} else {
