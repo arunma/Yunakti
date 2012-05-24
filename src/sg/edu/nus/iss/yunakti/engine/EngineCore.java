@@ -53,7 +53,7 @@ public class EngineCore {
 			}
 			
 		}
-		
+		System.out.println("Unique testcase size : "+uniqueTestCases.size());
 		return uniqueTestCases;
 	}
 	

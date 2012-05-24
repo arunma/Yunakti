@@ -1,10 +1,10 @@
 package sg.edu.nus.iss.yunakti.engine.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -18,23 +18,21 @@ public class TestEngineCore {
 	@Test
 	public void test() {
 	
-		YModel yModel=constructYModel();
 		EngineCore engineCore = new EngineCore();
-		List<YModel> models=mock(List.class);
+		List<YModel> models=new ArrayList<YModel>();
 		models.add(constructYModel());
 		models.add(constructYModel());//duplicate
 		
-		//verify (engineCore).getUniqueTestCases(models);
-		
+		System.out.println("Models : "+ models);
 		assertEquals(engineCore.getUniqueTestCases(models).size(),2);
 	}
 
 	
 	private YModel constructYModel() {
 		
-		YModel yModel = mock(YModel.class);
+		YModel yModel = new YModel();
 		
-		YClass classUnderTest=mock(YClass.class);
+		YClass classUnderTest=new YClass();
 		classUnderTest.setFullyQualifiedName("sg.edu.nus.iss.yunakti.ClassUnderTest");
 		
 		YClass testCase1=mockTestCase1();
@@ -50,11 +48,11 @@ public class TestEngineCore {
 
 
 	private YClass mockTestCase1() {
-		YClass testCase1=mock(YClass.class);
+		YClass testCase1=new YClass();;
 		testCase1.setFullyQualifiedName("sg.edu.nus.iss.yunakti.TestCase1");
 		
-		YClass helper1=mock(YClass.class);
-		YClass helper2=mock(YClass.class);
+		YClass helper1=new YClass();;
+		YClass helper2=new YClass();;
 		helper1.setFullyQualifiedName("sg.edu.nus.iss.yunakti.Helper1");
 		helper2.setFullyQualifiedName("sg.edu.nus.iss.yunakti.Helper2");
 		testCase1.addMember(helper1);
@@ -66,11 +64,11 @@ public class TestEngineCore {
 	
 	private YClass mockTestCase2() {
 		
-		YClass testCase2=mock(YClass.class);
+		YClass testCase2=new YClass();;
 		testCase2.setFullyQualifiedName("sg.edu.nus.iss.yunakti.TestCase2");
 		
-		YClass helper1=mock(YClass.class);
-		YClass helper2=mock(YClass.class);
+		YClass helper1=new YClass();;
+		YClass helper2=new YClass();;
 		helper1.setFullyQualifiedName("sg.edu.nus.iss.yunakti.Helper1");
 		helper2.setFullyQualifiedName("sg.edu.nus.iss.yunakti.Helper2");
 		testCase2.addMember(helper1);
