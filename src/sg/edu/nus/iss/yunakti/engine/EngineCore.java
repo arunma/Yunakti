@@ -1,12 +1,15 @@
 package sg.edu.nus.iss.yunakti.engine;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 import sg.edu.nus.iss.yunakti.engine.search.YSearch;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
+import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 
 public class EngineCore {
@@ -28,7 +31,6 @@ public class EngineCore {
 			ConsoleStreamUtil.println("Next line coming up ::::");
 			//System.out.println("Search results:"+searchResults);
 		} catch (Exception e) {
-			System.out.println("sdkljsklfdjlkdshjklsjsdklghsdg");
 			ConsoleStreamUtil.print(e);
 			e.printStackTrace();
 		}
@@ -37,6 +39,22 @@ public class EngineCore {
 		return searchResults;
 		
 		
+	}
+
+	public Set<YClass> getUniqueTestCases(List<YModel> models) {
+		
+		System.out.println("Calling getUniqueTestCases");
+		Set<YClass> uniqueTestCases=new HashSet<YClass>();
+		if (models!=null && models.size()>0){
+			List<YClass> allTestCasesInModel = null;
+			for (YModel eachModel : models) {
+				allTestCasesInModel = eachModel.getTestCases();
+				uniqueTestCases.addAll(allTestCasesInModel);
+			}
+			
+		}
+		System.out.println("Unique testcase size : "+uniqueTestCases.size());
+		return uniqueTestCases;
 	}
 	
 

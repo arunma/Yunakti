@@ -61,7 +61,6 @@ public class YSearch {
 			e.printStackTrace();
 		}
 	}
-
 	
 
 	public List<YModel> getResults() {
