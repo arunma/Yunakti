@@ -7,12 +7,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -29,6 +31,10 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 
 public class CompilationUnitVisitor extends ASTVisitor{
 	
@@ -43,7 +49,6 @@ public class CompilationUnitVisitor extends ASTVisitor{
 	private List<FieldDeclaration> fields = new ArrayList<FieldDeclaration>();
 	
 	private List<SimpleName> simpleNames = new ArrayList<SimpleName>();
-	private List<SimpleType> simpleTypes = new ArrayList<SimpleType>();
 	
 	private List<SingleMemberAnnotation> annoList = new ArrayList<SingleMemberAnnotation>();
 	
@@ -77,11 +82,6 @@ public class CompilationUnitVisitor extends ASTVisitor{
 		simpleNames.add(node);
 		return super.visit(node); 
 	}
-	
-	public boolean visit(SimpleType node){
-		simpleTypes.add(node);
-		return super.visit(node); 
-	}
 
 	public List<MethodDeclaration> getMethods() {
 		return methods;
@@ -89,10 +89,6 @@ public class CompilationUnitVisitor extends ASTVisitor{
 	
 	public List<FieldDeclaration> getFields() {
 		return fields;
-	}
-	
-	public List<SimpleType> getTypes() {
-		return simpleTypes;
 	}
 	
 	public List<SimpleName> getNames() {
@@ -103,7 +99,23 @@ public class CompilationUnitVisitor extends ASTVisitor{
 	public Set<String> getInvokedObjects(){
 		
 		Set<String> objectList = new TreeSet<String>();
+		List<SimpleName> nameList = getNames();   
+        
+        if(nameList != null && nameList.size() > 0){
+        	for(SimpleName tmpName : nameList){
+        		
+        		//System.out.println("Printing simple name =====> " + tmpName.getFullyQualifiedName());
+        		if(tmpName.resolveTypeBinding() != null && tmpName.resolveTypeBinding().isClass()){
+        			//System.out.println("Printing simple name =====> " + tmpName.getFullyQualifiedName() + " / " + tmpName.resolveTypeBinding().getQualifiedName());
+        			objectList.add(tmpName.resolveTypeBinding().getQualifiedName());
+        		}
+        	}
+        }
 		
+		
+		return objectList;
+		
+		/*
 		List<FieldDeclaration> fieldList = getFields();
 		if(fieldList != null && fieldList.size() > 0){
 			
@@ -122,32 +134,7 @@ public class CompilationUnitVisitor extends ASTVisitor{
 			
 			for(MethodDeclaration tmpMethod : methodList){
 				System.out.println(tmpMethod.getName());
-				/*
-				if("testString".equals(tmpMethod.getName().toString())){
-					
-					System.out.println("Found method");
-					AST ast = tmpMethod.getAST();
-					ASTRewrite rewriter = ASTRewrite.create(ast);
-					SingleMemberAnnotation testClassAnnotation = ast.newSingleMemberAnnotation();
-					testClassAnnotation.setTypeName(ast.newSimpleName("TC"));
-					testClassAnnotation.setValue(ast.newSimpleName("Class"));
-					System.out.println("Modifiers ====> " + tmpMethod.modifiers().size() + " / " + tmpMethod.modifiers().get(0));
-					tmpMethod.modifiers().add(0,testClassAnnotation);
-					System.out.println("Modifiers after ====> " + tmpMethod.modifiers().size() + " / " + tmpMethod.modifiers().get(0));
-					
-					try {
-						rewriter.rewriteAST();
-					} catch (JavaModelException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					System.out.println("method annotated");
-				}
-				*/
-				//tmpMethod.
+				
 				IMethodBinding methodBind = tmpMethod.resolveBinding(); 
 				//System.out.println("Qulified name for return type ======> " + methodBind.getReturnType().getQualifiedName());
 				ITypeBinding[] tmpTypeBinding = methodBind.getParameterTypes();
@@ -169,16 +156,10 @@ public class CompilationUnitVisitor extends ASTVisitor{
 				Iterator iter=statements.iterator();
 	            while(iter.hasNext()){
 	            	Statement stmt=(Statement)iter.next();
-	            	//System.out.println("looping method body ======> " + stmt.toString() + " Class type ======> " + stmt.getClass());
-	            	//objectList = resolveStatement(stmt, objectList);
 	            }
-	            
-	            
-	            
-			}
-			
-            
+	        }
 		}
+		
 		
 
 		if(annoList != null && annoList.size() > 0){
@@ -211,80 +192,47 @@ public class CompilationUnitVisitor extends ASTVisitor{
 					System.out.println("method annotated");
 				}
 			}
-		}
-		
-		if(annoTypeList != null && annoTypeList.size() > 0){
 			
-			for(AnnotationTypeMemberDeclaration tmpAnno : annoTypeList){
-				System.out.println("Annotation Name ===> " + tmpAnno.getName());
-				//System.out.println("Annotation Value ===> " + tmpAnno.resolveAnnotationBinding().getDeclaredMemberValuePairs()[0].getValue());
-			}
 		}
-		else{
-			
-			System.out.println("Annotation is empty!!!");
-		}
+		*/
         
         
-        
-        List<SimpleName> nameList = getNames();    
-        List<SimpleType> typeList = getTypes(); 
-        
-        if(nameList != null && nameList.size() > 0){
-        	for(SimpleName tmpName : nameList){
-        		
-        		//System.out.println("Printing simple name =====> " + tmpName.getFullyQualifiedName());
-        		if(tmpName.resolveTypeBinding() != null && tmpName.resolveTypeBinding().isClass()){
-        			//System.out.println("Printing simple name =====> " + tmpName.getFullyQualifiedName() + " / " + tmpName.resolveTypeBinding().getQualifiedName());
-        			objectList.add(tmpName.resolveTypeBinding().getQualifiedName());
-        		}
-        	}
-        }
-        
-        if(typeList != null && typeList.size() > 0){
-        	
-        	for(SimpleType tmpType : typeList){
-        		
-        		//System.out.println("Printing simple type =====> " + tmpType.resolveBinding().getQualifiedName());
-        	}
-        }
-		
-		
-		return objectList;
 	}
 	
-	private Set<String> resolveStatement(Statement stmt, Set<String> objectList){
+	
+	public String markTestClass(CompilationUnit comUnit, String CUTQualifiedName){
 		
-		if(stmt instanceof VariableDeclarationStatement)  
-        {  
-            VariableDeclarationStatement var=(VariableDeclarationStatement) stmt;
-            //System.out.println(var.toString() + "===> Type of variable:"+var.getType().resolveBinding().getQualifiedName());
-            objectList.add(var.getType().resolveBinding().getQualifiedName());
-            
-        }
-    	if(stmt instanceof ExpressionStatement)
-    	{
-    		ExpressionStatement expStat = (ExpressionStatement) stmt;
-    		Expression express = expStat.getExpression();  
-    		
-    		if(express instanceof Assignment)  
-            {  
-                Assignment assign=(Assignment)express;  
-                System.out.println("LHS:"+assign.getLeftHandSide()+"; ");  
-                System.out.println("Op:"+assign.getOperator()+"; ");  
-                System.out.println("RHS:"+assign.getRightHandSide());  
-                  
-            }  
-    		else if(express instanceof MethodInvocation)  
-            {  
-                MethodInvocation mi=(MethodInvocation) express;  
-                System.out.println("invocation name:"+mi.getName());  
-                System.out.println("invocation exp:"+mi.getExpression());  
-                System.out.println("invocation arg:"+mi.arguments());  
-                  
-            }
-    	}
+		AST ast = comUnit.getAST();
+		ASTRewrite rewriter = ASTRewrite.create(ast);
+		SingleMemberAnnotation testClassAnnotation = ast.newSingleMemberAnnotation();
+		testClassAnnotation.setTypeName(ast.newName("TC"));
+		testClassAnnotation.setValue(ast.newName(CUTQualifiedName));
 		
-		return objectList;
+		TypeDeclaration td = (TypeDeclaration)comUnit.types().get(0);
+		rewriter.getListRewrite(td, td.getModifiersProperty()).insertAt(testClassAnnotation, 0, null);
+		String updatedUnit = "";
+		TextEdit edits = null;
+		try {
+			updatedUnit = ((ICompilationUnit)comUnit.getJavaElement()).getSource();
+			System.out.println("Updated unit String Before =====> " + updatedUnit);
+		} catch (JavaModelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Document doc = new Document(updatedUnit);
+		edits = rewriter.rewriteAST(doc, null);
+		try {
+			edits.apply(doc);
+			System.out.println("Updated unit String After =====> " + doc.get());
+		} catch (MalformedTreeException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (BadLocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return doc.get();
 	}
+
 }
