@@ -1,6 +1,5 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.ui.dialog.filter.TestCaseFilter;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.TestCaseLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
@@ -46,21 +46,22 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private Text searchText;
 	private TestCaseFilter filter;
 	private YTestCaseCollection collection;
+	private YModel model;
 	private TestCaseDialog dialog;
 	private List<YClass> testClassForCUT;
+	private List<YClass> allTestClasses;
 
 	public TestCaseDialog(Shell parentShell) {
 		super(parentShell);
 		dialog = this;
 		// TODO : Replace with the original data.
-		collection = new YTestCaseCollection();
 	}
 
-	public TestCaseDialog(Shell parentShell, YTestCaseCollection collection) {
+	public TestCaseDialog(Shell parentShell, YModel model) {
 		super(parentShell);
 		dialog = this;
 		// this.collection = new YTestCaseCollection();
-		this.collection = collection;
+		this.model = model;
 	}
 
 	@Override
@@ -119,9 +120,9 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 		tableViewer.setContentProvider(new ArrayContentProvider());
 
-		if (collection != null) {
-			testClassForCUT = collection.getTestCases();
-			setTableData(testClassForCUT);
+		if (model != null) {
+			testClassForCUT = model.getTestCases();
+			setTableData(model);
 		}
 
 		// Layout the viewer
@@ -147,14 +148,18 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 	}
 
-	public void setTableData(List<YClass> testClasses) {
-		tableViewer.setInput(testClasses);
-		this.refresh();
+	public void setTableData(YModel model) {
+		this.model = model;
+		this.testClassForCUT = model.getTestCases();
+		System.out.println(model.getTestCases());
+		if (model != null) {
+			tableViewer.setInput(model.getTestCases());
+			this.refresh();
+		}
 	}
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.horizontalSpan = 3;
@@ -191,14 +196,14 @@ public class TestCaseDialog extends TitleAreaDialog {
 		// Add a SelectionListener
 		deleteButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				List<YClass> testClasses = collection.getTestCases();
+
 				System.out.println("remove selection listener");
-				for (YClass yClass : testClasses) {
+				for (YClass yClass : testClassForCUT) {
 
 					if (tableViewer.getSelection().toString()
 							.contains(yClass.getFullyQualifiedName())) {
 						try {
-							testClasses.remove(yClass);
+							testClassForCUT.remove(yClass);
 							tableViewer.refresh();
 						} catch (Exception ex) {
 							ex.printStackTrace();
@@ -208,7 +213,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 			}
 		});
 
-		this.setTableData(collection.getTestCases());
+		this.setTableData(model);
 	}
 
 	protected Button createOkButton(Composite parent, int id, String label,
@@ -226,7 +231,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 			public void widgetSelected(SelectionEvent e) {
 				if (collection != null) {
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
-							getShell(), collection);
+							getShell(), allTestClasses);
 					dialog.setInitialPattern("?");
 					dialog.open();
 				} else {
