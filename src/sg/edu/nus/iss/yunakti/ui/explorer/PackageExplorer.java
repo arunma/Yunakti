@@ -10,6 +10,12 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jdt.core.dom.rewrite.ITrackedNodePosition;
+import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -18,11 +24,16 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 public class PackageExplorer extends AbstractHandler {
 
+	private ASTParser parser;
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
@@ -127,6 +138,44 @@ public class PackageExplorer extends AbstractHandler {
 			comUnit.accept(visitor);
 			Set<String> objectList = visitor.getInvokedObjects();
 			
+			AST ast = comUnit.getAST();
+			ASTRewrite rewriter = ASTRewrite.create(ast);
+			SingleMemberAnnotation testClassAnnotation = ast.newSingleMemberAnnotation();
+			testClassAnnotation.setTypeName(ast.newName("TC"));
+			testClassAnnotation.setValue(ast.newName(new String[]{"Class","Pack","Test"}));
+			
+			
+			ImportDeclaration id = ast.newImportDeclaration();
+			id.setName(ast.newName(new String[]{"java","util","Set"}));
+			TypeDeclaration td = (TypeDeclaration)comUnit.types().get(0);
+			rewriter.getListRewrite(td, td.getModifiersProperty()).insertAt(testClassAnnotation, 0, null);
+			ITrackedNodePosition tdLocation = rewriter.track(td);
+			System.out.println("Start position ===> " + tdLocation.getStartPosition());
+			System.out.println("Type length ===> " + tdLocation.getLength());
+			ListRewrite lrw = rewriter.getListRewrite(comUnit, CompilationUnit.IMPORTS_PROPERTY);
+			lrw.insertLast(id, null);
+			String updatedUnit = "";
+			TextEdit edits = null;
+			try {
+				updatedUnit = ((ICompilationUnit)comUnit.getJavaElement()).getSource();
+				System.out.println("Updated unit String =====> " + updatedUnit);
+			} catch (JavaModelException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			Document doc = new Document(updatedUnit);
+			edits = rewriter.rewriteAST(doc, unit.getJavaProject().getOptions(true));
+			try {
+				edits.apply(doc);
+				System.out.println("Updated unit String =====> " + doc.get());
+			} catch (MalformedTreeException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (BadLocationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			try {
 				
 				String currentClassName = "";
@@ -177,7 +226,7 @@ public class PackageExplorer extends AbstractHandler {
 	}
 	
 	private CompilationUnit parse(ICompilationUnit unit) {
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
 		parser.setResolveBindings(true);
@@ -288,6 +337,15 @@ public class PackageExplorer extends AbstractHandler {
 		
 		IType[] tmpTypeList = tmpUnit.getTypes();
 		return tmpTypeList[0].getFullyQualifiedName();
+	}
+	
+	private void applyChangeToCompilationUnit(Document doc){
+		
+		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		parser.setSource(doc.get().toCharArray());
+		CompilationUnit cu = (CompilationUnit)parser.createAST(null);
+		AST ast = cu.getAST();
+		//TypeDeclaration td = (TypeDeclaration)cu.types().get(0);
 	}
 
 	/*
