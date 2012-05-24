@@ -1,19 +1,13 @@
-package sg.edu.nus.iss.yunakti.engine.util;
+package sg.edu.nus.iss.yunakti.engine.search;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IAnnotation;
-import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMemberValuePair;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.Signature;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchMatch;
@@ -22,9 +16,11 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeReferenceMatch;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-import sg.edu.nus.iss.yunakti.engine.search.ResultSetMapperBase;
-import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
+import sg.edu.nus.iss.yunakti.engine.util.ParserUtils;
+import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YModel;
+import sg.edu.nus.iss.yunakti.ui.explorer.YModelVisitor;
 
 public class YSearch {
 	
@@ -66,29 +62,47 @@ public class YSearch {
 
 	
 
-	public List<YModel> getModels() {
+	public List<YModel> getResults() {
+		ConsoleStreamUtil.println("Returning results +"+models);
 		return models;
-	}
-
-	public void setModels(List<YModel> models) {
-		this.models = models;
 	}
 
 
 	class ResultSetMapperImpl extends ResultSetMapperBase{
-	
+
 		private ConsoleStreamUtil streamUtil=ConsoleStreamUtil.getInstance();
 		private YModel model=null;
 		@Override
 		public void acceptSearchMatch(SearchMatch eachSearchMatch) throws CoreException {
-	
+
 			model=new YModel();
+			
+			
 			
 			if (eachSearchMatch.getClass().equals(TypeReferenceMatch.class)){
 	
 				IJavaElement testCaseElement=(IJavaElement)eachSearchMatch.getElement();
+			
+				if (testCaseElement.getAncestor(IJavaElement.COMPILATION_UNIT) instanceof ICompilationUnit){
+					
+					ICompilationUnit testCaseElementCompilationUnit=(ICompilationUnit) testCaseElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+					
+					streamUtil.println("Yaaaay.. icompilationunit"+testCaseElementCompilationUnit);
+					
+					YModelVisitor visitor = new YModelVisitor(model);
+					CompilationUnit comUnit = ParserUtils.parse(testCaseElementCompilationUnit);
+					streamUtil.println("Compilation unit is : "+comUnit);
+					comUnit.accept(visitor);
+					
+					streamUtil.println("Fields ready?"+visitor.getFields());
+					
+					
+				}
 				
-				if (testCaseElement.getElementType()==IJavaElement.TYPE){
+				/*if (testCaseElement.getElementType()==IJavaElement.TYPE){
+					
+					//ICompilationUnit icompilationUnit=(ICompilationUnit)testCaseElement;
+					//streamUtil.print("Yaaaay.. icompilationunit"+icompilationUnit);
 					
 					IType testCaseType=(IType)testCaseElement;
 					YClass testCase=new YClass( testCaseType.getFullyQualifiedName());
@@ -100,12 +114,15 @@ public class YSearch {
 					
 					model.getTestCases().add(testCase);
 				}
-				streamUtil.print("Model :"+model.toString());
+				streamUtil.print("Model :"+model.toString());*/
 				
 			}
+			streamUtil.println("Adding model...... to models");
+			//streamUtil.print("Model record : "+model.toString());
 			models.add(model);
 		}
 	
+		/*
 		private String getClassUnderTest(IJavaProject javaProject, IType testCaseType) throws JavaModelException {
 			
 			IAnnotation annotation = testCaseType.getAnnotation(YConstants.TEST_CASE_ANNOTATION);
@@ -139,5 +156,6 @@ public class YSearch {
 				
 			}
 		}
+		*/
 	}
 }

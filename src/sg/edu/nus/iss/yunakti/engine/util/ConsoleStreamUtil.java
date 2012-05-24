@@ -1,5 +1,8 @@
 package sg.edu.nus.iss.yunakti.engine.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
@@ -30,10 +33,34 @@ public class ConsoleStreamUtil {
 	}
 	
 	
-	public static void print(String message){
+	public static void println(String message){
 		
+		if (outputStream==null){
+			outputStream=createConsoleStream();
+		}
 		outputStream.println(message);
 		
 	}
+	
+	
 
+	public static void print(String message){
+		
+		if (outputStream==null){
+			outputStream=createConsoleStream();
+		}
+		outputStream.print(message);
+		
+	}
+	
+	public static void print(Exception exception){
+		StringWriter stringWriter = new StringWriter(); 
+		PrintWriter printWriter = new PrintWriter(stringWriter); 
+		printWriter.print(" [ "); 
+		printWriter.print(exception.getClass().getName()); 
+		printWriter.print(" ] "); 
+		printWriter.print(exception.getMessage()); 
+		exception.printStackTrace(printWriter); 
+		outputStream.print(stringWriter.toString());
+	}
 }
