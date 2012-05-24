@@ -14,7 +14,7 @@ public class YJavaElement implements Serializable{
 		this.fullyQualifiedName=fullyQualifiedName;
 	}
 	
-	private String fullyQualifiedName; //will be int, char etc in case of primitives of FQ names in case of objects
+	protected String fullyQualifiedName; //will be int, char etc in case of primitives of FQ names in case of objects
 
 	public String getFullyQualifiedName() {
 		return fullyQualifiedName;
