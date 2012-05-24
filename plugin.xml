@@ -91,6 +91,12 @@
             name="YunaktiTextview"
             restorable="true">
       </view>
+      <view
+            class="sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView"
+            id="sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView"
+            name="GridView"
+            restorable="true">
+      </view>      
    </extension>
 
 </plugin>
