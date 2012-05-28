@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.yunakti.engine.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import sg.edu.nus.iss.yunakti.model.YClass;
@@ -26,8 +27,8 @@ public class YModelListParser {
 		{
 			out.append(yclass.getFullyQualifiedName());
 			out.append(fieldseperator);
-			List<YClass> lstHelperclass=new ArrayList<YClass>();
-			lstHelperclass=(List<YClass>)yclass.getMembers();
+			HashSet<YClass> lstHelperclass=new HashSet<YClass>();
+			lstHelperclass=(HashSet<YClass>)yclass.getMembers();
 			System.out.println("lstHelper"+lstHelperclass.size());
 			for(YClass helperfortest:lstHelperclass)
 			{
