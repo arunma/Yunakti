@@ -392,11 +392,14 @@ private List<YModel>	 getModel(){
 			//test classes
 					YClass tc1 = new YClass();
 					tc1.setFullyQualifiedName("TestClass1");
-					tc1.setMembers(helperClassList);
+					tc1.addMember(hc1);
+					tc1.addMember(hc2);
+					
 					tc1.setyClassType(YTYPE.TEST_CASE);
 					YClass tc2 = new YClass();
 					tc2.setFullyQualifiedName("TestClass2");
-					tc2.setMembers(helperClassList);
+					tc2.addMember(hc1);
+					tc2.addMember(hc2);
 					tc2.setyClassType(YTYPE.TEST_CASE);
 					List<YClass> testClassList = new ArrayList<YClass>();
 					testClassList.add(tc1);
@@ -406,10 +409,12 @@ private List<YModel>	 getModel(){
 					//classes
 					YClass c1 = new YClass();
 					c1.setFullyQualifiedName("Class1");
-					c1.setMembers(testClassList);
+					c1.addMember(tc1);
+					c1.addMember(tc2);
 					YClass c2 = new YClass();
 					c2.setFullyQualifiedName("Class2");
-					c2.setMembers(testClassList);
+					c2.addMember(tc1);
+					c2.addMember(tc2);
 					
 				
 					// model

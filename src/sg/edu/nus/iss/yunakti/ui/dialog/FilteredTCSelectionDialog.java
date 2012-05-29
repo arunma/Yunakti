@@ -2,6 +2,7 @@ package sg.edu.nus.iss.yunakti.ui.dialog;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -16,19 +17,21 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 
 import sg.edu.nus.iss.yunakti.Activator;
 import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
-import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
 
 public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
-	private YTestCaseCollection collection;
+	private List<YClass> allTestClasses;
 	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 	Shell parentShell;
+	private YModel model;
 
-	public FilteredTCSelectionDialog(Shell shell, YTestCaseCollection collection) {
+	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model) {
 		super(shell);
 		this.parentShell = shell;
-		this.collection = collection;
+		this.allTestClasses = allTestClasses;
+		this.model = model;
 		setTitle("Add new Test Class");
 	}
 
@@ -82,8 +85,8 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
 			throws CoreException {
 		progressMonitor
-				.beginTask("Searching", collection.getAllTestCases().size()); //$NON-NLS-1$
-		for (Iterator<YClass> iter = collection.getAllTestCases().iterator(); iter
+				.beginTask("Searching", allTestClasses.size()); //$NON-NLS-1$
+		for (Iterator<YClass> iter = allTestClasses.iterator(); iter
 				.hasNext();) {
 			contentProvider.add(iter.next(), itemsFilter);
 			progressMonitor.worked(1);
@@ -109,14 +112,14 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			class1.setyClassType(YTYPE.TEST_CASE);
 			
 			boolean found = false;
-			for (YClass testClass : collection.getTestCases()) {
+			for (YClass testClass : allTestClasses) {
 				if(testClass.getFullyQualifiedName().equals(class1.getFullyQualifiedName())){
 					found = true;
 				}
 			}
 			
 			if(found == false){
-				collection.addTestCase(class1);
+				model.addTestCase(class1);
 				parentShell.forceFocus();
 				super.okPressed();
 			}else{

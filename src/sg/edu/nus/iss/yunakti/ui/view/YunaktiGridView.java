@@ -1,35 +1,30 @@
 package sg.edu.nus.iss.yunakti.ui.view;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
-import org.eclipse.ui.part.ViewPart;
 
+import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
@@ -38,18 +33,22 @@ import sg.edu.nus.iss.yunakti.model.providers.GridViewContentProvider1;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
 import sg.edu.nus.iss.yunakti.ui.dialog.TestCaseDialog;
-import sg.edu.nus.iss.yunakti.view.YunaktiTextView;
 
-public class YunaktiGridView extends PageBookView{
+public class YunaktiGridView extends PageBookView implements  ISelectionListener{
 	
 	public static final String ID = "sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView";
 	private TreeViewer viewer;
+	
+	EngineCore engineCore = new EngineCore();
+	List<YModel> yModels = new ArrayList<YModel>();
 
 	@Override
 	public void createPartControl(Composite parent) {
 		// TODO Auto-generated method stub
 		
 		setUpView(parent);
+		
+		getViewSite().getPage().addSelectionListener(this);
 		
 		try {
 			//YunaktiTextView vw=(YunaktiTextView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(YunaktiTextView.ID);
@@ -76,7 +75,6 @@ public class YunaktiGridView extends PageBookView{
 		
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
-		
 		
 		
 		
@@ -115,6 +113,8 @@ public class YunaktiGridView extends PageBookView{
 	              for (int i = 0; i < selection.length; i++)
 	            	  className = selection[i].getText();
 	              System.out.println("DefaultSelection={" + className + "}");
+	              
+	              
 	                       
 	              
 	              Point p = new Point(event.x, event.y);
@@ -128,13 +128,15 @@ public class YunaktiGridView extends PageBookView{
 	              System.out.println(columnIndex);
 	              
 	              
-	              if(columnIndex == 1){
+	              if(columnIndex == 1){	            	 
+	            	  System.out.println(yModels);	            	  
 	            	  
 	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell());
 						
 	  				caseDialog.create();
 	  				
-	  				caseDialog.setTableData(getTestCasses(className, columnIndex));
+	  				
+//	  				caseDialog.setTableData(getTestCasses(className, columnIndex));
 	  				
 	  				caseDialog.open();
 	            	  
@@ -151,55 +153,14 @@ public class YunaktiGridView extends PageBookView{
 	            		  
 	            	  }
 	              
-	              }
-
-	              
-	              
-	              
-	              
-	              /*Point pt = new Point(event.x, event.y);
-	              TableItem item = tree.get
-	              if (item == null)
-	               return;
-	              for (int i = 0; i < columnCount; i++) {
-	               Rectangle rect = item.getBounds(i);
-	               if (rect.contains(pt)) {
-	                int index = tree.indexOf(item);
-	                System.out.println("Item " + index + "-" + i);
-	               }
-	              }*/
-	              
-	              
-	              
-	              
-	              
-	              
-
-
-	              
-	             			
-				/*TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell());
-								
-				caseDialog.create();
-				
-				caseDialog.setTableData((List<YClass>)getModel().get(0).getTestCases());
-				
-				caseDialog.open();*/
-	            /*  
-	              HelperDialog dialog = new HelperDialog(parent.getShell());
-	              
-	              dialog.setLstYClass((List<YClass>)((List<YClass>)getModel().get(0).getTestCases()).get(0).getMembers());
-				*/
-				
+	              }	       
+	            
 			}
 			 }); 
 		
 	
 		
-		
-		
-		
-		
+				
 		
 		
 		
@@ -265,8 +226,10 @@ public class YunaktiGridView extends PageBookView{
 		//helper classes
 				YClass hc1 = new YClass();
 				hc1.setFullyQualifiedName("HelperClass1");
+				hc1.setyClassType(YTYPE.TEST_HELPER);
 				YClass hc2 = new YClass();
 				hc2.setFullyQualifiedName("HelperClass2");
+				hc2.setyClassType(YTYPE.TEST_HELPER);
 				List<YClass> helperClassList = new ArrayList<YClass>();
 				helperClassList.add(hc1);
 				helperClassList.add(hc2);
@@ -275,11 +238,13 @@ public class YunaktiGridView extends PageBookView{
 				//test classes
 						YClass tc1 = new YClass();
 						tc1.setFullyQualifiedName("TestClass1");
-						tc1.setMembers(helperClassList);
+						tc1.addMember(hc1);
+						tc1.addMember(hc2);
 						tc1.setyClassType(YTYPE.TEST_CASE);
 						YClass tc2 = new YClass();
 						tc2.setFullyQualifiedName("TestClass2");
-						tc2.setMembers(helperClassList);
+						tc2.addMember(hc1);
+						tc2.addMember(hc2);
 						tc2.setyClassType(YTYPE.TEST_CASE);
 						List<YClass> testClassList = new ArrayList<YClass>();
 						testClassList.add(tc1);
@@ -289,10 +254,12 @@ public class YunaktiGridView extends PageBookView{
 						//classes
 						YClass c1 = new YClass();
 						c1.setFullyQualifiedName("Class1");
-						c1.setMembers(testClassList);
+						c1.addMember(tc1);
+						c1.addMember(tc2);
 						YClass c2 = new YClass();
 						c2.setFullyQualifiedName("Class2");
-						c2.setMembers(testClassList);
+						c2.addMember(tc1);
+						c2.addMember(tc2);
 						
 					
 						// model
@@ -380,6 +347,58 @@ private List<YClass> getHelperClasses(String className, int colNum){
 		
 		return helperClasses;
 	}
+
+@Override
+public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+	
+	if (part != null &&
+            selection instanceof IStructuredSelection) {
+            
+		System.out.println("selector invoked");
+		
+		
+		
+		yModels= 	engineCore.populateModel((IStructuredSelection)selection);
+		
+		if(yModels != null && !yModels.isEmpty())
+		{
+		
+		viewer.setInput(getParentModel(yModels).toArray());
+		}
+		
+		
+		
+		
+            }
+	
+	
+}
+
+public List<YParentModel> getParentModel(List<YModel> yModels){
+	
+	
+	// parent model
+	List<YParentModel> parentModelList = new ArrayList<YParentModel>();
+	
+	
+	YParentModel parentModel = new YParentModel();						
+	parentModel.setClassList(yModels);						
+	parentModel.setParentName("Package1");
+	parentModelList.add(parentModel);
+	
+	
+	parentModel = new YParentModel();						
+	parentModel.setClassList(yModels);						
+	parentModel.setParentName("Package2");
+	parentModelList.add(parentModel);
+	
+						
+	
+	
+	return parentModelList;
+	
+	
+}
 
 
 

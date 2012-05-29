@@ -1,11 +1,17 @@
 package sg.edu.nus.iss.yunakti.ui.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YModel;
+import sg.edu.nus.iss.yunakti.model.YTYPE;
 import sg.edu.nus.iss.yunakti.ui.dialog.TestCaseDialog;
 
 /**
@@ -32,8 +38,52 @@ public class R2Action implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell());
-	    dialog.create();
+		;
+		YModel model = new YModel();
+		YClass classUnderTest = new YClass("com.subu.ClassUnderTest");
+		
+		
+	    model.setClassUnderTest(classUnderTest);
+	    List<YClass> testClasses = new ArrayList<YClass>();
+	    
+		YClass testClass1 = new YClass("com.subu.testClass1");
+		testClass1.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass2 = new YClass("com.subu.testClass2");
+		testClass2.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass3 = new YClass("com.subu.testClass3");
+		testClass3.setyClassType(YTYPE.TEST_CASE);
+		testClasses.add(testClass1);
+		testClasses.add(testClass2);
+		testClasses.add(testClass3);
+		model.addAllTestCase(testClasses);
+		
+		YClass testClass5 = new YClass("com.subu.testClass1");
+		testClass5.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass6 = new YClass("com.subu.testClass2");
+		testClass6.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass7 = new YClass("com.subu.testClass3");
+		testClass7.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass8 = new YClass("com.subu.testClass4");
+		testClass8.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass9 = new YClass("com.subu.testClass5");
+		testClass9.setyClassType(YTYPE.TEST_CASE);
+		YClass testClass10 = new YClass("com.subu.testClass6");
+		testClass10.setyClassType(YTYPE.TEST_CASE);
+	
+		List<YClass> allTestClasses = new ArrayList<YClass>();
+		allTestClasses.add(testClass5);
+		allTestClasses.add(testClass6);
+		allTestClasses.add(testClass7);
+		allTestClasses.add(testClass8);
+		allTestClasses.add(testClass9);
+		allTestClasses.add(testClass10);
+		
+		System.out.println(model);
+		
+		
+		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell(), model, allTestClasses);
+
+		  dialog.create();
 		if (dialog.open() == Window.OK) {
 
 		}
