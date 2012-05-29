@@ -23,18 +23,29 @@ public class YModelListParser {
 			out.append(ymodel.getClassUnderTest().getFullyQualifiedName());
 			out.append(colseperator);
 			List<YClass> lstTestclasses=(List<YClass>)ymodel.getTestCases();
+			int i=0;
+			int j=0;
 		for(YClass yclass:lstTestclasses)
 		{
+			if(i>0)
+			{
+				out.append(fieldseperator);
+			}
 			out.append(yclass.getFullyQualifiedName());
-			out.append(fieldseperator);
+			i++;
 			HashSet<YClass> lstHelperclass=new HashSet<YClass>();
 			lstHelperclass=(HashSet<YClass>)yclass.getMembers();
 			System.out.println("lstHelper"+lstHelperclass.size());
+			
 			for(YClass helperfortest:lstHelperclass)
 			{
 				//System.out.println("helperfortest"+helperfortest.getyClassType().name().toString());
+				if(j>0)
+				{
+					helperout.append(fieldseperator);
+				}
 				helperout.append(helperfortest.getFullyQualifiedName());
-				helperout.append(fieldseperator);
+				
 				System.out.println("helperout inside"+helperout);
 				/*if(helperfortest.getyClassType().name().equals(YTYPE.TEST_HELPER.toString()))
 				{
@@ -42,7 +53,7 @@ public class YModelListParser {
 					helperout.append(fieldseperator);
 					System.out.println("helperout inside"+helperout);
 				}*/
-				
+				j++;
 			}
 		}
 		System.out.println("helperout"+helperout);
