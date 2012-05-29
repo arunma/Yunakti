@@ -28,7 +28,6 @@ public class EngineCore {
 			List<IJavaElement> allSearchElements = search.gatherAllSearchElementsFromSelection(selection);
 			search.search(allSearchElements);
 			searchResults = search.getResults();
-			ConsoleStreamUtil.println("Next line coming up ::::");
 			//System.out.println("Search results:"+searchResults);
 		} catch (Exception e) {
 			ConsoleStreamUtil.print(e);
@@ -57,5 +56,22 @@ public class EngineCore {
 		return uniqueTestCases;
 	}
 	
+	public Set<YClass> getUniqueHelpers(List<YModel> models) {
+		
+		System.out.println("Calling getUniqueTestCases");
+		Set<YClass> uniqueHelpers=new HashSet<YClass>();
+		if (models!=null && models.size()>0){
+			List<YClass> allTestCasesInModel = null;
+			for (YModel eachModel : models) {
+				allTestCasesInModel = eachModel.getTestCases();
+				
+				
+				uniqueHelpers.addAll(allTestCasesInModel);
+			}
+			
+		}
+		System.out.println("Unique testcase size : "+uniqueHelpers.size());
+		return uniqueHelpers;
+	}
 
 }
