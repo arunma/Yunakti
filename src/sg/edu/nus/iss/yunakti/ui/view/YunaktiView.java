@@ -11,7 +11,7 @@ import org.eclipse.ui.part.ViewPart;
 public class YunaktiView extends ViewPart implements ISelectionListener
 {
 	
-private Label label;
+private Label label=null;
 public YunaktiView() {
 	super();
 }
