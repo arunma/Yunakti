@@ -3,7 +3,9 @@ package sg.edu.nus.iss.yunakti.ui.view;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -50,6 +52,10 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	private TreeViewer viewer;
 	
 	EngineCore engineCore = new EngineCore();
+	
+	List<YParentModel> packageList = new ArrayList<YParentModel>();
+	
+	List<YModel> yModels = null;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -138,11 +144,13 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	              
 	              if(columnIndex == 1){
 	            	  
-	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell());
+	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels));
 						
 	  				caseDialog.create();
 	  				
-	  				caseDialog.setTableData(getTestCasses(className, columnIndex));
+	  				//caseDialog.setTableData(getTestCasses(className, columnIndex));
+	  				
+	  				
 	  				
 	  				caseDialog.open();
 	            	  
@@ -176,7 +184,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 				
 		
 		
-		viewer.setInput(getModel().toArray());		
+		viewer.setInput(this.packageList.toArray());		
 		
 		
 		getSite().setSelectionProvider(viewer);
@@ -226,7 +234,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		return false;
 	}
 	
-	private List<YParentModel>	 getModel(){
+	/*private List<YParentModel>	 getModel(){
 		
 		
 		//helper classes
@@ -302,13 +310,13 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		
 		
 	}
+	*/
 	
-	
-	private List<YClass> getTestCasses(String className, int colNum){
+	private YModel getTestCasses(String className, int colNum){
 		
-		List<YClass> yClasses = null;
+		YModel returnModel = null;
 		
-		List<YParentModel> yParentModels =  getModel();
+		List<YParentModel> yParentModels =  this.packageList;
 		
 		for(YParentModel yParentModel: yParentModels){
 			
@@ -316,13 +324,13 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 				
 				if(className.equals(yModel.getClassUnderTest().getFullyQualifiedName())){
 					
-					yClasses = (List<YClass>)yModel.getTestCases();
+					returnModel =yModel;
 					
 				}
 			}
 		}
 		
-		return yClasses;
+		return returnModel;
 	}
 	
 	
@@ -331,7 +339,7 @@ private List<YClass> getHelperClasses(String className, int colNum){
 	List<YClass> helperClasses = new ArrayList<YClass>();
 	
 	
-	List<YClass> testCases = getTestCasses(className, colNum);
+	List<YClass> testCases = getTestCasses(className, colNum).getTestCases();
 	
 	
 	for(YClass yClass: testCases){
@@ -358,12 +366,14 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		
 		
 		
-		List<YModel> yModels= 	engineCore.populateModel((IStructuredSelection)selection);
+		this.yModels= 	engineCore.populateModel((IStructuredSelection)selection);
+		
+		buildPackageList(engineCore.getModelsByPackageName(this.yModels));
 		
 		if(yModels != null && !yModels.isEmpty())
 		{
 		
-		viewer.setInput(getParentModel(yModels).toArray());
+			viewer.setInput(this.packageList.toArray());
 		}
 		
 		
@@ -374,7 +384,7 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 	
 }
 
-public List<YParentModel> getParentModel(List<YModel> yModels){
+/*public List<YParentModel> getParentModel(){
 	
 	
 	// parent model
@@ -397,6 +407,24 @@ public List<YParentModel> getParentModel(List<YModel> yModels){
 	
 	return parentModelList;
 	
+	
+}*/
+
+public void buildPackageList(Map<String,List<YModel>> packageMap){
+	
+	
+	this.packageList = new ArrayList<YParentModel>();
+	
+	YParentModel parentModel = null;
+	
+	for (Map.Entry<String,List<YModel>> entry : packageMap.entrySet()) {
+		
+		parentModel = new YParentModel();
+		parentModel.setParentName(entry.getKey());
+		parentModel.setClassList(entry.getValue());
+		
+		this.packageList.add(parentModel);
+	}
 	
 }
 

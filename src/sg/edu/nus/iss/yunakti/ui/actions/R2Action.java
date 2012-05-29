@@ -1,7 +1,9 @@
 package sg.edu.nus.iss.yunakti.ui.actions;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -70,7 +72,7 @@ public class R2Action implements IWorkbenchWindowActionDelegate {
 		YClass testClass10 = new YClass("com.subu.testClass6");
 		testClass10.setyClassType(YTYPE.TEST_CASE);
 	
-		List<YClass> allTestClasses = new ArrayList<YClass>();
+		Set<YClass> allTestClasses = new HashSet<YClass>();
 		allTestClasses.add(testClass5);
 		allTestClasses.add(testClass6);
 		allTestClasses.add(testClass7);

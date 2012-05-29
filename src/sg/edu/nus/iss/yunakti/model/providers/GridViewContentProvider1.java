@@ -48,8 +48,12 @@ public class GridViewContentProvider1 implements ITreeContentProvider{
 	@Override
 	public boolean hasChildren(Object element) {
 		
-		if(element instanceof YParentModel)
+		if(element !=null && element instanceof YParentModel)
+		{
+			if(((YParentModel) element).getClassList() !=null)
+			
 		return ((YParentModel) element).getClassList().size() > 0;
+		}
 		
 		return false;
 	}

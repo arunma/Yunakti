@@ -43,6 +43,8 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 		YModel yModel = (YModel) element;
 		switch (columnIndex) {
 		case 0:
+			
+			
 			return PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJ_FILE);
 		case 1:

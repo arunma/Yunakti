@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -49,7 +50,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private YModel model;
 	private TestCaseDialog dialog;
 	private List<YClass> testClassForCUT;
-	private List<YClass> uniqueTestClasses;
+	private Set<YClass> uniqueTestClasses;
 
 	public TestCaseDialog(Shell parentShell) {
 		super(parentShell);
@@ -57,7 +58,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 		// TODO : Replace with the original data.
 	}
 
-	public TestCaseDialog(Shell parentShell, YModel model, List<YClass> uniqueTestClasses) {
+	public TestCaseDialog(Shell parentShell, YModel model, Set<YClass> uniqueTestClasses) {
 		super(parentShell);
 		dialog = this;
 		// this.collection = new YTestCaseCollection();

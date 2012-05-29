@@ -3,6 +3,7 @@ package sg.edu.nus.iss.yunakti.ui.dialog;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,12 +23,12 @@ import sg.edu.nus.iss.yunakti.model.YTYPE;
 
 public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
-	private List<YClass> allTestClasses;
+	private Set<YClass> allTestClasses;
 	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 	Shell parentShell;
 	private YModel model;
 
-	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model) {
+	public FilteredTCSelectionDialog(Shell shell, Set<YClass> allTestClasses, YModel model) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestClasses = allTestClasses;
