@@ -32,13 +32,16 @@ public class YModelListParser {
 			System.out.println("lstHelper"+lstHelperclass.size());
 			for(YClass helperfortest:lstHelperclass)
 			{
-				System.out.println("helperfortest"+helperfortest.getyClassType().name().toString());
-				if(helperfortest.getyClassType().name().equals(YTYPE.TEST_HELPER.toString()))
+				//System.out.println("helperfortest"+helperfortest.getyClassType().name().toString());
+				helperout.append(helperfortest.getFullyQualifiedName());
+				helperout.append(fieldseperator);
+				System.out.println("helperout inside"+helperout);
+				/*if(helperfortest.getyClassType().name().equals(YTYPE.TEST_HELPER.toString()))
 				{
 					helperout.append(helperfortest.getFullyQualifiedName());
 					helperout.append(fieldseperator);
 					System.out.println("helperout inside"+helperout);
-				}
+				}*/
 				
 			}
 		}
