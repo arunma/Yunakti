@@ -43,7 +43,7 @@ public class TestCaseDialogTest {
 	private void openDialog(){
 		try {
 		dialog = new TestCaseDialog(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getShell(),  this.model);
+				.getActiveWorkbenchWindow().getShell(),  this.model, null);
 		dialog.create();
 	    dialog.open();
 		}catch(Exception ex){
@@ -59,6 +59,12 @@ public class TestCaseDialogTest {
 	@Test
 	public void testTestCaseDialogTitle() throws Exception {
 		assertEquals("Select Test Classes", dialog.getShell().getText());
+	}
+	
+	@Test
+	public void testTestCaseDialogNUll() throws Exception {
+		this.model = null;
+		openDialog();
 	}
 
 }
