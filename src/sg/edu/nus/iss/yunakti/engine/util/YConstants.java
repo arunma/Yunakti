@@ -6,9 +6,8 @@ public interface YConstants {
 	public static final String JAVA = "java";
 	public static final String ANNOTATION_PROPERTY_CLASS_UNDER_TEST="classUnderTest";
 	public static final String ANNOTATION_PROPERTY_HELPER_CLASSES="helperClasses";
-	public static final String DOT=".";
-	
 	
 	//Move this to a preference page or something
 	public static final String[] FILTER_PACKAGES=new String[]{JAVA};
+	public static final String DOT = ".";
 }
