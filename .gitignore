@@ -4,3 +4,6 @@
 /.settings
 /META-INF
 /.project
+
+.classpath
+.gitignore

@@ -15,8 +15,8 @@ import sg.edu.nus.iss.yunakti.model.YModel;
 
 public class TestEngineCore {
 
-	@Test
-	public void test() {
+	//@Test
+	public void testUniqueTestCases() {
 	
 		EngineCore engineCore = new EngineCore();
 		List<YModel> models=new ArrayList<YModel>();
@@ -27,6 +27,22 @@ public class TestEngineCore {
 		assertEquals(engineCore.getUniqueTestCases(models).size(),2);
 	}
 
+	
+
+	@Test
+	public void testGetModelsByPackageName() {
+	
+		EngineCore engineCore = new EngineCore();
+		List<YModel> models=new ArrayList<YModel>();
+		models.add(constructYModel());
+		models.add(constructYModel());//duplicate
+		
+		System.out.println("Models : "+ models);
+		//assertEquals(engineCore.getModelsByPackageName(models).size(),2);
+		
+		System.out.println(engineCore.getModelsByPackageName(models));
+	}
+	
 	
 	private YModel constructYModel() {
 		

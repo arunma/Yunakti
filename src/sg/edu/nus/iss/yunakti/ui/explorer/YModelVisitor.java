@@ -104,7 +104,13 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 			List<MemberValuePair> members = node.values();
 			for (MemberValuePair memberValuePair : members) {
 				if (StringUtils.equals(memberValuePair.getName().toString(),ANNOTATION_PROPERTY_CLASS_UNDER_TEST)){
-					model.setClassUnderTest(new YClass(memberValuePair.getValue().toString()));
+					YClass classUnderTest=new YClass(memberValuePair.getValue().toString());
+					
+					System.out.println("Annotation Root : "+node.getRoot());
+					
+					//classUnderTest.setPath(node.get)
+					model.setClassUnderTest(classUnderTest);
+					
 				}
 			}
 			

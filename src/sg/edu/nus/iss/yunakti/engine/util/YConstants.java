@@ -9,4 +9,5 @@ public interface YConstants {
 	
 	//Move this to a preference page or something
 	public static final String[] FILTER_PACKAGES=new String[]{JAVA};
+	public static final String DOT = ".";
 }

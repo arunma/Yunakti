@@ -32,14 +32,14 @@ public class TestCaseDialogTest {
 		testClasses.add(testClass2);
 		testClasses.add(testClass3);
 		this.model.addAllTestCase(testClasses);	
-		openDialog();
+		//openDialog();
 		
 		
 //		model.
 		
 	}
 	
-	
+	/*
 	private void openDialog(){
 		try {
 		dialog = new TestCaseDialog(PlatformUI.getWorkbench()
@@ -49,7 +49,7 @@ public class TestCaseDialogTest {
 		}catch(Exception ex){
 			System.out.println("Error occured while opening the TestCase Dialog");
 		}
-	}
+	}*/
 
 	@After
 	public void tearDown() throws Exception {
