@@ -48,15 +48,23 @@ public class TestYunaktiModelListParser extends TestCase{
 		lstHelperClass.add(cls1);
 		
 		lstHelperClass.add(cls2);	
-		tstcls1.setMembers(lstHelperClass);
+		tstcls1.addMember(cls1);
+		tstcls1.addMember(cls2);
 		List<YClass> lstHelperClass1=new ArrayList<YClass>();
 		lstHelperClass1.add(cls3);
 		lstHelperClass1.add(cls4);
 		lstHelperClass1.add(cls5);
-		tstcls2.setMembers(lstHelperClass1);
-		tstcls3.setMembers(lstHelperClass);
-		tstcls4.setMembers(lstHelperClass1);
-		tstcls5.setMembers(lstHelperClass1);
+		tstcls2.addMember(cls3);
+		tstcls2.addMember(cls4);
+		tstcls2.addMember(cls5);
+		tstcls3.addMember(cls1);
+		tstcls3.addMember(cls2);
+		tstcls4.addMember(cls3);
+		tstcls4.addMember(cls4);
+		tstcls4.addMember(cls5);
+		tstcls5.addMember(cls3);
+		tstcls5.addMember(cls4);
+		tstcls5.addMember(cls5);
 		lstTestclasses1.add(tstcls1);
 		lstTestclasses1.add(tstcls2);
 		lstTestclasses2.add(tstcls3);
@@ -68,10 +76,13 @@ public class TestYunaktiModelListParser extends TestCase{
 		modelcls2.setFullyQualifiedName("Class2.class");
 		YModel model1=new YModel();
 		model1.setClassUnderTest(modelcls1);
-		model1.setTestCases(lstTestclasses1);
+		model1.addTestCase(tstcls1);
+		model1.addTestCase(tstcls2);
 		YModel model2=new YModel();
 		model2.setClassUnderTest(modelcls2);
-		model2.setTestCases(lstTestclasses2);
+		model2.addTestCase(tstcls3);
+		model2.addTestCase(tstcls4);
+		model2.addTestCase(tstcls5);
 		lstModelClass.add(model1);
 		lstModelClass.add(model2);
 	}
@@ -81,9 +92,11 @@ public class TestYunaktiModelListParser extends TestCase{
 		YModelListParser yModellistparser=new YModelListParser();
 		List<StringBuilder>lstParsedString=yModellistparser.parseListYModelToString(lstModelClass);
 		StringBuilder sbline1=lstParsedString.get(0);
-		assertEquals("Class1.class;Test1.class,Test2.class,;Helper1.class,Helper2.class,Helper3.class,Helper4.class,Helper5.class,", sbline1.toString());
+		System.out.println("line1:"+sbline1.toString());
+		assertEquals("Class1.class;Test1.class,Test2.class;Helper2.class,Helper1.class,Helper4.class,Helper3.class,Helper5.class", sbline1.toString());
 		StringBuilder sbline2=lstParsedString.get(1);
-		assertEquals("Class2.class;Test3.class,Test4.class,Test5.class,;Helper1.class,Helper2.class,Helper3.class,Helper4.class,Helper5.class,Helper3.class,Helper4.class,Helper5.class,", sbline2.toString());
+		System.out.println("line2:"+sbline2.toString());
+		assertEquals("Class2.class;Test3.class,Test4.class,Test5.class;Helper2.class,Helper1.class,Helper4.class,Helper3.class,Helper5.class,Helper4.class,Helper3.class,Helper5.class", sbline2.toString());
 		
 		
 	}
