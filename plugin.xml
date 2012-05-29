@@ -1,12 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+
    <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Sample Action Set"
+            visible="true"
+            id="sg.edu.nus.iss.yunakti.actionSet">
+         <menu
+               label="Sample &amp;Menu"
+               id="sampleMenu">
+            <separator
+                  name="sampleGroup">
+            </separator>
+         </menu>
+         <action
+               class="sg.edu.nus.iss.yunakti.ui.actions.SampleAction"
+               icon="icons/sample.gif"
+               id="sg.edu.nus.iss.yunakti.ui.actions.SampleAction"
+               label="&amp;Sample Action"
+               menubarPath="sampleMenu/sampleGroup"
+               style="radio"
+               toolbarPath="sampleGroup"
+               tooltip="Hello, Eclipse world">
+         </action>
+      </actionSet>
+      <actionSet
+            id="Yunakti.SubuActionSet"
+            label="SubuActionSet"
+            visible="true">
+         <menu
+               id="Yunakti.SubuMenu"
+               label="Subu">
+            <separator
+                  name="Yunakti.SubuGroup">
+            </separator>
+         </menu>
+         <action
+               class="sg.edu.nus.iss.yunakti.ui.actions.R2Action"
+               id="sg.edu.nus.iss.yunakti.ui.actions.SubuActions"
+               label="Open R2"
+               menubarPath="Yunakti.SubuMenu/Yunakti.SubuGroup"
+               style="push"
+               toolbarPath="Yunakti.SubuGroup"
+               tooltip="Subu">
+         </action>
+         <action
+               id="Yunakti.action1"
+               label="Search"
+               state="false"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.search.searchPages">
+      <page
+            class="sg.edu.nus.iss.yunakti.ui.dialog.SearchPage1"
+            enabled="true"
+            id="Yunakti.page1"
+            label="Yunakti">
+      </page>
+      </extension>
+         <extension
          point="org.eclipse.ui.menus">
       <menuContribution
+            allPopups="false"
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
          <command
-               commandId="sg.edu.nus.iss.yunakti.explorer"
+               commandId="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
                label="Yunakti"
                style="push">
          </command>
@@ -15,10 +78,25 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="sg.edu.nus.iss.yunakti.ui.explorer.PackageExplorer"
-            id="sg.edu.nus.iss.yunakti.explorer"
-            name="Convert">
+            defaultHandler="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
+            id="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
+            name="YunaktiCommand">
       </command>
+  </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="sg.edu.nus.iss.yunakti.view.YunaktiTextView"
+            id="Yunakti.view1"
+            name="YunaktiTextview"
+            restorable="true">
+      </view>
+      <view
+            class="sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView"
+            id="sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView"
+            name="GridView"
+            restorable="true">
+      </view>      
    </extension>
 
 </plugin>
