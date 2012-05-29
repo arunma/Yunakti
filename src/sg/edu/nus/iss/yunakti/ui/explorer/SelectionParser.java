@@ -148,6 +148,8 @@ public class SelectionParser {
 					}
 				}
 			}
+			
+			visitor.removeTestClassAnnotation(comUnit);
 		
 		} catch (JavaModelException e) {
 			// TODO Auto-generated catch block
@@ -157,7 +159,7 @@ public class SelectionParser {
 		return objectList;
 	}
 	
-	private static CompilationUnit parse(ICompilationUnit unit) {
+	public static CompilationUnit parse(ICompilationUnit unit) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(unit);
