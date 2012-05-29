@@ -81,6 +81,10 @@ public class CompilationUnitVisitor extends ASTVisitor{
 		return simpleNames;
 	}
 	
+	public List<SingleMemberAnnotation> getAnnoList() {
+		return annoList;
+	}
+	
 	
 	public Set<String> getInvokedObjects(){
 		
@@ -186,7 +190,7 @@ public class CompilationUnitVisitor extends ASTVisitor{
 	}
 	
 	
-	public String markTestClass(CompilationUnit comUnit, String CUTQualifiedName){
+	public String markTestClassAnnotation(CompilationUnit comUnit, String CUTQualifiedName){
 		
 		AST ast = comUnit.getAST();
 		ASTRewrite rewriter = ASTRewrite.create(ast);
@@ -196,6 +200,49 @@ public class CompilationUnitVisitor extends ASTVisitor{
 		
 		TypeDeclaration td = (TypeDeclaration)comUnit.types().get(0);
 		rewriter.getListRewrite(td, td.getModifiersProperty()).insertAt(testClassAnnotation, 0, null);
+		String updatedUnit = "";
+		TextEdit edits = null;
+		try {
+			updatedUnit = ((ICompilationUnit)comUnit.getJavaElement()).getSource();
+			System.out.println("Updated unit String Before =====> " + updatedUnit);
+		} catch (JavaModelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Document doc = new Document(updatedUnit);
+		edits = rewriter.rewriteAST(doc, null);
+		try {
+			edits.apply(doc);
+			System.out.println("Updated unit String After =====> " + doc.get());
+		} catch (MalformedTreeException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (BadLocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return doc.get();
+	}
+	
+	public String removeTestClassAnnotation(CompilationUnit comUnit){
+		
+		AST ast = comUnit.getAST();
+		ASTRewrite rewriter = ASTRewrite.create(ast);
+		TypeDeclaration td = (TypeDeclaration)comUnit.types().get(0);
+		
+		List<SingleMemberAnnotation> annoList = getAnnoList();
+		if(annoList != null && annoList.size() > 0){
+			
+			for(SingleMemberAnnotation tmpAnnotation : annoList){
+				if("TC".equals(tmpAnnotation.resolveAnnotationBinding().getName())){
+					
+					rewriter.getListRewrite(td, td.getModifiersProperty()).remove(tmpAnnotation, null);
+					break;
+				}
+			}
+		}
+		
 		String updatedUnit = "";
 		TextEdit edits = null;
 		try {
