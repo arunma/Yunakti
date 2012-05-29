@@ -66,7 +66,7 @@ public class YSearch {
 	public List<YModel> getResults() {
 		
 		models=groupModels(models);
-		ConsoleStreamUtil.println("Returning results +"+models);
+		ConsoleStreamUtil.println("Returning results :"+models);
 		return models;
 	}
 
