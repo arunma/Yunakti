@@ -123,7 +123,8 @@ public class YSearch {
 					
 					streamUtil.println("Yaaaay.. icompilationunit"+testCaseElementCompilationUnit);
 					
-					YModelVisitor visitor = new YModelVisitor(model);
+					YModelVisitor visitor = new YModelVisitor(model, testCaseElementCompilationUnit);
+					
 					CompilationUnit comUnit = ParserUtils.parse(testCaseElementCompilationUnit);
 					streamUtil.println("Compilation unit is : "+comUnit);
 					comUnit.accept(visitor);

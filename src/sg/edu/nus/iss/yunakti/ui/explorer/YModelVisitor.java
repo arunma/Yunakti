@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -36,9 +37,17 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	private YModel model;
 	private List<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
 	private List<FieldDeclaration> fields = new ArrayList<FieldDeclaration>();
+	private List<NormalAnnotation> annotations = new ArrayList<NormalAnnotation>();
+
+	private ICompilationUnit testCaseCompilationUnit;
 
 	public YModelVisitor(YModel model) {
 		this.model=model;
+	}
+	
+	public YModelVisitor(YModel model, ICompilationUnit testCaseCompilationUnit) {
+		this.model=model;
+		this.testCaseCompilationUnit=testCaseCompilationUnit;
 	}
 
 	@Override
@@ -82,6 +91,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	@Override
 	public boolean visit(NormalAnnotation node) {
 		
+		annotations.add(node);
 		resolveClassUnderTest(node);
 		
 		return super.visit(node);
@@ -91,8 +101,10 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	public boolean visit(TypeDeclaration node) {
 		
 		streamUtil.println("Field Class name : "+node.getName().toString());
+		YClass testCaseClass=new YClass(node.resolveBinding().getQualifiedName());
+		testCaseClass.setPath(testCaseCompilationUnit.getResource().getLocation().toOSString());
+		model.addTestCase(testCaseClass);
 		
-		model.addTestCase(new YClass(node.resolveBinding().getQualifiedName()));
 		//model.addTestCase(new YClass(ParserUtils.getClassName(node.getName().toString())));
 		return super.visit(node);
 		
@@ -123,6 +135,10 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		return methods;
 	}
 	
+	public List<NormalAnnotation> getAnnotations() {
+		return annotations;
+	}
+
 	public List<FieldDeclaration> getFields() {
 		return fields;
 		
