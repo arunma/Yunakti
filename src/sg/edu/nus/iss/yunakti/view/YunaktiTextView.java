@@ -224,17 +224,12 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	public void setLstYClass(List<YClass> lstYClass) {
 		this.lstYClass = lstYClass;
 	}
-
-	
-	public void setTextList(List<YClass> lstYClass) {
-
-		List<YModel> yModels = engineCore
-				.populateModel((IStructuredSelection) getSite().getPage().getSelection());
-		System.out.println("yModels" + yModels);
-
+	public void setListModel(List<YModel> yModels)
+	{
+		System.out.println("ymodels"+yModels);
+		System.out.println("lstModel"+lstModel);
 		if (yModels != null && !yModels.isEmpty()) {
-			List<StringBuilder> sb = lstPareser
-					.parseListYModelToString(yModels);
+			List<StringBuilder> sb = YModelListParser.parseListYModelToString(yModels);
 			String[] str = new String[sb.size()];
 			int i = 0;
 			for (StringBuilder s : sb) {
@@ -247,80 +242,29 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		}
 		else
 		{
-			setUpModelData();
-			System.out.println("lstModelClass" + lstModelClass);
-			List<StringBuilder> sb = lstPareser
-					.parseListYModelToString(lstModelClass);
-			String[] str = new String[sb.size()];
-			int i = 0;
-			for (StringBuilder s : sb) {
-				str[i] = s.toString();
-				i++;
-
-			}
-			lstModel.setItems(str);
-			
-			
+			lstModel.removeAll();
 		}
+			
+		
 	}
-	/*public void setTextList(List<YClass> lstYClass) {
 
-		// viewer.setInput(lstYClass);
-		System.out.println("lstYClass" + lstYClass);
-		if (lstYClass != null && !lstYClass.isEmpty()) {
-
-			viewer.setContentProvider(new ItemContentProvider());
-			viewer.setLabelProvider(new ItemLabelProvider());
-			viewer.setInput(lstYClass);
-			// viewer.setInput(getViewSite());
-		}
-	}*/
+	
+	
 
 	/**
 	 * @see ISelectionListener#selectionChanged(IWorkbenchPart, ISelection)
 	 **/
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		
-		if (part != null && selection instanceof IStructuredSelection) {
-
-			System.out.println("selector invoked" + selection);
-
-			List<YModel> yModels = engineCore
-					.populateModel((IStructuredSelection) selection);
-			System.out.println("yModels" + yModels);
-
-			if (yModels != null && !yModels.isEmpty()) {
-				List<StringBuilder> sb = lstPareser
-						.parseListYModelToString(yModels);
-				String[] str = new String[sb.size()];
-				int i = 0;
-				for (StringBuilder s : sb) {
-					str[i] = s.toString();
-					i++;
-
-				}
-				lstModel.setItems(str);
-				
-			}
-			else
-			{
-				setUpModelData();
-				System.out.println("lstModelClass" + lstModelClass);
-				List<StringBuilder> sb = lstPareser
-						.parseListYModelToString(lstModelClass);
-				String[] str = new String[sb.size()];
-				int i = 0;
-				for (StringBuilder s : sb) {
-					str[i] = s.toString();
-					i++;
-
-				}
-				lstModel.setItems(str);
-				
-				
-			}
-
+		System.out.println("selector invoked" + selection);
+		if(YModelListParser.findwhetherToPopulateModel(selection))
+		{
+		List<YModel> yModels = engineCore
+				.populateModel((IStructuredSelection) selection);
+		System.out.println("yModels" + yModels);
+		setListModel(yModels);
 		}
+
 
 	}
 
