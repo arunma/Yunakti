@@ -30,6 +30,7 @@ import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
+import sg.edu.nus.iss.yunakti.model.YTYPE;
 
 public class YModelVisitor extends ASTVisitor implements YModelSource{
 
@@ -83,10 +84,12 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		System.out.println("Current class name   : "+currentClassName);
 		if (!testCaseConstructed) return;
 		else if (StringUtils.equals(qualifiedName, currentClassName)) return;
-		
+		YClass member=null;
 		for(String filterPackage:YConstants.FILTER_PACKAGES){
 			if (!qualifiedName.startsWith(filterPackage)){
-				model.getTestCases().get(0).addMember(new YClass(qualifiedName));	
+				member=new YClass(qualifiedName);
+				member.setyClassType(YTYPE.TEST_HELPER);
+				model.getTestCases().get(0).addMember(member);	
 			}
 		}
 		
@@ -106,6 +109,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		
 		streamUtil.println("Field Class name : "+node.getName().toString());
 		YClass testCaseClass=new YClass(node.resolveBinding().getQualifiedName());
+		testCaseClass.setyClassType(YTYPE.TEST_CASE);
 		testCaseClass.setPath(testCaseCompilationUnit.getResource().getLocation().toOSString());
 		model.addTestCase(testCaseClass);
 		testCaseConstructed=true;
@@ -133,10 +137,9 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 			for (MemberValuePair memberValuePair : members) {
 				if (StringUtils.equals(memberValuePair.getName().toString(),ANNOTATION_PROPERTY_CLASS_UNDER_TEST)){
 					YClass classUnderTest=new YClass(memberValuePair.getValue().toString());
-					
+					classUnderTest.setyClassType(YTYPE.CLASS_UNDER_TEST);
 					System.out.println("Annotation Root : "+node.getRoot());
 					
-					//classUnderTest.setPath(node.get)
 					model.setClassUnderTest(classUnderTest);
 					
 				}
