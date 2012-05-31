@@ -90,6 +90,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void focusGained(FocusEvent e) {
+				System.out.println("R2 focus gained");
 				dialog.refresh();
 			}
 		});
@@ -223,11 +224,12 @@ public class TestCaseDialog extends TitleAreaDialog {
 				if(class1 != null){
 					System.out.println(" subu " + model.getTestCases());
 					model.getTestCases().remove(class1);
+					tableViewer.refresh();
 					gridView.updateGridView(model);
 					System.out.println(" subu "  +model.getTestCases());
 					EngineCore engineCore = new EngineCore();
 					engineCore.writeAnnotation(model);
-					tableViewer.refresh();
+					
 				}
 			}
 		});

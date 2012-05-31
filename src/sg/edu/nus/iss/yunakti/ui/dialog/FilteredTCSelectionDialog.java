@@ -100,7 +100,6 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
 	@Override
 	public String getElementName(Object item) {
-		System.out.println("subu " + (item.toString()));
 		return item.toString();
 	}
 
@@ -111,7 +110,14 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	protected void okPressed() {
 		if (this.getSelectedItems() != null
 				&& this.getSelectedItems().size() > 0) {
-			System.out.println(" okPressed  "  + this.getSelectedItems().getFirstElement());
+			
+			if(this.model.getTestCases().size() == 1){
+				 MessageDialog.openError(getShell(), "Error", "Can not add more than one Test Class for a ClassUnderTest");
+				 return;
+
+			}
+			
+			
 			YClass class1 = new YClass(this.getSelectedItems()
 					.getFirstElement().toString());
 			class1.setyClassType(YTYPE.TEST_CASE);
@@ -119,7 +125,6 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			boolean found = false;
 			
 			for (YClass testClass : model.getTestCases()) {
-				System.out.println(testClass.getFullyQualifiedName().toString());
 				if(testClass.getFullyQualifiedName().equals(class1.getFullyQualifiedName())){
 					found = true;
 				}
@@ -128,9 +133,14 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			if(found == false){
 				model.addTestCase(class1);
 				gridView.updateGridView(model);
+				parentShell.forceFocus();
+				try{
 				EngineCore engineCore = new EngineCore();
 				engineCore.writeAnnotation(model);
-				parentShell.forceFocus();
+				}catch(Exception ex){
+					System.out.println("Error in writing back to core");
+					ex.printStackTrace();
+				}
 				super.okPressed();
 			}else{
 				 MessageDialog.openError(getShell(), "Error", "Duplicate Class: Selected Test Class has been already added");
