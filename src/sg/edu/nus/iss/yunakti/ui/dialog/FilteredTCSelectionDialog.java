@@ -62,8 +62,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	protected ItemsFilter createFilter() {
 		return new ItemsFilter() {
 			public boolean matchItem(Object item) {
-				return matches(((YClass) item).getFullyQualifiedName()
-						.toString());
+				return matches(item.toString());
 			}
 
 			public boolean isConsistentItem(Object item) {
@@ -90,7 +89,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 				.beginTask("Searching", allTestClasses.size()); //$NON-NLS-1$
 		for (Iterator<YClass> iter = allTestClasses.iterator(); iter
 				.hasNext();) {
-			contentProvider.add(iter.next(), itemsFilter);
+			contentProvider.add(iter.next().getFullyQualifiedName(), itemsFilter);
 			progressMonitor.worked(1);
 		}
 		progressMonitor.done();
@@ -99,7 +98,8 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
 	@Override
 	public String getElementName(Object item) {
-		return ((YClass) item).getFullyQualifiedName();
+		System.out.println("subu " + (item.toString()));
+		return item.toString();
 	}
 
 	/**
@@ -116,6 +116,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			boolean found = false;
 			
 			for (YClass testClass : allTestClasses) {
+				System.out.println(testClass.getFullyQualifiedName().toString());
 				if(testClass.getFullyQualifiedName().equals(class1.getFullyQualifiedName())){
 					found = true;
 				}
