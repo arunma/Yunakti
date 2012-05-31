@@ -108,10 +108,10 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 					return yParentModel.getParentName();
 				case 1:
 					
-					return "N.A for test cases";
+					return "";
 				case 2:
 					
-					return "N.A for helper classes";
+					return "";
 				}
 				
 			}
