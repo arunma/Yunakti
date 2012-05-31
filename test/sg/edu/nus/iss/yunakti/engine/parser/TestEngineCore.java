@@ -29,7 +29,7 @@ public class TestEngineCore {
 
 	
 
-	@Test
+	//@Test
 	public void testGetModelsByPackageName() {
 	
 		EngineCore engineCore = new EngineCore();
@@ -43,6 +43,18 @@ public class TestEngineCore {
 		System.out.println(engineCore.getModelsByPackageName(models));
 	}
 	
+	@Test
+	public void testWriteAnnotation() {
+		
+		EngineCore engineCore = new EngineCore();
+		YModel yModel=constructYModel();
+		
+		//assertEquals(engineCore.getModelsByPackageName(models).size(),2);
+		
+		engineCore.writeAnnotation(yModel);
+		
+		System.out.println(yModel);
+	}
 	
 	private YModel constructYModel() {
 		
@@ -66,7 +78,7 @@ public class TestEngineCore {
 	private YClass mockTestCase1() {
 		YClass testCase1=new YClass();;
 		testCase1.setFullyQualifiedName("sg.edu.nus.iss.yunakti.TestCase1");
-		
+		testCase1.setPath("/Users/spark/Development/projects/Research/Yunakti/test/sg/edu/nus/iss/yunakti/TestCase1.java");
 		YClass helper1=new YClass();;
 		YClass helper2=new YClass();;
 		helper1.setFullyQualifiedName("sg.edu.nus.iss.yunakti.Helper1");

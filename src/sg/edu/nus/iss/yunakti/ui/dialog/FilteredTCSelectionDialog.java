@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 
 import sg.edu.nus.iss.yunakti.Activator;
+import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
@@ -113,14 +114,17 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			class1.setyClassType(YTYPE.TEST_CASE);
 			
 			boolean found = false;
+			
 			for (YClass testClass : allTestClasses) {
 				if(testClass.getFullyQualifiedName().equals(class1.getFullyQualifiedName())){
 					found = true;
 				}
 			}
-			
+			// Dont add duplicate test class again.
 			if(found == false){
 				model.addTestCase(class1);
+				EngineCore engineCore = new EngineCore();
+				engineCore.writeAnnotation(model);
 				parentShell.forceFocus();
 				super.okPressed();
 			}else{

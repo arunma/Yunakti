@@ -10,4 +10,6 @@ public interface YConstants {
 	//Move this to a preference page or something
 	public static final String[] FILTER_PACKAGES=new String[]{JAVA};
 	public static final String DOT = ".";
+	public static final String COMMA = ",";
+	public static final String DOUBLE_QUOTE = "\"";
 }

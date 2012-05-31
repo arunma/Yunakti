@@ -33,6 +33,7 @@ public class ParserUtils {
 		return (CompilationUnit) parser.createAST(null); 
 	}
 	
+	
 	private static Map<IJavaProject, Set<ICompilationUnit>> getCompilationUnitsByProject(final Set<ICompilationUnit> compilationUnits) {
         final Map<IJavaProject, Set<ICompilationUnit>> result = new HashMap<IJavaProject, Set<ICompilationUnit>>();
         for (final ICompilationUnit compilationUnit : compilationUnits) {

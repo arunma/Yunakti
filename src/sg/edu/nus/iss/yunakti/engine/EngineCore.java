@@ -8,12 +8,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.text.edits.MalformedTreeException;
 
 import sg.edu.nus.iss.yunakti.engine.search.YSearch;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
+import sg.edu.nus.iss.yunakti.engine.writer.YPersister;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 
@@ -40,6 +45,12 @@ public class EngineCore {
 		}
 		
 		//ConsoleStreamUtil.print("Printing....xxxxx"+(searchResults.get(0).toString()));
+		
+		
+		/*for (YModel yModel : searchResults) {
+			writeAnnotation(yModel);
+		}*/
+		
 		return searchResults;
 		
 		
@@ -118,6 +129,26 @@ public class EngineCore {
 			List<YModel> newModelList=new ArrayList<YModel>();
 			newModelList.add(eachModel);
 			modelsByPackageName.put(packageName, newModelList);
+		}
+		
+	}
+	
+	
+	public void writeAnnotation(YModel yModel){
+		//TODO persist only if needed. Need to investigate Memento
+		
+		YPersister persister=new YPersister();
+		
+		try {
+			persister.writeAnnotation(yModel);
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 		
 	}
