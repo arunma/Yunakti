@@ -46,9 +46,9 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	EngineCore engineCore = new EngineCore();
 
 	
-	List<YParentModel> packageList = new ArrayList<YParentModel>();
+	private static List<YParentModel> packageList = new ArrayList<YParentModel>();
 	
-	List<YModel> yModels = null;
+	private static  List<YModel> yModels = null;
 
 
 
@@ -183,7 +183,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 				
 		
 		
-		viewer.setInput(this.packageList.toArray());		
+		viewer.setInput(packageList.toArray());		
 		
 		
 		getSite().setSelectionProvider(viewer);
@@ -321,7 +321,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		
 		YModel returnModel = null;
 		
-		List<YParentModel> yParentModels =  this.packageList;
+		List<YParentModel> yParentModels =  packageList;
 		
 		for(YParentModel yParentModel: yParentModels){
 			
@@ -369,18 +369,18 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
             
 		System.out.println("selector invoked");
 		
+		List<YModel> tempYModel = engineCore.populateModel((IStructuredSelection)selection);	
 		
+		 		
 		
-		this.yModels= 	engineCore.populateModel((IStructuredSelection)selection);
-		
-		buildPackageList(engineCore.getModelsByPackageName(this.yModels));
-		yModels= 	engineCore.populateModel((IStructuredSelection)selection);
-		
-		if(yModels != null && !yModels.isEmpty())
+		if(tempYModel != null && !tempYModel.isEmpty())
 		{
 		
-			viewer.setInput(this.packageList.toArray());
+			yModels= tempYModel;
+			buildPackageList(engineCore.getModelsByPackageName(yModels));
+			viewer.setInput(packageList.toArray());
 		}
+		
 		
 		
 		
@@ -419,7 +419,7 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 public void buildPackageList(Map<String,List<YModel>> packageMap){
 	
 	
-	this.packageList = new ArrayList<YParentModel>();
+	packageList = new ArrayList<YParentModel>();
 	
 	YParentModel parentModel = null;
 	
@@ -429,7 +429,7 @@ public void buildPackageList(Map<String,List<YModel>> packageMap){
 		parentModel.setParentName(entry.getKey());
 		parentModel.setClassList(entry.getValue());
 		
-		this.packageList.add(parentModel);
+		packageList.add(parentModel);
 	}
 	
 }
