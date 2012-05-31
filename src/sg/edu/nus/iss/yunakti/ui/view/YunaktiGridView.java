@@ -172,12 +172,6 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 			 }); 
 		
 	
-		
-				
-		
-		
-		
-		
 		viewer.setContentProvider(new GridViewContentProvider1());		
 		viewer.setLabelProvider(new GridViewLabelProvider());			
 				
