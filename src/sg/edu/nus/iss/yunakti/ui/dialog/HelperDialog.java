@@ -31,7 +31,7 @@ public void setListItems(List<String> listItems) {
 
 	this.setTitle("Helper Classes");
 
-	//this.open();
+	this.open();
 }
 
 
