@@ -44,6 +44,8 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	private TreeViewer viewer;
 	
 	EngineCore engineCore = new EngineCore();
+	
+	private static YunaktiGridView gridView = null;
 
 	
 	private static List<YParentModel> packageList = new ArrayList<YParentModel>();
@@ -57,6 +59,8 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		// TODO Auto-generated method stub
 		
 		setUpView(parent);
+		
+		gridView = this;
 		
 		getViewSite().getPage().addSelectionListener(this);
 		
@@ -135,7 +139,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	              if(columnIndex == 1){	            	 
 	            	  System.out.println(yModels);	            	  
 	            	  
-	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels),this);
+	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels),gridView);
 						
 	  				caseDialog.create();
 	  				
@@ -149,7 +153,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            		  
 	            		  HelperDialog dialog = new HelperDialog(parent.getShell());
 	    	              
-	    	              dialog.setLstYClass(getHelperClasses(className, columnIndex));
+	    	              dialog.setListItems(getHelperClasses(className, columnIndex));
 	    				
 	            		  
 	            	  }
@@ -235,9 +239,9 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	}
 	
 	
-private List<YClass> getHelperClasses(String className, int colNum){
+private List<String> getHelperClasses(String className, int colNum){
 	
-	List<YClass> helperClasses = new ArrayList<YClass>();
+	List<String> helperClasses = new ArrayList<String>();
 	
 	
 	List<YClass> testCases = getTestCasses(className, colNum).getTestCases();
@@ -247,7 +251,7 @@ private List<YClass> getHelperClasses(String className, int colNum){
 		
 		for(YClass helperClass: yClass.getMembers()){
 			
-			helperClasses.add(helperClass);
+			helperClasses.add(helperClass.getName());
 			
 		}
 		
