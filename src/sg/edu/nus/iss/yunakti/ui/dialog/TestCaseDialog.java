@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.ui.dialog.filter.TestCaseFilter;
@@ -200,17 +202,27 @@ public class TestCaseDialog extends TitleAreaDialog {
 			public void widgetSelected(SelectionEvent e) {
 
 				System.out.println("remove selection listener");
-				for (YClass yClass : testClassForCUT) {
-
+				
+//				Iterator<YClass> iter = testClassForCUT.iterator();
+				YClass class1 = null;
+				for(YClass yClass : model.getTestCases()) {
 					if (tableViewer.getSelection().toString()
 							.contains(yClass.getFullyQualifiedName())) {
 						try {
-							testClassForCUT.remove(yClass);
-							tableViewer.refresh();
+							class1 = yClass;
+							break;
 						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
 					}
+				}
+				if(class1 != null){
+					System.out.println(" subu " + model.getTestCases());
+					model.getTestCases().remove(class1);
+					System.out.println(" subu "  +model.getTestCases());
+					EngineCore engineCore = new EngineCore();
+					engineCore.writeAnnotation(model);
+					tableViewer.refresh();
 				}
 			}
 		});

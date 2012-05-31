@@ -2,7 +2,6 @@ package sg.edu.nus.iss.yunakti.ui.dialog;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -72,11 +71,11 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	}
 
 	@Override
-	protected Comparator<YClass> getItemsComparator() {
-		return new Comparator<YClass>() {
-			public int compare(YClass class1, YClass class2) {
-				return class1.getFullyQualifiedName().compareTo(
-						class2.getFullyQualifiedName());
+	protected Comparator<String> getItemsComparator() {
+		return new Comparator<String>() {
+			public int compare(String class1, String class2) {
+				return class1.compareTo(
+						class2);
 			}
 		};
 	}
@@ -109,13 +108,14 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	protected void okPressed() {
 		if (this.getSelectedItems() != null
 				&& this.getSelectedItems().size() > 0) {
+			System.out.println(" okPressed  "  + this.getSelectedItems().getFirstElement());
 			YClass class1 = new YClass(this.getSelectedItems()
 					.getFirstElement().toString());
 			class1.setyClassType(YTYPE.TEST_CASE);
 			
 			boolean found = false;
 			
-			for (YClass testClass : allTestClasses) {
+			for (YClass testClass : model.getTestCases()) {
 				System.out.println(testClass.getFullyQualifiedName().toString());
 				if(testClass.getFullyQualifiedName().equals(class1.getFullyQualifiedName())){
 					found = true;
