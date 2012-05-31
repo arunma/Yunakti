@@ -20,6 +20,7 @@ import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
+import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
 
 public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
@@ -27,12 +28,14 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 	Shell parentShell;
 	private YModel model;
+	private YunaktiGridView gridView;
 
-	public FilteredTCSelectionDialog(Shell shell, Set<YClass> allTestClasses, YModel model) {
+	public FilteredTCSelectionDialog(Shell shell, Set<YClass> allTestClasses, YModel model, YunaktiGridView view) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestClasses = allTestClasses;
 		this.model = model;
+		this.gridView = view;
 		setTitle("Add new Test Class");
 	}
 
@@ -124,6 +127,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			// Dont add duplicate test class again.
 			if(found == false){
 				model.addTestCase(class1);
+				gridView.updateGridView(model);
 				EngineCore engineCore = new EngineCore();
 				engineCore.writeAnnotation(model);
 				parentShell.forceFocus();
