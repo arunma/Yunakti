@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.Type;
@@ -29,6 +30,7 @@ import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
+import sg.edu.nus.iss.yunakti.model.YTYPE;
 
 public class YModelVisitor extends ASTVisitor implements YModelSource{
 
@@ -38,7 +40,9 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	private List<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
 	private List<FieldDeclaration> fields = new ArrayList<FieldDeclaration>();
 	private List<NormalAnnotation> annotations = new ArrayList<NormalAnnotation>();
-
+	private boolean testCaseConstructed=false;
+	private String currentClassName;
+	
 	private ICompilationUnit testCaseCompilationUnit;
 
 	public YModelVisitor(YModel model) {
@@ -60,15 +64,11 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	public boolean visit(FieldDeclaration node) {
 		
 		
-		node.getType().resolveBinding().getQualifiedName();
+		//node.getType().resolveBinding().getQualifiedName();
 		
 		if (node.getType().isSimpleType()){
 			
 			SimpleType simpleFieldType=(SimpleType) node.getType();
-			
-			streamUtil.println("SimpleField Type"+simpleFieldType.resolveBinding().getQualifiedName());
-			
-			System.out.println("SimpleField Type"+simpleFieldType.resolveBinding().getQualifiedName());
 			
 			addToModel(simpleFieldType.resolveBinding().getQualifiedName());
 			
@@ -80,9 +80,16 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 
 	private void addToModel(String qualifiedName) {
 		
+		System.out.println("Current qualifed nme : "+qualifiedName);
+		System.out.println("Current class name   : "+currentClassName);
+		if (!testCaseConstructed) return;
+		else if (StringUtils.equals(qualifiedName, currentClassName)) return;
+		YClass member=null;
 		for(String filterPackage:YConstants.FILTER_PACKAGES){
 			if (!qualifiedName.startsWith(filterPackage)){
-				model.getTestCases().get(0).addMember(new YClass(qualifiedName));	
+				member=new YClass(qualifiedName);
+				member.setyClassType(YTYPE.TEST_HELPER);
+				model.getTestCases().get(0).addMember(member);	
 			}
 		}
 		
@@ -102,14 +109,27 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		
 		streamUtil.println("Field Class name : "+node.getName().toString());
 		YClass testCaseClass=new YClass(node.resolveBinding().getQualifiedName());
+		testCaseClass.setyClassType(YTYPE.TEST_CASE);
 		testCaseClass.setPath(testCaseCompilationUnit.getResource().getLocation().toOSString());
 		model.addTestCase(testCaseClass);
-		
+		testCaseConstructed=true;
+		currentClassName=testCaseClass.getFullyQualifiedName();
 		//model.addTestCase(new YClass(ParserUtils.getClassName(node.getName().toString())));
 		return super.visit(node);
 		
 	}
 	
+
+	@Override
+	public boolean visit(SimpleName simpleName){
+		
+		System.out.println("Simple name : "+simpleName);
+		if(simpleName.resolveTypeBinding() != null && simpleName.resolveTypeBinding().isClass()){
+			addToModel(simpleName.resolveTypeBinding().getQualifiedName());	
+		}
+		  
+		return super.visit(simpleName); 
+	}
 
 	private void resolveClassUnderTest(NormalAnnotation node) {
 		if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION)){
@@ -117,10 +137,9 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 			for (MemberValuePair memberValuePair : members) {
 				if (StringUtils.equals(memberValuePair.getName().toString(),ANNOTATION_PROPERTY_CLASS_UNDER_TEST)){
 					YClass classUnderTest=new YClass(memberValuePair.getValue().toString());
-					
+					classUnderTest.setyClassType(YTYPE.CLASS_UNDER_TEST);
 					System.out.println("Annotation Root : "+node.getRoot());
 					
-					//classUnderTest.setPath(node.get)
 					model.setClassUnderTest(classUnderTest);
 					
 				}
