@@ -24,6 +24,9 @@ List<YClass> lstYClass;
 }
 
 public void setListItems(List<String> listItems) {
+	if(listItems!=null && !listItems.isEmpty())
+	{
+
 	this.listItems = listItems;
 	this.setInput(listItems.toArray());
 
@@ -31,7 +34,15 @@ public void setListItems(List<String> listItems) {
 
 	this.setTitle("Helper Classes");
 
-	//this.open();
+	this.open();
+	}
+	else
+	{
+		
+		YunaktiMessageDialog yunaktimsgDlg=new YunaktiMessageDialog(this.getParentShell(),"Info",null,"No class found",MessageDialog.INFORMATION, new String[] { "OK",
+			 },0);
+	}
+
 }
 
 

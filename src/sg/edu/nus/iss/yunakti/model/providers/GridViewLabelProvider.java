@@ -127,7 +127,7 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 		StringBuilder builder=new StringBuilder();
 		
 		for (YClass testCase: yModel.getTestCases()){
-			builder.append(testCase.getFullyQualifiedName()).append(", ");
+			builder.append(testCase.getName()).append(", ");
 			
 		}
 		
@@ -137,8 +137,8 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 		
 	}
 	
-	
-	private String getHelperClasses(YModel yModel){
+
+private String getHelperClasses(YModel yModel){
 		
 String strHelperClasses = null;
 
@@ -147,13 +147,27 @@ StringBuilder builder=new StringBuilder();
 for (YClass testCase: yModel.getTestCases()){
 
 for (YClass testCaseMember:testCase.getMembers()){
-	builder.append(testCaseMember.getFullyQualifiedName()).append(", ");
+	builder.append(testCaseMember.getName()).append(", ");
 }
 }
 	strHelperClasses = builder.toString();
 		
 		return strHelperClasses;
 		
-	}		
+	}	
+
+	private String formatToStr(StringBuilder builder){
+		String str = null;
+		int len = builder.length();
+		
+		if(len > 2){
+			
+			
+			str = builder.substring(0, len-2);
+		}
+		
+		return str;
+		
+	}
 
 }
