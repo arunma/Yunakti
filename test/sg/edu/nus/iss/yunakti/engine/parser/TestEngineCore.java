@@ -28,6 +28,7 @@ public class TestEngineCore {
 	}
 
 	
+	
 
 	//@Test
 	public void testGetModelsByPackageName() {
@@ -43,7 +44,7 @@ public class TestEngineCore {
 		System.out.println(engineCore.getModelsByPackageName(models));
 	}
 	
-	@Test
+	//@Test
 	public void testWriteAnnotation() {
 		
 		EngineCore engineCore = new EngineCore();
@@ -106,4 +107,12 @@ public class TestEngineCore {
 		return testCase2;
 	}
 	
+	@Test
+	public void testGetAllClassesInWorkspace(){
+		
+		EngineCore core=new EngineCore();
+		List<YClass> allClassesInWorkspace = core.getAllClassesInWorkspace();
+		System.out.println("All classes in workspace: "+allClassesInWorkspace);
+		
+	}
 }

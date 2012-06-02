@@ -18,11 +18,11 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeReferenceMatch;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
+import sg.edu.nus.iss.yunakti.engine.parser.YModelVisitor;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.ParserUtils;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YModel;
-import sg.edu.nus.iss.yunakti.ui.explorer.YModelVisitor;
 
 public class YSearch {
 	

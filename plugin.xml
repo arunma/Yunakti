@@ -74,6 +74,15 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <command
+               commandId="sg.edu.nus.iss.yunakti.command.ListClassesCommand"
+               label="ListClasses"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -81,6 +90,11 @@
             defaultHandler="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
             id="sg.edu.nus.iss.yunakti.command.YunaktiCommand"
             name="YunaktiCommand">
+      </command>
+      <command
+            defaultHandler="sg.edu.nus.iss.yunakti.command.ListClassesCommand"
+            id="sg.edu.nus.iss.yunakti.command.ListClassesCommand"
+            name="ListClassesCommand">
       </command>
   </extension>
    <extension

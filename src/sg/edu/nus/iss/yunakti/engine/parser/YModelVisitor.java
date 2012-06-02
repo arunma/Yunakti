@@ -1,4 +1,4 @@
-package sg.edu.nus.iss.yunakti.ui.explorer;
+package sg.edu.nus.iss.yunakti.engine.parser;
 
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.ANNOTATION_PROPERTY_CLASS_UNDER_TEST;
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.TEST_CASE_ANNOTATION;
@@ -25,7 +25,6 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
-import sg.edu.nus.iss.yunakti.engine.parser.YModelSource;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YClass;
