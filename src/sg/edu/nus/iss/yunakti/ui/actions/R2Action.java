@@ -83,12 +83,12 @@ public class R2Action implements IWorkbenchWindowActionDelegate {
 		System.out.println(model);
 		
 		
-		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell(), model, allTestClasses);
-
-		  dialog.create();
-		if (dialog.open() == Window.OK) {
-
-		}
+//		TestCaseDialog dialog = new TestCaseDialog(this.window.getShell(), model, allTestClasses);
+//
+//		  dialog.create();
+//		if (dialog.open() == Window.OK) {
+//
+//		}
 	}
 
 	/**

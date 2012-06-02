@@ -12,7 +12,7 @@ import sg.edu.nus.iss.yunakti.model.YTYPE;
 import junit.framework.TestCase;
 
 public class TestYunaktiModelListParser extends TestCase{
-	/*
+	
 	List<YModel> lstModelClass;
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -89,8 +89,8 @@ public class TestYunaktiModelListParser extends TestCase{
 	@Test
 	public void testparseListYModelToString()
 	{
-		YModelListParser yModellistparser=new YModelListParser();
-		List<StringBuilder>lstParsedString=yModellistparser.parseListYModelToString(lstModelClass);
+		//YModelListParser yModellistparser=new YModelListParser();
+		List<StringBuilder>lstParsedString=YModelListParser.parseListYModelToString(lstModelClass);
 		StringBuilder sbline1=lstParsedString.get(0);
 		System.out.println("line1:"+sbline1.toString());
 		assertEquals("Class1.class;Test1.class,Test2.class;Helper2.class,Helper1.class,Helper4.class,Helper3.class,Helper5.class", sbline1.toString());
@@ -100,5 +100,5 @@ public class TestYunaktiModelListParser extends TestCase{
 		
 		
 	}
-	*/
+	
 }

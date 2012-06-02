@@ -3,14 +3,15 @@ package sg.edu.nus.iss.yunakti.engine.util;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ISelection;
 
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
-import sg.edu.nus.iss.yunakti.model.YTYPE;
 
 public class YModelListParser {
 	
-	public List<StringBuilder> parseListYModelToString(List<YModel> lstModel)
+	public static List<StringBuilder> parseListYModelToString(List<YModel> lstModel)
 	{
 		
 		List<StringBuilder> lstYModelString=new ArrayList<StringBuilder>();
@@ -64,6 +65,33 @@ public class YModelListParser {
 		}
 		//System.out.println("lstYModelString"+lstYModelString);
 		return lstYModelString;
+	}
+	
+	public static boolean findwhetherToPopulateModel(ISelection selection) {
+		boolean isValid = false;
+		try {
+			System.out.println("selection1 "
+					+ ((IStructuredSelection) selection).getFirstElement()
+							.getClass().getName());
+			System.out.println("selector invoked");
+			String selectiontype = ((IStructuredSelection) selection)
+					.getFirstElement().getClass().getName();
+			List<String> lstAllowedNames = new ArrayList<String>();
+			lstAllowedNames
+					.add("org.eclipse.jdt.internal.core.PackageFragment");
+			lstAllowedNames
+					.add("org.eclipse.jdt.internal.core.PackageFragmentRoot");
+			lstAllowedNames.add("org.eclipse.jdt.internal.core.JavaProject");
+			lstAllowedNames
+					.add("org.eclipse.jdt.internal.core.CompilationUnit");
+			if (selectiontype != null
+					&& lstAllowedNames.contains(selectiontype)) {
+				isValid=true;
+			}
+		} catch (Exception e) {
+
+		}
+		return isValid;
 	}
 
 }

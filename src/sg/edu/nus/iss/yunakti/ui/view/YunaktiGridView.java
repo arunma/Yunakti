@@ -44,6 +44,8 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	private TreeViewer viewer;
 	
 	EngineCore engineCore = new EngineCore();
+	
+	private static YunaktiGridView gridView = null;
 
 	
 	private static List<YParentModel> packageList = new ArrayList<YParentModel>();
@@ -57,6 +59,8 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		// TODO Auto-generated method stub
 		
 		setUpView(parent);
+		
+		gridView = this;
 		
 		getViewSite().getPage().addSelectionListener(this);
 		
@@ -86,9 +90,6 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
 		
-		
-		
-		
 		String[] title = { "Class", "Test Case", "Helper Class" }; //$NON-NLS-1$ //$NON-NLS-2$
 		int[] bounds = { 200, 200,200 };
 
@@ -99,10 +100,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 			column.getColumn().setWidth(bounds[col]);			
 		}
 		
-		
-		
-		
-				
+						
 		tree.addListener(SWT.MouseDoubleClick, new Listener() {  
 			 
 			@Override
@@ -141,15 +139,9 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	              if(columnIndex == 1){	            	 
 	            	  System.out.println(yModels);	            	  
 	            	  
-	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels));
+	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels),gridView);
 						
 	  				caseDialog.create();
-	  				
-	  				//caseDialog.setTableData(getTestCasses(className, columnIndex));
-	  				
-	  				
-	  				
-//	  				caseDialog.setTableData(getTestCasses(className, columnIndex));
 	  				
 	  				caseDialog.open();
 	            	  
@@ -161,7 +153,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            		  
 	            		  HelperDialog dialog = new HelperDialog(parent.getShell());
 	    	              
-	    	              dialog.setLstYClass(getHelperClasses(className, columnIndex));
+	    	              dialog.setListItems(getHelperClasses(className, columnIndex));
 	    				
 	            		  
 	            	  }
@@ -172,16 +164,8 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 			 }); 
 		
 	
-		
-				
-		
-		
-		
-		
 		viewer.setContentProvider(new GridViewContentProvider1());		
 		viewer.setLabelProvider(new GridViewLabelProvider());			
-				
-		
 		
 		viewer.setInput(packageList.toArray());		
 		
@@ -233,90 +217,6 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		return false;
 	}
 	
-	/*private List<YParentModel>	 getModel(){
-		
-		
-		//helper classes
-				YClass hc1 = new YClass();
-				hc1.setFullyQualifiedName("HelperClass1");
-				hc1.setyClassType(YTYPE.TEST_HELPER);
-				YClass hc2 = new YClass();
-				hc2.setFullyQualifiedName("HelperClass2");
-				hc2.setyClassType(YTYPE.TEST_HELPER);
-				List<YClass> helperClassList = new ArrayList<YClass>();
-				helperClassList.add(hc1);
-				helperClassList.add(hc2);
-				
-				
-				//test classes
-						YClass tc1 = new YClass();
-						tc1.setFullyQualifiedName("TestClass1");
-						tc1.addMember(hc1);
-						tc1.addMember(hc2);
-						tc1.setyClassType(YTYPE.TEST_CASE);
-						YClass tc2 = new YClass();
-						tc2.setFullyQualifiedName("TestClass2");
-						tc2.addMember(hc1);
-						tc2.addMember(hc2);
-						tc2.setyClassType(YTYPE.TEST_CASE);
-						List<YClass> testClassList = new ArrayList<YClass>();
-						testClassList.add(tc1);
-						testClassList.add(tc2);
-										
-						
-						//classes
-						YClass c1 = new YClass();
-						c1.setFullyQualifiedName("Class1");
-						c1.addMember(tc1);
-						c1.addMember(tc2);
-						YClass c2 = new YClass();
-						c2.setFullyQualifiedName("Class2");
-						c2.addMember(tc1);
-						c2.addMember(tc2);
-						
-					
-						// model
-						YModel yModel1 = new YModel();
-						yModel1.setClassUnderTest(c1);
-						yModel1.addTestCase(tc1);
-						yModel1.addTestCase(tc2);
-						
-						// model
-						YModel yModel2 = new YModel();
-						yModel2.setClassUnderTest(c2);
-						yModel2.addTestCase(tc1);
-						yModel2.addTestCase(tc2);
-						
-						List<YModel> yModels = new ArrayList<YModel>();
-						yModels.add(yModel1);
-						yModels.add(yModel2);
-						
-						
-						// parent model
-						List<YParentModel> parentModelList = new ArrayList<YParentModel>();
-						
-						
-						YParentModel parentModel = new YParentModel();						
-						parentModel.setClassList(yModels);						
-						parentModel.setParentName("Package1");
-						parentModelList.add(parentModel);
-						
-						
-						parentModel = new YParentModel();						
-						parentModel.setClassList(yModels);						
-						parentModel.setParentName("Package2");
-						parentModelList.add(parentModel);
-						
-											
-						
-						
-						return parentModelList;
-				
-		
-		
-	}
-	*/
-	
 	private YModel getTestCasses(String className, int colNum){
 		
 		YModel returnModel = null;
@@ -339,9 +239,9 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	}
 	
 	
-private List<YClass> getHelperClasses(String className, int colNum){
+private List<String> getHelperClasses(String className, int colNum){
 	
-	List<YClass> helperClasses = new ArrayList<YClass>();
+	List<String> helperClasses = new ArrayList<String>();
 	
 	
 	List<YClass> testCases = getTestCasses(className, colNum).getTestCases();
@@ -351,7 +251,7 @@ private List<YClass> getHelperClasses(String className, int colNum){
 		
 		for(YClass helperClass: yClass.getMembers()){
 			
-			helperClasses.add(helperClass);
+			helperClasses.add(helperClass.getName());
 			
 		}
 		
@@ -380,41 +280,12 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			buildPackageList(engineCore.getModelsByPackageName(yModels));
 			viewer.setInput(packageList.toArray());
 		}
-		
-		
-		
-		
-		
+				
             }
-	
 	
 }
 
-/*public List<YParentModel> getParentModel(){
-	
-	
-	// parent model
-	List<YParentModel> parentModelList = new ArrayList<YParentModel>();
-	
-	
-	YParentModel parentModel = new YParentModel();						
-	parentModel.setClassList(yModels);						
-	parentModel.setParentName("Package1");
-	parentModelList.add(parentModel);
-	
-	
-	parentModel = new YParentModel();						
-	parentModel.setClassList(yModels);						
-	parentModel.setParentName("Package2");
-	parentModelList.add(parentModel);
-	
-						
-	
-	
-	return parentModelList;
-	
-	
-}*/
+
 
 public void buildPackageList(Map<String,List<YModel>> packageMap){
 	
@@ -431,6 +302,32 @@ public void buildPackageList(Map<String,List<YModel>> packageMap){
 		
 		packageList.add(parentModel);
 	}
+	
+}
+
+public void updateGridView(YModel model){
+	
+	for(YParentModel parentModel : packageList){
+		
+		for(YModel yModel: parentModel.getClassList())
+		{
+			
+			if(yModel.getClassUnderTest().getFullyQualifiedName().equals(model.getClassUnderTest().getFullyQualifiedName())){
+				
+				parentModel.getClassList().remove(yModel);
+				parentModel.getClassList().add(model);				
+				
+				viewer.setInput(packageList.toArray());
+				
+				return;
+				
+			}
+			
+		}
+		
+		
+	}
+	
 	
 }
 
