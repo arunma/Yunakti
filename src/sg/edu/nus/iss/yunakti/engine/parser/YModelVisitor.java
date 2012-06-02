@@ -44,14 +44,14 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	
 	private ICompilationUnit testCaseCompilationUnit;
 
-	public YModelVisitor(YModel model) {
+	private List<String> allClassNames;
+
+	public YModelVisitor(YModel model, ICompilationUnit testCaseElementCompilationUnit, List<String> allClassNames) {
 		this.model=model;
+		this.testCaseCompilationUnit=testCaseElementCompilationUnit;
+		this.allClassNames=allClassNames;
 	}
 	
-	public YModelVisitor(YModel model, ICompilationUnit testCaseCompilationUnit) {
-		this.model=model;
-		this.testCaseCompilationUnit=testCaseCompilationUnit;
-	}
 
 	@Override
 	public boolean visit(MethodDeclaration node) {
@@ -84,14 +84,12 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		if (!testCaseConstructed) return;
 		else if (StringUtils.equals(qualifiedName, currentClassName)) return;
 		YClass member=null;
-		for(String filterPackage:YConstants.FILTER_PACKAGES){
-			if (!qualifiedName.startsWith(filterPackage)){
-				member=new YClass(qualifiedName);
-				member.setyClassType(YTYPE.TEST_HELPER);
-				model.getTestCases().get(0).addMember(member);	
-			}
-		}
 		
+		if (allClassNames.contains(qualifiedName)){
+			member=new YClass(qualifiedName);
+			member.setyClassType(YTYPE.TEST_HELPER);
+			model.getTestCases().get(0).addMember(member);
+		}
 	}
 
 	@Override
