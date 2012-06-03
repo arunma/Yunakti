@@ -2,7 +2,6 @@ package sg.edu.nus.iss.yunakti.ui.dialog;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +20,7 @@ import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
+import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
 
 public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
@@ -28,12 +28,14 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 	Shell parentShell;
 	private YModel model;
+	private YunaktiGridView gridView;
 
-	public FilteredTCSelectionDialog(Shell shell, Set<YClass> allTestClasses, YModel model) {
+	public FilteredTCSelectionDialog(Shell shell, Set<YClass> allTestClasses, YModel model, YunaktiGridView view) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestClasses = allTestClasses;
 		this.model = model;
+		this.gridView = view;
 		setTitle("Add new Test Class");
 	}
 
@@ -72,11 +74,11 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	}
 
 	@Override
-	protected Comparator<YClass> getItemsComparator() {
-		return new Comparator<YClass>() {
-			public int compare(YClass class1, YClass class2) {
-				return class1.getFullyQualifiedName().compareTo(
-						class2.getFullyQualifiedName());
+	protected Comparator<String> getItemsComparator() {
+		return new Comparator<String>() {
+			public int compare(String class1, String class2) {
+				return class1.compareTo(
+						class2);
 			}
 		};
 	}
@@ -98,7 +100,6 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
 	@Override
 	public String getElementName(Object item) {
-		System.out.println("subu " + (item.toString()));
 		return item.toString();
 	}
 
@@ -109,14 +110,21 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	protected void okPressed() {
 		if (this.getSelectedItems() != null
 				&& this.getSelectedItems().size() > 0) {
+			
+			if(this.model.getTestCases().size() == 1){
+				 MessageDialog.openError(getShell(), "Error", "Can not add more than one Test Class for a ClassUnderTest");
+				 return;
+
+			}
+			
+			
 			YClass class1 = new YClass(this.getSelectedItems()
 					.getFirstElement().toString());
 			class1.setyClassType(YTYPE.TEST_CASE);
 			
 			boolean found = false;
 			
-			for (YClass testClass : allTestClasses) {
-				System.out.println(testClass.getFullyQualifiedName().toString());
+			for (YClass testClass : model.getTestCases()) {
 				if(testClass.getFullyQualifiedName().equals(class1.getFullyQualifiedName())){
 					found = true;
 				}
@@ -124,9 +132,15 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			// Dont add duplicate test class again.
 			if(found == false){
 				model.addTestCase(class1);
+				gridView.updateGridView(model);
+				parentShell.forceFocus();
+				try{
 				EngineCore engineCore = new EngineCore();
 				engineCore.writeAnnotation(model);
-				parentShell.forceFocus();
+				}catch(Exception ex){
+					System.out.println("Error in writing back to core");
+					ex.printStackTrace();
+				}
 				super.okPressed();
 			}else{
 				 MessageDialog.openError(getShell(), "Error", "Duplicate Class: Selected Test Class has been already added");

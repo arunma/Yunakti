@@ -9,6 +9,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.SearchEngine;
@@ -18,11 +19,13 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeReferenceMatch;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
+import sg.edu.nus.iss.yunakti.engine.parser.YModelVisitor;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.ParserUtils;
+import sg.edu.nus.iss.yunakti.engine.util.WorkspaceUtils;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
+import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
-import sg.edu.nus.iss.yunakti.ui.explorer.YModelVisitor;
 
 public class YSearch {
 	
@@ -43,9 +46,11 @@ public class YSearch {
 		
 	}
 	
-	public void search(List<IJavaElement> javaElements){
+	public void search(List<IJavaElement> javaElements) throws JavaModelException, CoreException{
 		
-		ResultSetMapperBase resultMapper=new ResultSetMapperImpl();
+		List<String> allClassNames = getAllClassNamesInWorkspace();
+		
+		ResultSetMapperBase resultMapper=new ResultSetMapperImpl(allClassNames);
 		System.out.println("About to search.....");
 		
 		SearchPattern pattern = SearchPattern.createPattern(YConstants.TEST_CASE_ANNOTATION, IJavaSearchConstants.ANNOTATION_TYPE,IJavaSearchConstants.ANNOTATION_TYPE_REFERENCE, SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
@@ -62,6 +67,18 @@ public class YSearch {
 		}
 	}
 	
+
+	private List<String> getAllClassNamesInWorkspace() throws JavaModelException, CoreException {
+
+		WorkspaceUtils utils=WorkspaceUtils.getInstance();
+		utils.gatherAllClassesInWorkspace();
+		List<YClass> allClasses = utils.getAllClasses();
+		List<String> fqNames=new ArrayList<String>();
+		for (YClass yClass : allClasses) {
+			fqNames.add(yClass.getFullyQualifiedName());
+		}
+		return fqNames;
+	}
 
 	public List<YModel> getResults() {
 		
@@ -106,12 +123,14 @@ public class YSearch {
 
 		private ConsoleStreamUtil streamUtil=ConsoleStreamUtil.getInstance();
 		private YModel model=null;
+		private List<String> allClassNames;
+		public ResultSetMapperImpl(List<String> allClassNames) {
+			this.allClassNames=allClassNames;
+		}
 		@Override
 		public void acceptSearchMatch(SearchMatch eachSearchMatch) throws CoreException {
 
 			model=new YModel();
-			
-			
 			
 			if (eachSearchMatch.getClass().equals(TypeReferenceMatch.class)){
 	
@@ -121,15 +140,11 @@ public class YSearch {
 					
 					ICompilationUnit testCaseElementCompilationUnit=(ICompilationUnit) testCaseElement.getAncestor(IJavaElement.COMPILATION_UNIT);
 					
-					streamUtil.println("Yaaaay.. icompilationunit"+testCaseElementCompilationUnit);
-					
-					YModelVisitor visitor = new YModelVisitor(model, testCaseElementCompilationUnit);
+					YModelVisitor visitor = new YModelVisitor(model, testCaseElementCompilationUnit, allClassNames);
 					
 					CompilationUnit comUnit = ParserUtils.parse(testCaseElementCompilationUnit);
-					streamUtil.println("Compilation unit is : "+comUnit);
 					comUnit.accept(visitor);
 					
-					streamUtil.println("Fields ready?"+visitor.getFields());
 					
 					
 				}

@@ -1,4 +1,4 @@
-package sg.edu.nus.iss.yunakti.ui.explorer;
+package sg.edu.nus.iss.yunakti.engine.parser;
 
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.ANNOTATION_PROPERTY_CLASS_UNDER_TEST;
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.TEST_CASE_ANNOTATION;
@@ -25,7 +25,6 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
-import sg.edu.nus.iss.yunakti.engine.parser.YModelSource;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YClass;
@@ -45,14 +44,14 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	
 	private ICompilationUnit testCaseCompilationUnit;
 
-	public YModelVisitor(YModel model) {
+	private List<String> allClassNames;
+
+	public YModelVisitor(YModel model, ICompilationUnit testCaseElementCompilationUnit, List<String> allClassNames) {
 		this.model=model;
+		this.testCaseCompilationUnit=testCaseElementCompilationUnit;
+		this.allClassNames=allClassNames;
 	}
 	
-	public YModelVisitor(YModel model, ICompilationUnit testCaseCompilationUnit) {
-		this.model=model;
-		this.testCaseCompilationUnit=testCaseCompilationUnit;
-	}
 
 	@Override
 	public boolean visit(MethodDeclaration node) {
@@ -85,14 +84,12 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		if (!testCaseConstructed) return;
 		else if (StringUtils.equals(qualifiedName, currentClassName)) return;
 		YClass member=null;
-		for(String filterPackage:YConstants.FILTER_PACKAGES){
-			if (!qualifiedName.startsWith(filterPackage)){
-				member=new YClass(qualifiedName);
-				member.setyClassType(YTYPE.TEST_HELPER);
-				model.getTestCases().get(0).addMember(member);	
-			}
-		}
 		
+		if (allClassNames.contains(qualifiedName)){
+			member=new YClass(qualifiedName);
+			member.setyClassType(YTYPE.TEST_HELPER);
+			model.getTestCases().get(0).addMember(member);
+		}
 	}
 
 	@Override

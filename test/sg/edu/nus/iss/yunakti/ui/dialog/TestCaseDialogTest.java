@@ -56,14 +56,14 @@ public class TestCaseDialogTest {
 	
 
 	private void openDialog(){
-		try {
-		dialog = new TestCaseDialog(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getShell(),  this.model, allTestClasses);
-		dialog.create();
-	    dialog.open();
-		}catch(Exception ex){
-			System.out.println("Error occured while opening the TestCase Dialog");
-		}
+//		try {
+//		dialog = new TestCaseDialog(PlatformUI.getWorkbench()
+//				.getActiveWorkbenchWindow().getShell(),  this.model, allTestClasses);
+//		dialog.create();
+//	    dialog.open();
+//		}catch(Exception ex){
+//			System.out.println("Error occured while opening the TestCase Dialog");
+//		}
 	}
 
 	@After

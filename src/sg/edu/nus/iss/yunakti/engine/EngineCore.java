@@ -17,6 +17,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 
 import sg.edu.nus.iss.yunakti.engine.search.YSearch;
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
+import sg.edu.nus.iss.yunakti.engine.util.WorkspaceUtils;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.engine.writer.YPersister;
 import sg.edu.nus.iss.yunakti.model.YClass;
@@ -52,6 +53,7 @@ public class EngineCore {
 		}*/
 		
 		return searchResults;
+		
 		
 		
 	}
@@ -153,6 +155,25 @@ public class EngineCore {
 		
 	}
 	
+	public List<YClass> getAllClassesInWorkspace(){
+		
+		List<YClass> allClassesInWorkspace=new ArrayList<YClass>(); //to avoid nullpointers in front end
+		WorkspaceUtils workspaceUtils=WorkspaceUtils.getInstance();
+		try {
+			workspaceUtils.gatherAllClassesInWorkspace();
+			allClassesInWorkspace = workspaceUtils.getAllClasses();
+			
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		System.out.println("All classes in workspace : "+allClassesInWorkspace);
+		return allClassesInWorkspace;
+		
+	}
 	
-
+	
+	
+	
 }

@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,11 +29,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.ui.dialog.filter.TestCaseFilter;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.TestCaseLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
+import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
 
 /**
  * Dialog used to display all the testcases for a CUT. Also used to add or
@@ -51,6 +54,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private TestCaseDialog dialog;
 	private List<YClass> testClassForCUT;
 	private Set<YClass> uniqueTestClasses;
+	private YunaktiGridView gridView;
 
 	public TestCaseDialog(Shell parentShell) {
 		super(parentShell);
@@ -58,12 +62,14 @@ public class TestCaseDialog extends TitleAreaDialog {
 		// TODO : Replace with the original data.
 	}
 
-	public TestCaseDialog(Shell parentShell, YModel model, Set<YClass> uniqueTestClasses) {
+	public TestCaseDialog(Shell parentShell, YModel model, Set<YClass> uniqueTestClasses , YunaktiGridView gridView) {
 		super(parentShell);
 		dialog = this;
 		// this.collection = new YTestCaseCollection();
 		this.model = model;
 		this.uniqueTestClasses = uniqueTestClasses;
+		this.gridView = gridView;
+		
 	}
 
 	@Override
@@ -84,6 +90,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void focusGained(FocusEvent e) {
+				System.out.println("R2 focus gained");
 				dialog.refresh();
 			}
 		});
@@ -200,17 +207,29 @@ public class TestCaseDialog extends TitleAreaDialog {
 			public void widgetSelected(SelectionEvent e) {
 
 				System.out.println("remove selection listener");
-				for (YClass yClass : testClassForCUT) {
-
+				
+//				Iterator<YClass> iter = testClassForCUT.iterator();
+				YClass class1 = null;
+				for(YClass yClass : model.getTestCases()) {
 					if (tableViewer.getSelection().toString()
 							.contains(yClass.getFullyQualifiedName())) {
 						try {
-							testClassForCUT.remove(yClass);
-							tableViewer.refresh();
+							class1 = yClass;
+							break;
 						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
 					}
+				}
+				if(class1 != null){
+					System.out.println(" subu " + model.getTestCases());
+					model.getTestCases().remove(class1);
+					tableViewer.refresh();
+					gridView.updateGridView(model);
+					System.out.println(" subu "  +model.getTestCases());
+					EngineCore engineCore = new EngineCore();
+					engineCore.writeAnnotation(model);
+					
 				}
 			}
 		});
@@ -233,7 +252,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 			public void widgetSelected(SelectionEvent e) {
 				if (uniqueTestClasses != null) {
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
-							getShell(), uniqueTestClasses, model);
+							getShell(), uniqueTestClasses, model, gridView);
 					dialog.setInitialPattern("?");
 					dialog.open();
 				} else {

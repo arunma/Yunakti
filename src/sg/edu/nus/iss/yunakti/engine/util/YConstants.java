@@ -12,4 +12,5 @@ public interface YConstants {
 	public static final String DOT = ".";
 	public static final String COMMA = ",";
 	public static final String DOUBLE_QUOTE = "\"";
+	public static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
 }
