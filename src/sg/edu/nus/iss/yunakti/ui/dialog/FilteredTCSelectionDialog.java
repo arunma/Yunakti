@@ -2,6 +2,7 @@ package sg.edu.nus.iss.yunakti.ui.dialog;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,13 +25,13 @@ import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
 
 public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 
-	private Set<YClass> allTestClasses;
+	private List<YClass> allTestClasses;
 	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 	Shell parentShell;
 	private YModel model;
 	private YunaktiGridView gridView;
 
-	public FilteredTCSelectionDialog(Shell shell, Set<YClass> allTestClasses, YModel model, YunaktiGridView view) {
+	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model, YunaktiGridView view) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestClasses = allTestClasses;
@@ -111,13 +112,13 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 		if (this.getSelectedItems() != null
 				&& this.getSelectedItems().size() > 0) {
 			
-			if(this.model.getTestCases().size() == 1){
-				 MessageDialog.openError(getShell(), "Error", "Can not add more than one Test Class for a ClassUnderTest");
-				 return;
-
-			}
+//			if(this.model.getTestCases().size() == 1){
+//				 MessageDialog.openError(getShell(), "Error", "Can not add more than one Test Class for a ClassUnderTest");
+//				 return;
+//
+//			}
 			
-			
+			 
 			YClass class1 = new YClass(this.getSelectedItems()
 					.getFirstElement().toString());
 			class1.setyClassType(YTYPE.TEST_CASE);
@@ -138,7 +139,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 				EngineCore engineCore = new EngineCore();
 				engineCore.writeAnnotation(model);
 				}catch(Exception ex){
-					System.out.println("Error in writing back to core");
+					System.out.println("Error in writing back to model");
 					ex.printStackTrace();
 				}
 				super.okPressed();

@@ -135,7 +135,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	              if(columnIndex == 1){	            	 
 	            	  System.out.println(yModels);	            	  
 	            	  
-	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels), gridView);
+	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getAllClassesInWorkspace(), gridView);
 						
 	  				caseDialog.create();
 	  				
