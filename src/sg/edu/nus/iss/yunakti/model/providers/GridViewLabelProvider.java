@@ -1,11 +1,13 @@
 package sg.edu.nus.iss.yunakti.model.providers;
 
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import sg.edu.nus.iss.yunakti.Activator;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
@@ -45,12 +47,14 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 		case 0:
 			
 			
-			return PlatformUI.getWorkbench().getSharedImages()
-					.getImage(ISharedImages.IMG_OBJ_FILE);
+			return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_CLASS);
+					
 		case 1:
+		   return	Activator.getImageDescriptor("icons/search.gif").createImage();
 			
-			return PlatformUI.getWorkbench().getSharedImages()
-					.getImage(ISharedImages.IMG_OBJ_FOLDER);
+			//return 
+					//PlatformUI.getWorkbench().getSharedImages()
+					//.getImage(ISharedImages.IMG_OBJ_FOLDER);
 		case 2:
 			
 			return PlatformUI.getWorkbench().getSharedImages()
@@ -65,8 +69,7 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 				
 				switch (columnIndex) {
 				case 0:
-					return PlatformUI.getWorkbench().getSharedImages()
-							.getImage(ISharedImages.IMG_OBJ_FOLDER);
+					return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PACKAGE);
 				case 1:
 					
 					return null;
@@ -88,7 +91,7 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 		YModel yModel = (YModel) element;
 		switch (columnIndex) {
 		case 0:
-			return yModel.getClassUnderTest().getFullyQualifiedName();
+			return yModel.getClassUnderTest().getName();
 		case 1:
 			
 			return getTestClasses(yModel);
@@ -131,7 +134,7 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 			
 		}
 		
-		strTestClasses = builder.toString();
+		strTestClasses = formatToStr(builder);
 		
 		return strTestClasses;
 		
@@ -150,7 +153,7 @@ for (YClass testCaseMember:testCase.getMembers()){
 	builder.append(testCaseMember.getName()).append(", ");
 }
 }
-	strHelperClasses = builder.toString();
+	strHelperClasses = formatToStr(builder);
 		
 		return strHelperClasses;
 		

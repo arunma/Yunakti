@@ -1,9 +1,6 @@
 package sg.edu.nus.iss.yunakti.ui.view;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +29,6 @@ import sg.edu.nus.iss.yunakti.engine.EngineCore;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
-import sg.edu.nus.iss.yunakti.model.YTYPE;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewContentProvider1;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
@@ -139,7 +135,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	              if(columnIndex == 1){	            	 
 	            	  System.out.println(yModels);	            	  
 	            	  
-	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels),gridView);
+	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getUniqueTestCases(yModels), gridView);
 						
 	  				caseDialog.create();
 	  				
@@ -181,6 +177,8 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		viewer.getControl().setLayoutData(gridData);
+		
+		viewer.expandAll();
 		
 		
 		
@@ -227,7 +225,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 			
 			for(YModel yModel: yParentModel.getClassList()){
 				
-				if(className.equals(yModel.getClassUnderTest().getFullyQualifiedName())){
+				if(className.equals(yModel.getClassUnderTest().getName())){
 					
 					returnModel =yModel;
 					
@@ -279,6 +277,7 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			yModels= tempYModel;
 			buildPackageList(engineCore.getModelsByPackageName(yModels));
 			viewer.setInput(packageList.toArray());
+			viewer.expandAll();
 		}
 				
             }
@@ -318,6 +317,8 @@ public void updateGridView(YModel model){
 				parentModel.getClassList().add(model);				
 				
 				viewer.setInput(packageList.toArray());
+				
+				viewer.expandAll();
 				
 				return;
 				
