@@ -53,7 +53,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private YModel model;
 	private TestCaseDialog dialog;
 	private List<YClass> testClassForCUT;
-	private Set<YClass> uniqueTestClasses;
+	private List<YClass> allClasses;
 	private YunaktiGridView gridView;
 
 	public TestCaseDialog(Shell parentShell) {
@@ -62,12 +62,12 @@ public class TestCaseDialog extends TitleAreaDialog {
 		// TODO : Replace with the original data.
 	}
 
-	public TestCaseDialog(Shell parentShell, YModel model, Set<YClass> uniqueTestClasses , YunaktiGridView gridView) {
+	public TestCaseDialog(Shell parentShell, YModel model, List<YClass> allClasses , YunaktiGridView gridView) {
 		super(parentShell);
 		dialog = this;
 		// this.collection = new YTestCaseCollection();
 		this.model = model;
-		this.uniqueTestClasses = uniqueTestClasses;
+		this.allClasses = allClasses;
 		this.gridView = gridView;
 		
 	}
@@ -192,13 +192,13 @@ public class TestCaseDialog extends TitleAreaDialog {
 		});
 
 		// Create Refresh button
-		Button refreshButton = createButton(parent, SWT.PUSH, "Refresh", false);
-		// Add a SelectionListener
-		refreshButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.refresh();
-			}
-		});
+//		Button refreshButton = createButton(parent, SWT.PUSH, "Refresh", false);
+//		// Add a SelectionListener
+//		refreshButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				tableViewer.refresh();
+//			}
+//		});
 
 		// Create Delete button
 		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
@@ -250,14 +250,18 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (uniqueTestClasses != null) {
+				if (allClasses != null) {
+					EngineCore engineCore = new EngineCore();
+					List<YClass> allClasses =  engineCore.getAllClassesInWorkspace();
+			
+					System.out.println("subu " + model);
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
-							getShell(), uniqueTestClasses, model, gridView);
+							getShell(), allClasses, model, gridView);
 					dialog.setInitialPattern("?");
 					dialog.open();
 				} else {
 					MessageDialog.openError(getShell(), "Error",
-							"There are no testclasses in the selected project");
+							"There are no classes in the workspace");
 				}
 			}
 

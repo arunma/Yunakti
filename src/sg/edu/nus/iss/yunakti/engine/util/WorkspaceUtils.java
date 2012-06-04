@@ -92,9 +92,9 @@ public class WorkspaceUtils {
 		for (ICompilationUnit eachCompilationUnit : compilationUnits) {
 			
 				yClass=new YClass();
-				visitor=new YClassVisitor(yClass);
 				
 				compilationUnit = ParserUtils.parse(eachCompilationUnit);
+				visitor=new YClassVisitor(yClass, eachCompilationUnit);
 				compilationUnit.accept(visitor);
 				
 		}
@@ -107,9 +107,11 @@ public class WorkspaceUtils {
  class YClassVisitor extends ASTVisitor{
 
 	private YClass yClass;
+	private ICompilationUnit compilationUnit;
 	
-	public YClassVisitor(YClass yClass) {
+	public YClassVisitor(YClass yClass, ICompilationUnit eachCompilationUnit) {
 		this.yClass=yClass;
+		this.compilationUnit=eachCompilationUnit;
 	}
 	
 	@Override
@@ -117,6 +119,7 @@ public class WorkspaceUtils {
 		
 		System.out.println("Type declaration node : "+node.resolveBinding().getQualifiedName());
 		yClass=new YClass(node.resolveBinding().getQualifiedName());
+		yClass.setPath(compilationUnit.getResource().getLocation().toOSString());
 		yClass.setyClassType(YTYPE.TEST_HELPER);
 		allClasses.add(yClass);
 		return super.visit(node);
