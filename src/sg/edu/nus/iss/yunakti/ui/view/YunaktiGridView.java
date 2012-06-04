@@ -250,7 +250,8 @@ private List<String> getHelperClasses(String className, int colNum){
 		
 		for(YClass helperClass: yClass.getMembers()){
 			
-			helperClasses.add(helperClass.getName());
+			//helperClasses.add(helperClass.getName());
+			helperClasses.add(helperClass.getFullyQualifiedName());
 			
 		}
 		
