@@ -26,6 +26,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
+import sg.edu.nus.iss.yunakti.engine.util.YModelListParser;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
@@ -267,6 +268,12 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
             
 		System.out.println("selector invoked");
 		
+		
+		 if(YModelListParser.findwhetherToPopulateModel(selection))
+         {
+
+		
+		
 		List<YModel> tempYModel = engineCore.populateModel((IStructuredSelection)selection);	
 		
 		 		
@@ -279,6 +286,16 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			viewer.setInput(packageList.toArray());
 			viewer.expandAll();
 		}
+		
+		else
+        {
+                viewer.setInput(null);
+        }
+		
+		
+         }
+		 
+		 
 				
             }
 	
