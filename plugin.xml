@@ -108,7 +108,7 @@
       <view
             class="sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView"
             id="sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView"
-            name="GridView"
+            name="YunaktiGridView"
             restorable="true">
       </view>      
    </extension>

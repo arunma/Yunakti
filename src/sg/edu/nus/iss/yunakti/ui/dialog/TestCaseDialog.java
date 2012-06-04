@@ -192,13 +192,13 @@ public class TestCaseDialog extends TitleAreaDialog {
 		});
 
 		// Create Refresh button
-		Button refreshButton = createButton(parent, SWT.PUSH, "Refresh", false);
-		// Add a SelectionListener
-		refreshButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.refresh();
-			}
-		});
+//		Button refreshButton = createButton(parent, SWT.PUSH, "Refresh", false);
+//		// Add a SelectionListener
+//		refreshButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				tableViewer.refresh();
+//			}
+//		});
 
 		// Create Delete button
 		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
@@ -253,7 +253,8 @@ public class TestCaseDialog extends TitleAreaDialog {
 				if (allClasses != null) {
 					EngineCore engineCore = new EngineCore();
 					List<YClass> allClasses =  engineCore.getAllClassesInWorkspace();
-					
+			
+					System.out.println("subu " + model);
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
 							getShell(), allClasses, model, gridView);
 					dialog.setInitialPattern("?");
