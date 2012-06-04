@@ -57,8 +57,9 @@ public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLoc
 		if (yModel.getTestCases()!=null){
 			
 			for (YClass eachTestCase : yModel.getTestCases()) {
-				
-				IWorkspace workspace = ResourcesPlugin.getWorkspace(); 
+					
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				System.out.println(eachTestCase.getPath());
 				IPath location = Path.fromOSString(eachTestCase.getPath()); 
 				IFile file = workspace.getRoot().getFileForLocation(location); 
 				

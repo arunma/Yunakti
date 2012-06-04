@@ -118,10 +118,19 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 //
 //			}
 			
-			 
-			YClass class1 = new YClass(this.getSelectedItems()
-					.getFirstElement().toString());
+			//Set the path while adding new TestClass to YModel.
+			String fullyQualifiedName = this.getSelectedItems()
+					.getFirstElement().toString();
+			YClass class1 = new YClass(fullyQualifiedName);
 			class1.setyClassType(YTYPE.TEST_CASE);
+		 
+			String path = null;
+			for(YClass testClass : allTestClasses){
+				if(fullyQualifiedName.equals(testClass.getFullyQualifiedName())){
+					path = testClass.getPath();
+				}
+			}
+			class1.setPath(path);
 			
 			boolean found = false;
 			

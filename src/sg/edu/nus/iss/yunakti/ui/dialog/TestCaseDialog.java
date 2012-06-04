@@ -253,7 +253,8 @@ public class TestCaseDialog extends TitleAreaDialog {
 				if (allClasses != null) {
 					EngineCore engineCore = new EngineCore();
 					List<YClass> allClasses =  engineCore.getAllClassesInWorkspace();
-					
+			
+					System.out.println("subu " + model);
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
 							getShell(), allClasses, model, gridView);
 					dialog.setInitialPattern("?");
