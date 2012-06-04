@@ -57,6 +57,10 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 					//.getImage(ISharedImages.IMG_OBJ_FOLDER);
 		case 2:
 			
+			if(getHelperClasses(yModel)==null){
+				return null;
+			}
+			
 			return PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJ_FILE);
 		}
