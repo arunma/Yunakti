@@ -100,7 +100,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="sg.edu.nus.iss.yunakti.view.YunaktiTextView"
+            class="sg.edu.nus.iss.yunakti.ui.view.YunaktiTextView"
             id="Yunakti.view1"
             name="YunaktiTextview"
             restorable="true">

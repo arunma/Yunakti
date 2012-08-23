@@ -1,4 +1,4 @@
-package sg.edu.nus.iss.yunakti.view;
+package sg.edu.nus.iss.yunakti.ui.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +48,11 @@ import org.eclipse.ui.forms.widgets.ScrolledPageBook;
 import org.eclipse.ui.part.ViewPart;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
-import sg.edu.nus.iss.yunakti.engine.util.YModelListParser;
+
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
+import sg.edu.nus.iss.yunakti.ui.util.YModelListParser;
 
 public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	
