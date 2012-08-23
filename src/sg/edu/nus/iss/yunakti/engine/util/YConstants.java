@@ -11,6 +11,11 @@ public interface YConstants {
 	public static final String[] FILTER_PACKAGES=new String[]{JAVA};
 	public static final String DOT = ".";
 	public static final String COMMA = ",";
+	public static final String COLON = ";";
 	public static final String DOUBLE_QUOTE = "\"";
 	public static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
+	public static final String JAVA_PACKAGE = "org.eclipse.jdt.internal.core.PackageFragment";
+	public static final String JAVA_PACKAGEROOT = "org.eclipse.jdt.internal.core.PackageFragmentRoot";
+	public static final String JAVA_PROJECT = "org.eclipse.jdt.internal.core.JavaProject";
+	public static final String JAVA_COMPILATIONUNIT = "org.eclipse.jdt.internal.core.CompilationUnit";
 }

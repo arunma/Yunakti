@@ -15,14 +15,13 @@ public class YModelListParser {
 	{
 		
 		List<StringBuilder> lstYModelString=new ArrayList<StringBuilder>();
-		char colseperator=';';
-		char fieldseperator=',';
+		
 		for(YModel ymodel:lstModel)
 		{
 			StringBuilder out = new StringBuilder(); 
 			StringBuilder helperout=new StringBuilder();
 			out.append(ymodel.getClassUnderTest().getFullyQualifiedName());
-			out.append(colseperator);
+			out.append(YConstants.COLON);
 			List<YClass> lstTestclasses=(List<YClass>)ymodel.getTestCases();
 			int i=0;
 			int j=0;
@@ -30,60 +29,57 @@ public class YModelListParser {
 		{
 			if(i>0)
 			{
-				out.append(fieldseperator);
+				out.append(YConstants.COMMA);
 			}
 			out.append(yclass.getFullyQualifiedName());
 			i++;
 			HashSet<YClass> lstHelperclass=new HashSet<YClass>();
 			lstHelperclass=(HashSet<YClass>)yclass.getMembers();
-			System.out.println("lstHelper"+lstHelperclass.size());
+			
 			
 			for(YClass helperfortest:lstHelperclass)
 			{
-				//System.out.println("helperfortest"+helperfortest.getyClassType().name().toString());
+				
 				if(j>0)
 				{
-					helperout.append(fieldseperator);
+					helperout.append(YConstants.COMMA);
 				}
 				helperout.append(helperfortest.getFullyQualifiedName());
 				
-				System.out.println("helperout inside"+helperout);
+				
 				/*if(helperfortest.getyClassType().name().equals(YTYPE.TEST_HELPER.toString()))
 				{
 					helperout.append(helperfortest.getFullyQualifiedName());
-					helperout.append(fieldseperator);
+					helperout.append(YConstants.COMMA);
 					System.out.println("helperout inside"+helperout);
 				}*/
 				j++;
 			}
 		}
-		System.out.println("helperout"+helperout);
-		out.append(colseperator);
+		
+		out.append(YConstants.COLON);
 		out.append(helperout);
 		
 		lstYModelString.add(out);
 		}
-		//System.out.println("lstYModelString"+lstYModelString);
+		
 		return lstYModelString;
 	}
 	
 	public static boolean findwhetherToPopulateModel(ISelection selection) {
 		boolean isValid = false;
 		try {
-			System.out.println("selection1 "
-					+ ((IStructuredSelection) selection).getFirstElement()
-							.getClass().getName());
-			System.out.println("selector invoked");
+		
 			String selectiontype = ((IStructuredSelection) selection)
 					.getFirstElement().getClass().getName();
 			List<String> lstAllowedNames = new ArrayList<String>();
 			lstAllowedNames
-					.add("org.eclipse.jdt.internal.core.PackageFragment");
+					.add(YConstants.JAVA_PACKAGE);
 			lstAllowedNames
-					.add("org.eclipse.jdt.internal.core.PackageFragmentRoot");
-			lstAllowedNames.add("org.eclipse.jdt.internal.core.JavaProject");
+					.add(YConstants.JAVA_PROJECT);
+			lstAllowedNames.add(YConstants.JAVA_PACKAGEROOT);
 			lstAllowedNames
-					.add("org.eclipse.jdt.internal.core.CompilationUnit");
+					.add(YConstants.JAVA_COMPILATIONUNIT);
 			if (selectiontype != null
 					&& lstAllowedNames.contains(selectiontype)) {
 				isValid=true;
