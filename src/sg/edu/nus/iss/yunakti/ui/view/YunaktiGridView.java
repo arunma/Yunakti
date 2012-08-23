@@ -26,7 +26,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
-import sg.edu.nus.iss.yunakti.engine.util.YModelListParser;
+
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
@@ -34,6 +34,7 @@ import sg.edu.nus.iss.yunakti.model.providers.GridViewContentProvider1;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
 import sg.edu.nus.iss.yunakti.ui.dialog.TestCaseDialog;
+import sg.edu.nus.iss.yunakti.ui.util.YModelListParser;
 
 public class YunaktiGridView extends PageBookView implements  ISelectionListener{
 	
