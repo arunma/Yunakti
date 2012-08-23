@@ -1,8 +1,7 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.logging.Logger;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -46,6 +45,7 @@ import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
  */
 public class TestCaseDialog extends TitleAreaDialog {
 
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private TableViewer tableViewer;
 	private Text searchText;
 	private TestCaseFilter filter;
@@ -59,13 +59,11 @@ public class TestCaseDialog extends TitleAreaDialog {
 	public TestCaseDialog(Shell parentShell) {
 		super(parentShell);
 		dialog = this;
-		// TODO : Replace with the original data.
 	}
 
 	public TestCaseDialog(Shell parentShell, YModel model, List<YClass> allClasses , YunaktiGridView gridView) {
 		super(parentShell);
 		dialog = this;
-		// this.collection = new YTestCaseCollection();
 		this.model = model;
 		this.allClasses = allClasses;
 		this.gridView = gridView;
@@ -90,7 +88,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 
 			@Override
 			public void focusGained(FocusEvent e) {
-				System.out.println("R2 focus gained");
+				logger.fine("R2 focus gained");
 				dialog.refresh();
 			}
 		});
@@ -160,7 +158,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 	public void setTableData(YModel model) {
 		this.model = model;
 		this.testClassForCUT = model.getTestCases();
-		System.out.println(model.getTestCases());
+        logger.fine(model.getTestCases().toString());
 		if (model != null) {
 			tableViewer.setInput(model.getTestCases());
 			this.refresh();
@@ -191,24 +189,14 @@ public class TestCaseDialog extends TitleAreaDialog {
 			}
 		});
 
-		// Create Refresh button
-//		Button refreshButton = createButton(parent, SWT.PUSH, "Refresh", false);
-//		// Add a SelectionListener
-//		refreshButton.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent e) {
-//				tableViewer.refresh();
-//			}
-//		});
-
 		// Create Delete button
 		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
 		// Add a SelectionListener
 		deleteButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 
-				System.out.println("remove selection listener");
+			   logger.fine("Adding Selection Listener for Delete button");
 				
-//				Iterator<YClass> iter = testClassForCUT.iterator();
 				YClass class1 = null;
 				for(YClass yClass : model.getTestCases()) {
 					if (tableViewer.getSelection().toString()
@@ -222,11 +210,11 @@ public class TestCaseDialog extends TitleAreaDialog {
 					}
 				}
 				if(class1 != null){
-					System.out.println(" subu " + model.getTestCases());
+					logger.fine( model.getTestCases().toString());
 					model.getTestCases().remove(class1);
 					tableViewer.refresh();
 					gridView.updateGridView(model);
-					System.out.println(" subu "  +model.getTestCases());
+					logger.fine(model.getTestCases().toString());
 					EngineCore engineCore = new EngineCore();
 					engineCore.writeAnnotation(model);
 					
@@ -254,7 +242,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 					EngineCore engineCore = new EngineCore();
 					List<YClass> allClasses =  engineCore.getAllClassesInWorkspace();
 			
-					System.out.println("subu " + model);
+					logger.fine("Model ::" + model.toString());
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
 							getShell(), allClasses, model, gridView);
 					dialog.setInitialPattern("?");

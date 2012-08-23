@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,6 +31,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	Shell parentShell;
 	private YModel model;
 	private YunaktiGridView gridView;
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model, YunaktiGridView view) {
 		super(shell);
@@ -148,7 +150,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 				EngineCore engineCore = new EngineCore();
 				engineCore.writeAnnotation(model);
 				}catch(Exception ex){
-					System.out.println("Error in writing back to model");
+					logger.fine("Error in writing back to model");
 					ex.printStackTrace();
 				}
 				super.okPressed();
