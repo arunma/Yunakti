@@ -33,7 +33,6 @@ import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.ui.dialog.filter.TestCaseFilter;
 import sg.edu.nus.iss.yunakti.ui.dialog.helper.TestCaseLabelProvider;
-import sg.edu.nus.iss.yunakti.ui.dialog.helper.YTestCaseCollection;
 import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
 
 /**
@@ -49,7 +48,6 @@ public class TestCaseDialog extends TitleAreaDialog {
 	private TableViewer tableViewer;
 	private Text searchText;
 	private TestCaseFilter filter;
-	private YTestCaseCollection collection;
 	private YModel model;
 	private TestCaseDialog dialog;
 	private List<YClass> testClassForCUT;
