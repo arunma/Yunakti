@@ -4,6 +4,7 @@ import static sg.edu.nus.iss.yunakti.engine.util.YConstants.TEST_CASE_ANNOTATION
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.filebuffers.FileBuffers;
@@ -47,8 +48,9 @@ import sg.edu.nus.iss.yunakti.model.YModel;
 
 public class YPersister {
 	
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLocationException, CoreException{
+	public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLocationException, CoreException{
 		
 		if (yModel==null){
 			return;
@@ -59,7 +61,7 @@ public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLoc
 			for (YClass eachTestCase : yModel.getTestCases()) {
 					
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				System.out.println(eachTestCase.getPath());
+				logger.fine(eachTestCase.getPath());
 				IPath location = Path.fromOSString(eachTestCase.getPath()); 
 				IFile file = workspace.getRoot().getFileForLocation(location); 
 				
@@ -88,7 +90,7 @@ public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLoc
 				TextEdit edits = null;
 				try {
 					updatedUnit = ((ICompilationUnit)compilationUnit.getJavaElement()).getSource();
-					System.out.println("Updated unit String Before =====> \n" + updatedUnit);
+					logger.fine("Updated unit String Before =====> \n" + updatedUnit);
 				} catch (JavaModelException e1) {
 					e1.printStackTrace();
 					throw e1;
@@ -100,12 +102,12 @@ public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLoc
 				iCompilationUnit.getBuffer().setContents(newSource);
 				
 				edits = rewriter.rewriteAST(doc, null);
-				System.out.println(edits);
+				logger.fine(edits.toString());
 				edits.apply(doc);
 				writeToFile(doc,file);
 
 			    
-				System.out.println("Updated unit String After  \n" + doc.get());
+				logger.fine("Updated unit String After  \n" + doc.get());
 			}
 		}
 				
@@ -192,7 +194,7 @@ public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLoc
 		@Override
 		public boolean visit(NormalAnnotation node) {
 			
-			System.out.println("Normal annotation. Yyyyyyyyy");
+			logger.fine("Normal annotation.");
 			removeTestCaseAnnotation(node);
 			
 			return super.visit(node);
@@ -201,7 +203,7 @@ public void writeAnnotation(YModel yModel) throws MalformedTreeException, BadLoc
 		@Override
 		public boolean visit(org.eclipse.jdt.core.dom.SingleMemberAnnotation node) {
 			
-			System.out.println("Single member annotation.yyyyyyyyy");
+			logger.fine("Single member annotation.");
 			removeTestCaseAnnotation(node);
 			
 			return super.visit(node);

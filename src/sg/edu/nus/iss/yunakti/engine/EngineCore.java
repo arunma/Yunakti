@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -25,10 +26,8 @@ import sg.edu.nus.iss.yunakti.model.YModel;
 
 public class EngineCore {
 
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	public EngineCore() {
-		
-	}
 	
 	public List<YModel> populateModel(IStructuredSelection selection) {
 		
@@ -39,7 +38,7 @@ public class EngineCore {
 			List<IJavaElement> allSearchElements = search.gatherAllSearchElementsFromSelection(selection);
 			search.search(allSearchElements);
 			searchResults = search.getResults();
-			//System.out.println("Search results:"+searchResults);
+			//logger.fine("Search results:"+searchResults);
 		} catch (Exception e) {
 			ConsoleStreamUtil.print(e);
 			e.printStackTrace();
@@ -60,7 +59,7 @@ public class EngineCore {
 
 	public Set<YClass> getUniqueTestCases(List<YModel> models) {
 		
-		System.out.println("Calling getUniqueTestCases");
+		logger.fine("Calling getUniqueTestCases");
 		Set<YClass> uniqueTestCases=new HashSet<YClass>();
 		if (models!=null && models.size()>0){
 			List<YClass> allTestCasesInModel = null;
@@ -70,13 +69,13 @@ public class EngineCore {
 			}
 			
 		}
-		System.out.println("Unique testcase size : "+uniqueTestCases.size());
+		logger.fine("Unique testcase size : "+uniqueTestCases.size());
 		return uniqueTestCases;
 	}
 	
 	public Set<YClass> getUniqueHelpers(List<YModel> models) {
 		
-		System.out.println("Calling getUniqueHelpers");
+		logger.fine("Calling getUniqueHelpers");
 		Set<YClass> uniqueHelpers=new HashSet<YClass>();
 		if (models!=null && models.size()>0){
 			List<YClass> allTestCasesInModel = null;
@@ -94,14 +93,14 @@ public class EngineCore {
 			}
 			
 		}
-		System.out.println("Unique helpers size : "+uniqueHelpers.size());
+		logger.fine("Unique helpers size : "+uniqueHelpers.size());
 		return uniqueHelpers;
 	}
 	
 	
 	public Map<String,List<YModel>> getModelsByPackageName(List<YModel> models) {
 		
-		System.out.println("Calling getModelsByPackageName");
+		logger.fine("Calling getModelsByPackageName");
 		
 		Map<String,List<YModel>> modelsByPackageName=new HashMap <String,List<YModel>>();
 		
@@ -117,7 +116,7 @@ public class EngineCore {
 			}
 			
 		}
-		System.out.println("Unique testcase size : "+modelsByPackageName.size());
+		logger.fine("Unique testcase size : "+modelsByPackageName.size());
 		return modelsByPackageName;
 	}
 
@@ -168,7 +167,7 @@ public class EngineCore {
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		System.out.println("All classes in workspace : "+allClassesInWorkspace);
+		logger.fine("All classes in workspace : "+allClassesInWorkspace);
 		return allClassesInWorkspace;
 		
 	}

@@ -2,6 +2,7 @@ package sg.edu.nus.iss.yunakti.engine.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -22,6 +23,9 @@ import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
 
 public class WorkspaceUtils {
+	
+	
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	private WorkspaceUtils(){}
 	
@@ -117,7 +121,7 @@ public class WorkspaceUtils {
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		
-		System.out.println("Type declaration node : "+node.resolveBinding().getQualifiedName());
+		logger.fine("Type declaration node : "+node.resolveBinding().getQualifiedName());
 		yClass=new YClass(node.resolveBinding().getQualifiedName());
 		yClass.setPath(compilationUnit.getResource().getLocation().toOSString());
 		yClass.setyClassType(YTYPE.TEST_HELPER);
@@ -133,7 +137,7 @@ public class WorkspaceUtils {
 	@Override
 	public boolean visit(SimpleName simpleName){
 		
-		System.out.println("Simple name : "+simpleName);
+		logger.fine("Simple name : "+simpleName);
 		return super.visit(simpleName); 
 	}
 }

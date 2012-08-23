@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.yunakti.command;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -16,6 +17,7 @@ import sg.edu.nus.iss.yunakti.view.YunaktiTextView;
 
 public class YunaktiCommand extends AbstractHandler {
 
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	EngineCore engine = new EngineCore();
 
 	public YunaktiCommand() {
@@ -25,7 +27,7 @@ public class YunaktiCommand extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		System.out.println("Execution event fired :::::" + event);
+		logger.fine("Execution event fired :::::" + event);
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -29,6 +30,8 @@ import sg.edu.nus.iss.yunakti.model.YModel;
 
 public class YSearch {
 	
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
 	private List<YModel> models=new ArrayList<YModel>();
 	
 	public List<IJavaElement> gatherAllSearchElementsFromSelection(IStructuredSelection selection) {
@@ -51,15 +54,15 @@ public class YSearch {
 		List<String> allClassNames = getAllClassNamesInWorkspace();
 		
 		ResultSetMapperBase resultMapper=new ResultSetMapperImpl(allClassNames);
-		System.out.println("About to search.....");
+		logger.fine("About to search.....");
 		
 		SearchPattern pattern = SearchPattern.createPattern(YConstants.TEST_CASE_ANNOTATION, IJavaSearchConstants.ANNOTATION_TYPE,IJavaSearchConstants.ANNOTATION_TYPE_REFERENCE, SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
 		//SearchPattern pattern=SearchPattern.createPattern(YConstants.TEST_CASE_ANNOTATION, IJavaSearchConstants.ANNOTATION_TYPE, IJavaSearchConstants.ALL_OCCURRENCES, SearchPattern.R_FULL_MATCH);
-		System.out.println("Pattern... "+pattern);
+		logger.fine("Pattern... "+pattern);
 		try {
 			new SearchEngine().search(pattern, new SearchParticipant[]{SearchEngine.getDefaultSearchParticipant()},
 					SearchEngine.createJavaSearchScope(javaElements.toArray(new IJavaElement[]{})), resultMapper, null);
-			System.out.println("Search done....");
+			logger.fine("Search done....");
 			
 			
 		} catch (CoreException e) {

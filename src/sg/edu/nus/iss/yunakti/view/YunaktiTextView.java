@@ -2,6 +2,7 @@ package sg.edu.nus.iss.yunakti.view;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -53,6 +54,8 @@ import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
 
 public class YunaktiTextView extends ViewPart implements ISelectionListener {
+	
+	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	// private Label label;
 	public static final String ID = "Yunakti.view1";
 	public static final String NAME = "YunaktiTextview";
@@ -226,8 +229,8 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	}
 	public void setListModel(List<YModel> yModels)
 	{
-		System.out.println("ymodels"+yModels);
-		System.out.println("lstModel"+lstModel);
+		logger.fine("ymodels"+yModels);
+		logger.fine("lstModel"+lstModel);
 		if (yModels != null && !yModels.isEmpty()) {
 			List<StringBuilder> sb = YModelListParser.parseListYModelToString(yModels);
 			String[] str = new String[sb.size()];
@@ -256,12 +259,12 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	 **/
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		
-		System.out.println("selector invoked" + selection);
+		logger.fine("selector invoked" + selection);
 		if(YModelListParser.findwhetherToPopulateModel(selection))
 		{
 		List<YModel> yModels = engineCore
 				.populateModel((IStructuredSelection) selection);
-		System.out.println("yModels" + yModels);
+		logger.fine("yModels" + yModels);
 		setListModel(yModels);
 		}
 
@@ -276,7 +279,7 @@ class ItemLabelProvider implements ILabelProvider {
 	}
 
 	public String getText(Object arg0) {
-		// System.out.println("gettext"+((YClass)
+		// logger.fine("gettext"+((YClass)
 		// arg0).getFullyQualifiedName());
 		// return ((YClass) arg0).getFullyQualifiedName();
 		return arg0.toString();

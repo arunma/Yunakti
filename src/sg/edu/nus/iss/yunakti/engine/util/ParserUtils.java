@@ -58,7 +58,6 @@ public class ParserUtils {
 
 	public static String getClassName(String className) {
 
-		System.out.println("Class Name : "+className);
 		if (StringUtils.isNotBlank(className)){
 			String paramType = Signature.getSignatureSimpleName(className);
 			int indexOfLt = paramType.indexOf("<");
