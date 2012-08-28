@@ -79,12 +79,13 @@ public class YPersister {
 				TypeDeclaration typeDeclaration = (TypeDeclaration)compilationUnit.types().get(0);
 				
 				ASTRewrite rewriter=ASTRewrite.create(compilationUnitAst);
-				
-				
 				ListRewrite listRewriter = rewriter.getListRewrite(typeDeclaration, typeDeclaration.getModifiersProperty());
 				removeTestCaseAnnotation(compilationUnit, listRewriter);
+
 				
-				listRewriter.insertAt(testCaseAnnotation, 0, null);
+				if (!eachTestCase.isDeleteFlag()){
+					listRewriter.insertAt(testCaseAnnotation, 0, null);
+				}
 				
 				String updatedUnit = "";
 				TextEdit edits = null;

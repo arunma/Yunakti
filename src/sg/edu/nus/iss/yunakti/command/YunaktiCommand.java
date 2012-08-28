@@ -28,8 +28,7 @@ public class YunaktiCommand extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		logger.fine("Execution event fired :::::" + event);
-		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
-				.getActiveMenuSelection(event);
+		IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getActiveMenuSelection(event);
 
 		try {
 			if (YModelListParser.findwhetherToPopulateModel(selection)) {

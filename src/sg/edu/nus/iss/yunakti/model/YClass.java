@@ -22,6 +22,8 @@ public class YClass extends YJavaElement{
 	private Set<YClass> members=new HashSet<YClass>(); //common name for helpers/instance primitives in testcases and instance variables in normal classes
 	private List<YAnnotation> annotations=new ArrayList<YAnnotation>();
 	
+	private boolean deleteFlag;
+	
 	public YClass() {
 	}
 	
@@ -87,5 +89,14 @@ public class YClass extends YJavaElement{
 		
 		return false;
 	}
+
+	public boolean isDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(boolean deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+
 	
 }

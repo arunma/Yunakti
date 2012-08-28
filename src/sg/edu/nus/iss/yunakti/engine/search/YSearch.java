@@ -91,6 +91,15 @@ public class YSearch {
 	}
 
 
+	/**
+	 * The input list of models have one model per testcase and the class under tests are duplicated. 
+	 * 
+	 * This method just takes the existing list, combines all the testcases under each class under test 
+	 * and returns the models
+	 * 
+	 * @param models
+	 * @return
+	 */
 	private List<YModel> groupModels(List<YModel> models) {
 
 		Map<String,YModel> groupedModels=new HashMap<String,YModel>();
