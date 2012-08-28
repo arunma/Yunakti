@@ -33,6 +33,11 @@ public class YModel implements Serializable{
 		this.testCases.addAll(testCases);
 	}
 	
+	public void removeTestCase(YClass testCase){
+		this.testCases.remove(testCase);
+		testCase.setDeleteFlag(true);
+		this.testCases.add(testCase);
+	}
 	
 	@Override
 	public String toString() {

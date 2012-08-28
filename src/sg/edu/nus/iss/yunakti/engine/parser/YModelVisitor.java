@@ -4,30 +4,22 @@ import static sg.edu.nus.iss.yunakti.engine.util.YConstants.ANNOTATION_PROPERTY_
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.TEST_CASE_ANNOTATION;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimpleType;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
-import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
@@ -58,6 +50,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	@Override
 	public boolean visit(MethodDeclaration node) {
 		methods.add(node);
+		
 		return super.visit(node);
 	}
 	
@@ -118,11 +111,11 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		
 	}
 	
-
+	
 	@Override
 	public boolean visit(SimpleName simpleName){
 		
-		logger.fine("Simple name : "+simpleName);
+		streamUtil.print("Simple name : "+simpleName);
 		if(simpleName.resolveTypeBinding() != null && simpleName.resolveTypeBinding().isClass()){
 			addToModel(simpleName.resolveTypeBinding().getQualifiedName());	
 		}
@@ -130,6 +123,14 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		return super.visit(simpleName); 
 	}
 
+	@Override
+	public boolean visit(MethodInvocation node) {
+		
+		streamUtil.print("Method invocation : "+node);
+		
+		return super.visit(node);
+	}
+	
 	private void resolveClassUnderTest(NormalAnnotation node) {
 		if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION)){
 			List<MemberValuePair> members = node.values();
