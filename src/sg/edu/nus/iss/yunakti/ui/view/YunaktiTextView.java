@@ -23,35 +23,25 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.printing.PrintDialog;
 import org.eclipse.swt.printing.Printer;
 import org.eclipse.swt.printing.PrinterData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledPageBook;
 import org.eclipse.ui.part.ViewPart;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
 
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
-import sg.edu.nus.iss.yunakti.model.YTYPE;
 import sg.edu.nus.iss.yunakti.ui.util.YModelListParser;
 
 public class YunaktiTextView extends ViewPart implements ISelectionListener {
@@ -65,6 +55,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	List<YModel> lstModelClass;
 	private List<YClass> lstYClass;
 	private org.eclipse.swt.widgets.List lstModel;
+	StringBuilder printString;
 	public YunaktiTextView() {
 		super();
 		lstYClass = new ArrayList<YClass>();
@@ -82,7 +73,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		super.init(site);
 	}
 
-	private void setUpModelData() {
+	/*private void setUpModelData() {
 		lstModelClass = new ArrayList<YModel>();
 		List<YClass> lstTestclasses1 = new ArrayList<YClass>();
 		List<YClass> lstTestclasses2 = new ArrayList<YClass>();
@@ -147,7 +138,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		lstModelClass.add(model2);
 
 	}
-
+*/
 	
 	
 
@@ -201,9 +192,11 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 					GC gc = new GC(p);
 					Font font = gc.getFont();
 					// String printText = categories.getItems().toString();
-					String printText = lstModel.getItems().toString();
-					Point extent = gc.stringExtent(printText);
-					gc.drawString(printText, leftMargin,
+					//String printText = lstModel.getItems().toString();
+				//System.out.println("leftMargin"+leftMargin);
+				
+					Point extent = gc.stringExtent(printString.toString());
+					gc.drawString(printString.toString(), leftMargin,
 							topMargin + font.getFontData()[0].getHeight());
 					p.endPage();
 					gc.dispose();
@@ -232,14 +225,15 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	{
 		logger.fine("ymodels"+yModels);
 		logger.fine("lstModel"+lstModel);
+		printString=new StringBuilder();
 		if (yModels != null && !yModels.isEmpty()) {
-			List<StringBuilder> sb = YModelListParser.parseListYModelToString(yModels);
+			List<StringBuilder> sb= YModelListParser.parseListYModelToString(yModels);
 			String[] str = new String[sb.size()];
 			int i = 0;
 			for (StringBuilder s : sb) {
 				str[i] = s.toString();
 				i++;
-
+				printString.append(s);
 			}
 			lstModel.setItems(str);
 			
