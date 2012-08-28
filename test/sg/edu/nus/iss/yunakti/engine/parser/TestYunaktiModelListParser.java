@@ -3,13 +3,14 @@ package sg.edu.nus.iss.yunakti.engine.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
-import sg.edu.nus.iss.yunakti.engine.util.YModelListParser;
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
-import junit.framework.TestCase;
+import sg.edu.nus.iss.yunakti.ui.util.YModelListParser;
 
 public class TestYunaktiModelListParser extends TestCase{
 	

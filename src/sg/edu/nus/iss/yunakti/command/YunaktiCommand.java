@@ -10,10 +10,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
-import sg.edu.nus.iss.yunakti.engine.util.YModelListParser;
+
 import sg.edu.nus.iss.yunakti.model.YModel;
+import sg.edu.nus.iss.yunakti.ui.util.YModelListParser;
 import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
-import sg.edu.nus.iss.yunakti.view.YunaktiTextView;
+import sg.edu.nus.iss.yunakti.ui.view.YunaktiTextView;
+
 
 public class YunaktiCommand extends AbstractHandler {
 

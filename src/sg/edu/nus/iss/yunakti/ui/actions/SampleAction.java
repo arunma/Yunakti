@@ -65,7 +65,7 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		System.out.println("kk");
+	
 	}
 
 	/**
