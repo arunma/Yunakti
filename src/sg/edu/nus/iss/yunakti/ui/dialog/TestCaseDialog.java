@@ -87,7 +87,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 			@Override
 			public void focusGained(FocusEvent e) {
 				logger.fine("R2 focus gained");
-				dialog.refresh();
+				
 			}
 		});
 
@@ -191,6 +191,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
 		// Add a SelectionListener
 		deleteButton.addSelectionListener(new SelectionAdapter() {
+				
 			public void widgetSelected(SelectionEvent e) {
 
 			   logger.fine("Adding Selection Listener for Delete button");
@@ -200,21 +201,16 @@ public class TestCaseDialog extends TitleAreaDialog {
 					if (tableViewer.getSelection().toString()
 							.contains(yClass.getFullyQualifiedName())) {
 						try {
-							class1 = yClass;
+							model.removeTestCase(yClass);
+							EngineCore engineCore = new EngineCore();
+							engineCore.writeAnnotation(model);
+							TestCaseDialog.this.setTableData(model);
+							TestCaseDialog.this.tableViewer.refresh();		// Refreshing will happen only after clicking					
 							break;
 						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
 					}
-				}
-				if(class1 != null){
-					logger.fine( model.getTestCases().toString());
-					model.getTestCases().remove(class1);
-					tableViewer.refresh();
-					gridView.updateGridView(model);
-					logger.fine(model.getTestCases().toString());
-					EngineCore engineCore = new EngineCore();
-					engineCore.writeAnnotation(model);
 					
 				}
 			}
