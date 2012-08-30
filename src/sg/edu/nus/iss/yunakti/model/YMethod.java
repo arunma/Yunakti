@@ -3,6 +3,8 @@ package sg.edu.nus.iss.yunakti.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 public class YMethod {
 
 	private YClass parentClass =null;
@@ -20,6 +22,9 @@ public class YMethod {
 		this.methodName=methodName;
 	}
 	
+	public YMethod() {
+	}
+
 	public YClass getParentClass() {
 		return parentClass;
 	}
@@ -77,5 +82,9 @@ public class YMethod {
 		this.methodName = methodName;
 	}
 	
+	@Override
+	public String toString() {
+		return "Method name : " +getMethodName() + " : Method class : "+ getParentClass().getFullyQualifiedName();
+	}
 	
 }

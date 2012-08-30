@@ -120,7 +120,6 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	@Override
 	public boolean visit(SimpleName simpleName){
 		
-		ConsoleStreamUtil.println("Simple name : "+simpleName);
 		if(simpleName.resolveTypeBinding() != null && simpleName.resolveTypeBinding().isClass()){
 			addToModel(simpleName.resolveTypeBinding().getQualifiedName());	
 		}
@@ -141,11 +140,13 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 
 		String className=declaringClass.getQualifiedName();
 		String methodName=methodDeclaration.getName();
+		YMethod testMethod=new YMethod(new YClass(className),methodName);
+		
+		testCase.addMethod(testMethod);
 		
 		if (StringUtils.equalsIgnoreCase(className, model.getClassUnderTest().getFullyQualifiedName())){
-			YMethod testMethodToBeAnnotated=new YMethod();
-			testMethodToBeAnnotated.setParentClass(new YClass(className)); //not actually being used but now that we have the information, why dont we populate it
-			testMethodToBeAnnotated.set
+			ConsoleStreamUtil.println("Adding method to be annotated : "+testMethod);
+			testCase.addMethodToBeAnnotated(testMethod);
 		}
 		
 		ConsoleStreamUtil.println("Classname and method name : "+className +"::::"+methodName);

@@ -14,13 +14,14 @@ public class YClass extends YJavaElement{
 	private YTYPE yClassType; //test/helper/cut
 	@Override
 	public String toString() {
-		return ReflectionToStringBuilder.toString(this);
+		return "Class name : "+getFullyQualifiedName() + "  : Methods : "+ methods.toString() + ":  Methods to be annotated : "+methodsToBeAnnotated;
 	}
 
 	private List<YMODIFIER> accessModifiers;
 	private List<YMethod> methods=new ArrayList<YMethod>(); // in case of testcase, this is the individual testmethod - eg. testM1
 	private Set<YClass> members=new HashSet<YClass>(); //common name for helpers/instance primitives in testcases and instance variables in normal classes
 	private List<YAnnotation> annotations=new ArrayList<YAnnotation>();
+	private List<YMethod> methodsToBeAnnotated=new ArrayList<YMethod>();
 	
 	private boolean deleteFlag;
 	
@@ -97,6 +98,29 @@ public class YClass extends YJavaElement{
 	public void setDeleteFlag(boolean deleteFlag) {
 		this.deleteFlag = deleteFlag;
 	}
+
+	public void addMethod(YMethod testMethod) {
+		this.methods.add(testMethod);
+	}
+
+	public void addMethodToBeAnnotated(YMethod testMethod) {
+		this.methodsToBeAnnotated.add(testMethod);
+		
+	}
+
+	public List<YMethod> getMethodsToBeAnnotated() {
+		return methodsToBeAnnotated;
+	}
+
+	public void setMethodsToBeAnnotated(List<YMethod> methodsToBeAnnotated) {
+		this.methodsToBeAnnotated = methodsToBeAnnotated;
+	}
+
+	public void setMembers(Set<YClass> members) {
+		this.members = members;
+	}
+	
+	
 
 	
 }
