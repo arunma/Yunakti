@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +29,10 @@ public class EngineCore {
 
 	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	
+    static{
+    	logger.setLevel(Level.FINER);
+    }
+
 	public List<YModel> populateModel(IStructuredSelection selection) {
 		
 		
@@ -46,10 +50,10 @@ public class EngineCore {
 		
 		ConsoleStreamUtil.print("Printing....xxxxx"+(searchResults.get(0).toString()));
 		
-		
+		/*
 		for (YModel yModel : searchResults) {
 			writeAnnotation(yModel);
-		}
+		}*/
 		
 		return searchResults;
 		

@@ -18,7 +18,7 @@ public class YClass extends YJavaElement{
 	}
 
 	private List<YMODIFIER> accessModifiers;
-	private List<YMethod> methods=new ArrayList<YMethod>();
+	private List<YMethod> methods=new ArrayList<YMethod>(); // in case of testcase, this is the individual testmethod - eg. testM1
 	private Set<YClass> members=new HashSet<YClass>(); //common name for helpers/instance primitives in testcases and instance variables in normal classes
 	private List<YAnnotation> annotations=new ArrayList<YAnnotation>();
 	
