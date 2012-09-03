@@ -8,6 +8,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -44,7 +45,7 @@ import sg.edu.nus.iss.yunakti.ui.view.YunaktiGridView;
  */
 public class TestCaseDialog extends TitleAreaDialog {
 
-	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private TableViewer tableViewer;
 	private Text searchText;
 	private TestCaseFilter filter;
@@ -59,13 +60,14 @@ public class TestCaseDialog extends TitleAreaDialog {
 		dialog = this;
 	}
 
-	public TestCaseDialog(Shell parentShell, YModel model, List<YClass> allClasses , YunaktiGridView gridView) {
+	public TestCaseDialog(Shell parentShell, YModel model,
+			List<YClass> allClasses, YunaktiGridView gridView) {
 		super(parentShell);
 		dialog = this;
 		this.model = model;
 		this.allClasses = allClasses;
 		this.gridView = gridView;
-		
+
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 			@Override
 			public void focusGained(FocusEvent e) {
 				logger.fine("R2 focus gained");
-				
+
 			}
 		});
 
@@ -156,15 +158,17 @@ public class TestCaseDialog extends TitleAreaDialog {
 	public void setTableData(YModel model) {
 		this.model = model;
 		this.testClassForCUT = model.getTestCases();
-        logger.fine(model.getTestCases().toString());
+		logger.fine(model.getTestCases().toString());
 		if (model != null) {
-			
+
 			tableViewer.setInput(model.getTestCases());
 			this.refresh();
 		}
 	}
 
-	@Override
+	/**
+	 * Create button handlers for Cancel & Delete button
+	 */
 	protected void createButtonsForButtonBar(Composite parent) {
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
@@ -192,27 +196,45 @@ public class TestCaseDialog extends TitleAreaDialog {
 		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
 		// Add a SelectionListener
 		deleteButton.addSelectionListener(new SelectionAdapter() {
-				
+
 			public void widgetSelected(SelectionEvent e) {
 
-			   logger.fine("Adding Selection Listener for Delete button");
-				
-				YClass class1 = null;
-				for(YClass yClass : model.getTestCases()) {
-					if (tableViewer.getSelection().toString()
-							.contains(yClass.getFullyQualifiedName())) {
-						try {
-							model.removeTestCase(yClass);
-							EngineCore engineCore = new EngineCore();
-							engineCore.writeAnnotation(model);
-							TestCaseDialog.this.setTableData(model);
-							TestCaseDialog.this.tableViewer.refresh();		// Refreshing will happen only after clicking					
-							break;
-						} catch (Exception ex) {
-							ex.printStackTrace();
+				logger.fine("Adding Selection Listener for Delete button");
+
+				IStructuredSelection sel = (IStructuredSelection) tableViewer
+						.getSelection();
+				YClass selectedYClass = (YClass) sel.getFirstElement();
+
+				if (selectedYClass != null) {
+					for (YClass yClass : model.getTestCases()) {
+						if (selectedYClass.getFullyQualifiedName().equals(
+								yClass.getFullyQualifiedName())) {
+							try {
+								// Before writing annotation, set the delete
+								// flag to true and call the removeTestCase in
+								// Model
+								yClass.setDeleteFlag(true);
+								model.removeTestCase(yClass);
+								EngineCore engineCore = new EngineCore();
+								engineCore.writeAnnotation(model);
+
+								// After writing annotation, remove the
+								// testclass actually from the model. Set the
+								// delete flag to false.
+								yClass.setDeleteFlag(false);
+								model.removeTestCase(yClass);
+								// Refreshing will happen only after clicking
+								TestCaseDialog.this.setTableData(model);
+								TestCaseDialog.this.tableViewer.refresh();
+								TestCaseDialog.this.gridView.updateGridView(model);
+								break;
+
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
 						}
 					}
-					
+
 				}
 			}
 		});
@@ -220,6 +242,18 @@ public class TestCaseDialog extends TitleAreaDialog {
 		this.setTableData(model);
 	}
 
+	/**
+	 * Button Handler for Ok Button. Adding Click Event Handler for OK Button.
+	 * Calls the pop-up window with all the classes in the project Explorer.
+	 * 
+	 * @param Compsosite
+	 *            parent
+	 * @param int id
+	 * @param String
+	 *            label
+	 * @param boolean defaultButton
+	 * @return
+	 */
 	protected Button createOkButton(Composite parent, int id, String label,
 			boolean defaultButton) {
 		// increment the number of columns in the button bar
@@ -235,11 +269,13 @@ public class TestCaseDialog extends TitleAreaDialog {
 			public void widgetSelected(SelectionEvent e) {
 				if (allClasses != null) {
 					EngineCore engineCore = new EngineCore();
-					List<YClass> allClasses =  engineCore.getAllClassesInWorkspace();
-			
+					List<YClass> allClasses = engineCore
+							.getAllClassesInWorkspace();
+
 					logger.fine("Model ::" + model.toString());
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
-							getShell(), allClasses, model, gridView);
+							getShell(), allClasses, model, gridView,
+							TestCaseDialog.this);
 					dialog.setInitialPattern("?");
 					dialog.open();
 				} else {
