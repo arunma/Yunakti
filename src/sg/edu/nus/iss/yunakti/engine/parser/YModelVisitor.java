@@ -11,6 +11,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -21,6 +23,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YMethod;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YTYPE;
 
@@ -35,6 +38,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	private List<NormalAnnotation> annotations = new ArrayList<NormalAnnotation>();
 	private boolean testCaseConstructed=false;
 	private String currentClassName;
+	private YClass testCase;
 	
 	private ICompilationUnit testCaseCompilationUnit;
 
@@ -83,7 +87,8 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		if (allClassNames.contains(qualifiedName)){
 			member=new YClass(qualifiedName);
 			member.setyClassType(YTYPE.TEST_HELPER);
-			model.getTestCases().get(0).addMember(member);
+			//model.getTestCases().get(0).addMember(member);
+			testCase.addMember(member);
 		}
 	}
 
@@ -99,13 +104,13 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		
-		streamUtil.println("Field Class name : "+node.getName().toString());
-		YClass testCaseClass=new YClass(node.resolveBinding().getQualifiedName());
-		testCaseClass.setyClassType(YTYPE.TEST_CASE);
-		testCaseClass.setPath(testCaseCompilationUnit.getResource().getLocation().toOSString());
-		model.addTestCase(testCaseClass);
+		ConsoleStreamUtil.println("Field Class name : "+node.getName().toString());
+		testCase=new YClass(node.resolveBinding().getQualifiedName());
+		testCase.setyClassType(YTYPE.TEST_CASE);
+		testCase.setPath(testCaseCompilationUnit.getResource().getLocation().toOSString());
+		model.addTestCase(testCase);
 		testCaseConstructed=true;
-		currentClassName=testCaseClass.getFullyQualifiedName();
+		currentClassName=testCase.getFullyQualifiedName();
 		//model.addTestCase(new YClass(ParserUtils.getClassName(node.getName().toString())));
 		return super.visit(node);
 		
@@ -115,7 +120,6 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	@Override
 	public boolean visit(SimpleName simpleName){
 		
-		streamUtil.print("Simple name : "+simpleName);
 		if(simpleName.resolveTypeBinding() != null && simpleName.resolveTypeBinding().isClass()){
 			addToModel(simpleName.resolveTypeBinding().getQualifiedName());	
 		}
@@ -126,10 +130,30 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	@Override
 	public boolean visit(MethodInvocation node) {
 		
-		streamUtil.print("Method invocation : "+node);
+		ConsoleStreamUtil.println("Method invocation : "+node);
+		logger.fine("Method invocation :"+node);
 		
+		IMethodBinding methodBinding = node.resolveMethodBinding();
+		
+		ITypeBinding declaringClass = methodBinding.getDeclaringClass();
+		IMethodBinding methodDeclaration = methodBinding.getMethodDeclaration();
+
+		String className=declaringClass.getQualifiedName();
+		String methodName=methodDeclaration.getName();
+		YMethod testMethod=new YMethod(new YClass(className),methodName);
+		
+		testCase.addMethod(testMethod);
+		
+		if (StringUtils.equalsIgnoreCase(className, model.getClassUnderTest().getFullyQualifiedName())){
+			ConsoleStreamUtil.println("Adding method to be annotated : "+testMethod);
+			testCase.addMethodToBeAnnotated(testMethod);
+		}
+		
+		ConsoleStreamUtil.println("Classname and method name : "+className +"::::"+methodName);
 		return super.visit(node);
 	}
+	
+	//visit
 	
 	private void resolveClassUnderTest(NormalAnnotation node) {
 		if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION)){
