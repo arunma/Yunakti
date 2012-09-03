@@ -158,6 +158,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 		this.testClassForCUT = model.getTestCases();
         logger.fine(model.getTestCases().toString());
 		if (model != null) {
+			
 			tableViewer.setInput(model.getTestCases());
 			this.refresh();
 		}
