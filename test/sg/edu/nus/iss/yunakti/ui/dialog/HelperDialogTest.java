@@ -1,7 +1,5 @@
 package sg.edu.nus.iss.yunakti.ui.dialog;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +10,12 @@ import org.eclipse.ui.PlatformUI;
 import org.junit.Test;
 
 import sg.edu.nus.iss.yunakti.model.YClass;
-import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
 
 public class HelperDialogTest extends TestCase {
 	MyHelperDialog helperDialog;
 	List<YClass> lstHelperClass;
 
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		super.setUp();
 		lstHelperClass = new ArrayList<YClass>();
 		YClass cls1 = new YClass();
