@@ -3,8 +3,6 @@ package sg.edu.nus.iss.yunakti.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 public class YMethod {
 
 	private YClass parentClass =null;
@@ -16,6 +14,8 @@ public class YMethod {
 	private List<YAnnotation> annotations=new ArrayList<YAnnotation>();
 	private List<YMethod> callees=new ArrayList<YMethod>();
 	private String methodName;
+	
+	private boolean deleteFlag;
 	
 	public YMethod(YClass parentClass, String methodName) {
 		this.parentClass=parentClass;
@@ -85,6 +85,14 @@ public class YMethod {
 	@Override
 	public String toString() {
 		return "Method name : " +getMethodName() + " : Method class : "+ getParentClass().getFullyQualifiedName();
+	}
+
+	public boolean isDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(boolean deleteFlag) {
+		this.deleteFlag = deleteFlag;
 	}
 	
 }

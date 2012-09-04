@@ -153,6 +153,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		return super.visit(node);
 	}
 	
+
 	//visit
 	
 	private void resolveClassUnderTest(NormalAnnotation node) {

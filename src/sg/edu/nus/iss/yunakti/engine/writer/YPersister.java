@@ -1,8 +1,10 @@
 package sg.edu.nus.iss.yunakti.engine.writer;
 
+import static sg.edu.nus.iss.yunakti.engine.util.YConstants.METHOD_ANNOTATION;
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.TEST_CASE_ANNOTATION;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -22,14 +24,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MemberValuePair;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -41,9 +45,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
+import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 import sg.edu.nus.iss.yunakti.engine.util.ParserUtils;
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YMethod;
 import sg.edu.nus.iss.yunakti.model.YModel;
 
 public class YPersister {
@@ -87,6 +93,9 @@ public class YPersister {
 					listRewriter.insertAt(testCaseAnnotation, 0, null);
 				}
 				
+				Map<String, YMethod> methodsToBeAnnotatedToMap = convertMethodsToBeAnnotatedToMap(eachTestCase.getMethodsToBeAnnotated());
+				addMethodLevelAnnotations(methodsToBeAnnotatedToMap, compilationUnit, listRewriter);
+				
 				String updatedUnit = "";
 				TextEdit edits = null;
 				try {
@@ -115,7 +124,20 @@ public class YPersister {
 			
 	}
 	
-	
+
+	private Map<String, YMethod> convertMethodsToBeAnnotatedToMap(List<YMethod> methodsToBeAnnotated) {
+		Map<String,YMethod> methodAnnotationMap=null;
+		
+		if (methodsToBeAnnotated!=null && methodsToBeAnnotated.size()>0){
+			methodAnnotationMap=new HashMap<String,YMethod>();
+			for (YMethod yMethod : methodsToBeAnnotated) {
+				methodAnnotationMap.put(yMethod.getMethodName(), yMethod);
+			}
+		}
+		return methodAnnotationMap;
+	}
+
+
 	private Map<String, String> getHelperPropertyAsMap(YClass eachTestCase) {
 	
 		Map<String,String> helperProperty=null;
@@ -211,17 +233,87 @@ public class YPersister {
 			
 		}
 		
-		
-		
 		private void removeTestCaseAnnotation(Annotation node) {
 			
-			if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION)){
+			if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION) || StringUtils.equals(node.getTypeName().getFullyQualifiedName(),METHOD_ANNOTATION) ){
 				
 				rewriter.remove(node, null);
 			}
 		}
 	}
 	
+	
+	
+
+	private void addMethodLevelAnnotations(Map<String, YMethod> methodsToBeAnnotatedToMap, CompilationUnit compilationUnit, ListRewrite listRewriter) {
+		compilationUnit.accept(new MethodAnnotationVisitor(methodsToBeAnnotatedToMap, compilationUnit, listRewriter));
+		
+	}
+	
+
+	
+	private static class MethodAnnotationVisitor extends ASTVisitor {
+		
+		private ListRewrite rewriter;
+		private CompilationUnit compilationUnit;
+		private Map<String, YMethod> methodsToBeAnnotatedToMap;
+
+		public MethodAnnotationVisitor(Map<String, YMethod> methodsToBeAnnotatedToMap, CompilationUnit compilationUnit, ListRewrite rewriter) {
+			this.methodsToBeAnnotatedToMap=methodsToBeAnnotatedToMap;
+			this.compilationUnit=compilationUnit;
+			this.rewriter=rewriter;
+		}
+	    
+		@Override
+		public boolean visit(MethodDeclaration node) {
+			logger.fine("Method Declaration ");
+			addAnnotation(node);
+			return super.visit(node);
+		}
+		
+		private void addAnnotation(MethodDeclaration node) {
+			
+			if (methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName())){
+				ConsoleStreamUtil.println("Bingoooooo. Found method to annotate : "+node.resolveBinding().getName());
+			}
+					
+					
+		/*			
+			Map<String,String> annotationProperties=getCalleesAsMap(yModel);
+			annotationProperties.putAll(getClassUnderTestPropertyAsMap(yModel));
+			
+			NormalAnnotation testCaseAnnotation = createAnnotation(compilationUnit, YConstants.METHOD_ANNOTATION, annotationProperties);
+			
+			if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION) || StringUtils.equals(node.getTypeName().getFullyQualifiedName(),METHOD_ANNOTATION) ){
+				
+				rewriter.remove(node, null);
+			}*/
+		}
+	}
+	
+	
+
+	/*private Map<String, String> getCalleesAsMap( eachTestCase) {
+	
+		Map<String,String> helperProperty=null;
+		
+		StringBuilder builder=null;
+		if (eachTestCase.getMembers()!=null){
+			helperProperty=new HashMap<String,String>();
+			builder=new StringBuilder();
+			
+			for (YClass eachHelper : eachTestCase.getMembers()) {
+				builder.append(eachHelper.getFullyQualifiedName()).append(YConstants.COMMA);
+				
+			}
+			
+			helperProperty.put(YConstants.ANNOTATION_PROPERTY_HELPER_CLASSES, StringUtils.substringBeforeLast(builder.toString(), YConstants.COMMA));
+		}
+		
+		
+		return helperProperty;
+	
+	}*/
 	
 	private void writeToFile(IDocument document, IFile file) throws CoreException{
 		try {
