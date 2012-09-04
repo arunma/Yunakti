@@ -35,7 +35,6 @@ public class EngineCore {
 
 	public List<YModel> populateModel(IStructuredSelection selection) {
 		
-		
 		List<YModel> searchResults = null;
 		try {
 			YSearch search=new YSearch();
