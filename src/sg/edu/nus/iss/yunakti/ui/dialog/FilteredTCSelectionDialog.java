@@ -31,14 +31,16 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	Shell parentShell;
 	private YModel model;
 	private YunaktiGridView gridView;
+	private TestCaseDialog testCaseDialog;
 	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model, YunaktiGridView view) {
+	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model, YunaktiGridView view, TestCaseDialog testCaseDialog) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestClasses = allTestClasses;
 		this.model = model;
 		this.gridView = view;
+		this.testCaseDialog = testCaseDialog;
 		setTitle("Add new Test Class");
 	}
 
@@ -143,8 +145,10 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			}
 			// Dont add duplicate test class again.
 			if(found == false){
-				model.addTestCase(class1);
+				model.addTestCase(class1);				
 				gridView.updateGridView(model);
+			    this.testCaseDialog.setTableData(model);
+				parentShell.update();				
 				parentShell.forceFocus();
 				try{
 				EngineCore engineCore = new EngineCore();

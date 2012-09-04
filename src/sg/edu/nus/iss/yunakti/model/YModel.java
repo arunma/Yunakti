@@ -35,8 +35,11 @@ public class YModel implements Serializable{
 	
 	public void removeTestCase(YClass testCase){
 		this.testCases.remove(testCase);
-		testCase.setDeleteFlag(true);
-		this.testCases.add(testCase);
+		if(testCase.isDeleteFlag()) {
+			testCase.setDeleteFlag(true);
+			this.testCases.add(testCase);
+		}
+		
 	}
 	
 	@Override
