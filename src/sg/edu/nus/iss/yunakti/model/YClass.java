@@ -21,6 +21,7 @@ public class YClass extends YJavaElement{
 	private List<YMethod> methods=new ArrayList<YMethod>();
 	private Set<YClass> members=new HashSet<YClass>(); //common name for helpers/instance primitives in testcases and instance variables in normal classes
 	private List<YAnnotation> annotations=new ArrayList<YAnnotation>();
+	private List<YMethod> methodsToBeAnnotated=new ArrayList<YMethod>();
 	
 	private boolean deleteFlag;
 	
@@ -98,5 +99,25 @@ public class YClass extends YJavaElement{
 		this.deleteFlag = deleteFlag;
 	}
 
+	public void addMethod(YMethod testMethod) {
+		this.methods.add(testMethod);
+	}
+ 
+	public void addMethodToBeAnnotated(YMethod testMethod) {
+		this.methodsToBeAnnotated.add(testMethod);
+		
+	}
+ 
+	public List<YMethod> getMethodsToBeAnnotated() {
+		return methodsToBeAnnotated;
+	}
+ 
+	public void setMethodsToBeAnnotated(List<YMethod> methodsToBeAnnotated) {
+		this.methodsToBeAnnotated = methodsToBeAnnotated;
+	}
+ 
+	public void setMembers(Set<YClass> members) {
+		this.members = members;
+	}
 	
 }
