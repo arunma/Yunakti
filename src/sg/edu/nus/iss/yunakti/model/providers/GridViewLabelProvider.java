@@ -1,5 +1,8 @@
 package sg.edu.nus.iss.yunakti.model.providers;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -9,6 +12,7 @@ import org.eclipse.ui.PlatformUI;
 
 import sg.edu.nus.iss.yunakti.Activator;
 import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YMethod;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
 
@@ -40,12 +44,32 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
+		
+if(element instanceof YClass){
+			
+
+			YClass yClass = (YClass) element;
+			switch (columnIndex) {
+			case 0:
+				return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PUBLIC);
+			case 1:
+				
+				return Activator.getImageDescriptor("icons/search.gif").createImage();
+			case 2:
+				
+				return null;
+			}
+			
+			
+			
+		}
+else
+		
 		if(element instanceof YModel)
 		{
 		YModel yModel = (YModel) element;
 		switch (columnIndex) {
 		case 0:
-			
 			
 			return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_CLASS);
 					
@@ -69,8 +93,7 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 		else{
 			if(element instanceof YParentModel){
 				
-				YParentModel yParentModel = (YParentModel) element;
-				
+								
 				switch (columnIndex) {
 				case 0:
 					return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PACKAGE);
@@ -90,6 +113,25 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
+		if(element instanceof YClass){
+			
+
+			YClass yClass = (YClass) element;
+			switch (columnIndex) {
+			case 0:
+				return getCUTMethod(yClass);
+			case 1:
+				
+				return getTestClassMethods(yClass);
+			case 2:
+				
+				return "";
+			}
+			
+			
+			
+		}
+		else
 		if(element instanceof YModel)
 		{
 		YModel yModel = (YModel) element;
@@ -122,6 +164,7 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 				}
 				
 			}
+			
 		}
 		
 		return null;
@@ -174,6 +217,60 @@ for (YClass testCaseMember:testCase.getMembers()){
 		}
 		
 		return str;
+		
+	}
+	
+	private String getTestClassMethods(YClass yClass){
+		
+		String strMethod = null;
+		
+		
+
+		StringBuilder builder=new StringBuilder();
+		
+		/*for (YMethod yMethod: yClass.getMethods()){
+		
+		for (YClass testCaseMember:testCase.getMembers()){
+			builder.append(testCaseMember.getName()).append(", ");
+		}
+		}
+		strMethod = formatToStr(builder);
+				*/
+		
+		
+		
+			
+			for(YMethod yMethod : yClass.getMethods()){
+				
+				builder.append(yMethod.getMethodName()).append(", ");
+				
+				
+			
+		}
+		
+		strMethod = formatToStr(builder);
+		
+		return strMethod;
+		
+	}
+	
+	private String getCUTMethod(YClass yClass){
+		String cutMethod = null;
+		
+		Collection<YMethod> yMethods = (List<YMethod>) yClass.getMethods();
+		
+		if(yMethods != null && yMethods.size() != 0){
+			
+			YMethod yMethod = (YMethod)yMethods.toArray()[0];
+			
+			YMethod yMethod2 = yMethod.getCallees().get(0);
+			
+			cutMethod = yMethod2.getMethodName();
+			
+		}
+		
+		return cutMethod;
+		
 		
 	}
 

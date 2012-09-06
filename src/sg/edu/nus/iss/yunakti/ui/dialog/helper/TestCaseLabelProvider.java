@@ -18,26 +18,17 @@ public class TestCaseLabelProvider extends LabelProvider implements
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		YClass testCase = (YClass) element;
-		if (testCase != null) {
-			switch (columnIndex) {
-			case 0:
-				if (testCase.getFullyQualifiedName() != null) {
-					return testCase.getFullyQualifiedName();
-				}
-			case 1:
-				if (testCase.getyClassType() != null) {
-					return testCase.getyClassType().toString();
-				}
-			case 2:
-				if (testCase.getyClassType() != null) {
-					return testCase.getyClassType().toString();
-				}
-			default:
-				return "unknown " + columnIndex;
+		switch (columnIndex) {
+		case 0:
+			if (testCase.getFullyQualifiedName() != null) {
+				return testCase.getFullyQualifiedName();
 			}
-		} else {
-			return "";
+		case 1:
+			if (testCase.getyClassType() != null) {
+				return testCase.getyClassType().toString();
+			}
 		}
+		return "";
 
 	}
 

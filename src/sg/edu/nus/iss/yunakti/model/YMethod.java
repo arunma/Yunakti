@@ -17,8 +17,7 @@ public class YMethod {
 	
 	private boolean deleteFlag;
 	
-	public YMethod(YClass parentClass, String methodName) {
-		this.parentClass=parentClass;
+	public YMethod(String methodName) {
 		this.methodName=methodName;
 	}
 	
@@ -74,6 +73,9 @@ public class YMethod {
 		this.callees = callees;
 	}
 
+	public void addCallee(YMethod yMethod){
+		this.callees.add(yMethod);
+	}
 	public String getMethodName() {
 		return methodName;
 	}
