@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -39,6 +40,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	private boolean testCaseConstructed=false;
 	private String currentClassName;
 	private YClass testCase;
+	private YClass classUnderTest=null;
 	
 	private ICompilationUnit testCaseCompilationUnit;
 
@@ -61,19 +63,12 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	@Override
 	public boolean visit(FieldDeclaration node) {
 		
-		
-		//node.getType().resolveBinding().getQualifiedName();
-		
 		if (node.getType().isSimpleType()){
-			
 			SimpleType simpleFieldType=(SimpleType) node.getType();
-			
 			addToModel(simpleFieldType.resolveBinding().getQualifiedName());
-			
 		}
 		
 		return super.visit(node); 
-		
 	}
 
 	private void addToModel(String qualifiedName) {
@@ -133,14 +128,27 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		ConsoleStreamUtil.println("Method invocation : "+node);
 		logger.fine("Method invocation :"+node);
 		
-		IMethodBinding methodBinding = node.resolveMethodBinding();
+		String callerMethod=getCallerMethod(node);
 		
+		IMethodBinding methodBinding = node.resolveMethodBinding();
 		ITypeBinding declaringClass = methodBinding.getDeclaringClass();
 		IMethodBinding methodDeclaration = methodBinding.getMethodDeclaration();
 
 		String className=declaringClass.getQualifiedName();
 		String methodName=methodDeclaration.getName();
-		YMethod testMethod=new YMethod(new YClass(className),methodName);
+		
+		
+		YMethod testMethod=new YMethod(callerMethod);
+		testMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
+		YMethod calleeMethod=new YMethod(methodName);
+		calleeMethod.setParentClass(new YClass(className));
+		
+		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), className)){
+			classUnderTest.addMethod(calleeMethod);
+		}
+		
+		testMethod.addCallee(calleeMethod);
+		
 		
 		testCase.addMethod(testMethod);
 		
@@ -154,8 +162,20 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	}
 	
 
-	//visit
-	
+	private String getCallerMethod(MethodInvocation node) {
+
+		MethodDeclaration callerMethodNode=null;
+		ASTNode currentNode=node;
+		while (currentNode.getNodeType()!=ASTNode.METHOD_DECLARATION){
+			currentNode=currentNode.getParent();
+		}
+		callerMethodNode=(MethodDeclaration) currentNode;
+		
+		return callerMethodNode.resolveBinding().getMethodDeclaration().getName();
+
+	}
+
+
 	private void resolveClassUnderTest(NormalAnnotation node) {
 		if (StringUtils.equals(node.getTypeName().getFullyQualifiedName(),TEST_CASE_ANNOTATION)){
 			List<MemberValuePair> members = node.values();
@@ -168,8 +188,9 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 					if (StringUtils.isNotBlank(classUnderTestString)){
 						classUnderTestString=StringUtils.replace(classUnderTestString, "\"", "");
 					}
+					
 					logger.fine("Class Under Test String : "+classUnderTestString);
-					YClass classUnderTest=new YClass(classUnderTestString);
+					classUnderTest=new YClass(classUnderTestString);
 					classUnderTest.setyClassType(YTYPE.CLASS_UNDER_TEST);
 					logger.fine("Annotation Root : "+node.getRoot());
 					
