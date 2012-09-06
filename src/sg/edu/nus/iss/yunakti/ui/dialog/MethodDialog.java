@@ -9,6 +9,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -60,28 +61,41 @@ public class MethodDialog extends TitleAreaDialog {
 		super(parentShell);
 		dialog = this;
 	}
-	
-	private void populateTestMethodsInTC(){
+
+	public List<YMethod> getCurrentTestMethods() {
+		return this.testMethodsForCUTMethod;
+	}
+
+	private void populateTestMethodsInTC() {
 		this.allTestMethodsInTC = new ArrayList<YMethod>();
-		
-		    
+
 		YMethod method1 = new YMethod();
 		method1.setMethodName("method1");
 		this.allTestMethodsInTC.add(method1);
-		
+
 		YMethod method2 = new YMethod();
 		method2.setMethodName("method2");
 		this.allTestMethodsInTC.add(method2);
-		
+
 		YMethod method3 = new YMethod();
 		method3.setMethodName("method3");
 		this.allTestMethodsInTC.add(method3);
-		
+
 		YMethod method4 = new YMethod();
 		method4.setMethodName("method4");
-		this.allTestMethodsInTC.add(method4);
-		
-		
+
+		YMethod method5 = new YMethod();
+		method5.setMethodName("xmethod2");
+		this.allTestMethodsInTC.add(method5);
+
+		YMethod method6 = new YMethod();
+		method6.setMethodName("xmethod3");
+		this.allTestMethodsInTC.add(method6);
+
+		YMethod method7 = new YMethod();
+		method7.setMethodName("xmethod4");
+		this.allTestMethodsInTC.add(method7);
+
 	}
 
 	public MethodDialog(Shell parentShell, List<YMethod> testMethodsForCUTMethod) {
@@ -90,7 +104,7 @@ public class MethodDialog extends TitleAreaDialog {
 		this.testMethodsForCUTMethod = testMethodsForCUTMethod;
 		System.out.println(testMethodsForCUTMethod);
 		populateTestMethodsInTC();
-//		this.gridView = gridView;o
+		// this.gridView = gridView;o
 	}
 
 	@Override
@@ -149,7 +163,7 @@ public class MethodDialog extends TitleAreaDialog {
 
 		tableViewer.setContentProvider(new ArrayContentProvider());
 
-		if (testMethodsForCUTMethod != null) {			
+		if (testMethodsForCUTMethod != null) {
 			setTableData(testMethodsForCUTMethod);
 		}
 
@@ -177,8 +191,7 @@ public class MethodDialog extends TitleAreaDialog {
 	}
 
 	public void setTableData(List<YMethod> testMethods) {
-		System.out.println(testMethods);
-		if (testMethods != null && testMethods.size()!=0) {
+		if (testMethods != null && testMethods.size() != 0) {
 			tableViewer.setInput(testMethods);
 			this.refresh();
 		}
@@ -213,7 +226,26 @@ public class MethodDialog extends TitleAreaDialog {
 		// Create Delete button
 		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
 		// Add a SelectionListener
+
 		deleteButton.addSelectionListener(new SelectionAdapter() {
+
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection sel = (IStructuredSelection) tableViewer
+						.getSelection();
+				YMethod selectedYMethod = (YMethod) sel.getFirstElement();
+
+				if (selectedYMethod != null) {
+					for(YMethod method : testMethodsForCUTMethod){
+						if(method.getMethodName().equals(selectedYMethod.getMethodName())){
+							testMethodsForCUTMethod.remove(selectedYMethod);
+							// Refreshing will happen only after clicking
+							MethodDialog.this.setTableData(testMethodsForCUTMethod);
+							MethodDialog.this.tableViewer.refresh();
+							break;
+						}
+					}
+				}
+			}
 		});
 
 	}
@@ -238,16 +270,16 @@ public class MethodDialog extends TitleAreaDialog {
 		button.setText(label);
 		button.setFont(JFaceResources.getDialogFont());
 		button.setData(new Integer(id));
-		
+
 		button.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("allMethods " + allTestMethodsInTC);
-				if (allTestMethodsInTC  != null) {
-				
+				if (allTestMethodsInTC != null) {
+
 					FilteredMethodSelectionDialog dialog = new FilteredMethodSelectionDialog(
-							getShell(), allTestMethodsInTC);
+							getShell(), allTestMethodsInTC, MethodDialog.this);
 					dialog.setInitialPattern("?");
 					dialog.open();
 				} else {

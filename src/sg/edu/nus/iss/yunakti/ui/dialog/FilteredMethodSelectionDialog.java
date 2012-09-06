@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -27,15 +28,16 @@ public class FilteredMethodSelectionDialog extends FilteredItemsSelectionDialog 
 	Shell parentShell;
 	private YModel model;
 	private YunaktiGridView gridView;
-	private TestCaseDialog testCaseDialog;
+	private MethodDialog methodDialog;
 	private static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
 
 	public FilteredMethodSelectionDialog(Shell shell,
-			List<YMethod> allTestMethods) {
+			List<YMethod> allTestMethods, MethodDialog methodDialog) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestMethods = allTestMethods;
-		System.out.println(allTestMethods);
+		this.methodDialog = methodDialog;
 		// this.model = model;
 		// this.gridView = view;
 		// this.testCaseDialog = testCaseDialog;
@@ -124,6 +126,21 @@ public class FilteredMethodSelectionDialog extends FilteredItemsSelectionDialog 
 			method1.setMethodName(methodName);
 
 			System.out.println(method1);
+			
+			boolean found = false;
+			List<YMethod> currentTestMethods = this.methodDialog.getCurrentTestMethods();
+			for(YMethod method : currentTestMethods){
+				if(method1.getMethodName().equals(method.getMethodName())){
+					found = true;
+				}
+			}
+			
+			if(found == false){
+				currentTestMethods.add(method1);
+				methodDialog.setTableData(currentTestMethods);
+			}else{
+				MessageDialog.openError(getShell(), "Error", "Duplicate Method: Selected Test Method has been already added");
+			}
 
 		}
 	}
