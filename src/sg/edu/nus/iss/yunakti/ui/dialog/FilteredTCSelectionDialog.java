@@ -71,7 +71,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			public boolean matchItem(Object item) {
 				return matches(item.toString());
 			}
-
+			
 			public boolean isConsistentItem(Object item) {
 				return true;
 			}
