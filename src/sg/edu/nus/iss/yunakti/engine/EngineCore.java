@@ -48,11 +48,11 @@ public class EngineCore {
 		}
 		
 		ConsoleStreamUtil.print("Printing....xxxxx"+(searchResults.get(0).toString()));
-		
+	/*	
 		
 		for (YModel yModel : searchResults) {
 			writeAnnotation(yModel);
-		}
+		}*/
 		
 		return searchResults;
 		

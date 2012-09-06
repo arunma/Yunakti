@@ -282,11 +282,15 @@ public class YPersister {
 		
 		private void addAnnotation(MethodDeclaration node) {
 			
+			final List list= rewriter.getOriginalList();
+			
 			ConsoleStreamUtil.println("Adding annotation for "+node.resolveBinding().getName());
 			if (methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName())){
 				ConsoleStreamUtil.println("Bingoooooo. Found method to annotate : "+node.resolveBinding().getName());
 				NormalAnnotation methodAnnotation = createAnnotation(compilationUnit.getAST(), YConstants.METHOD_ANNOTATION, null);
-				rewriter.insertAt(methodAnnotation, 0, null);
+				int indexOfMethodDeclaration = list.indexOf(node.getAST());
+				//rewriter.insertAt(methodAnnotation, indexOfMethodDeclaration, null);
+				rewriter.insertBefore(methodAnnotation, node, null);
 			}
 					
 			/*Map<String,String> annotationProperties=getCalleesAsMap(yModel);

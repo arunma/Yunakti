@@ -40,6 +40,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	private boolean testCaseConstructed=false;
 	private String currentClassName;
 	private YClass testCase;
+	private YClass classUnderTest=null;
 	
 	private ICompilationUnit testCaseCompilationUnit;
 
@@ -141,6 +142,11 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		testMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
 		YMethod calleeMethod=new YMethod(methodName);
 		calleeMethod.setParentClass(new YClass(className));
+		
+		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), className)){
+			classUnderTest.addMethod(calleeMethod);
+		}
+		
 		testMethod.addCallee(calleeMethod);
 		
 		
@@ -182,8 +188,9 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 					if (StringUtils.isNotBlank(classUnderTestString)){
 						classUnderTestString=StringUtils.replace(classUnderTestString, "\"", "");
 					}
+					
 					logger.fine("Class Under Test String : "+classUnderTestString);
-					YClass classUnderTest=new YClass(classUnderTestString);
+					classUnderTest=new YClass(classUnderTestString);
 					classUnderTest.setyClassType(YTYPE.CLASS_UNDER_TEST);
 					logger.fine("Annotation Root : "+node.getRoot());
 					
