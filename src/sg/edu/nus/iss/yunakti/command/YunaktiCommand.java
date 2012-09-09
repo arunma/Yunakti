@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
+import sg.edu.nus.iss.yunakti.engine.util.ConsoleStreamUtil;
 
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.ui.util.YModelListParser;
@@ -44,6 +45,8 @@ public class YunaktiCommand extends AbstractHandler {
 						.showView(YunaktiGridView.ID);
 			}
 		} catch (Exception e) {
+			ConsoleStreamUtil.print(e);
+			e.printStackTrace();
 		}
 
 		return null;
