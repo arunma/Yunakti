@@ -94,7 +94,7 @@ public class YPersister {
 				}
 				
 				Map<String, YMethod> methodsToBeAnnotatedToMap = convertMethodsToBeAnnotatedToMap(eachTestCase.getMethodsToBeAnnotated());
-				addMethodLevelAnnotations(methodsToBeAnnotatedToMap, compilationUnit, listRewriter);
+				//addMethodLevelAnnotations(methodsToBeAnnotatedToMap, compilationUnit, listRewriter);
 				
 				String updatedUnit = "";
 				TextEdit edits = null;
