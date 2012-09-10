@@ -86,7 +86,7 @@ public class YMethod {
 	
 	@Override
 	public String toString() {
-		return "Method name : " +getMethodName() + " : Method class : "+ getParentClass().getFullyQualifiedName();
+		return "Method name : " +getMethodName();
 	}
 
 	public boolean isDeleteFlag() {
