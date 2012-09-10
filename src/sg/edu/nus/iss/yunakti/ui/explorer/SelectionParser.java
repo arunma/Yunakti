@@ -18,7 +18,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class SelectionParser {
 
-	
+	//get all packages for project
+	/*
+	 * In JDT, all the sub package is considered as direct child of the parent package on top(direct child from source folder)
+	 */
 	public static List<IJavaElement> listAllPackage(IStructuredSelection selection){
 			
 			List<IJavaElement> allPackList = new ArrayList<IJavaElement>();
@@ -28,7 +31,6 @@ public class SelectionParser {
 	
 			IJavaProject currentProject = null;
 			if (firstElement instanceof IJavaElement) {
-				//System.out.println("Current project is JAVA Project");
 				currentProject = ((IJavaElement) firstElement).getJavaProject();
 				IPackageFragmentRoot[] rootList = null;
 				try {
@@ -36,10 +38,8 @@ public class SelectionParser {
 	
 					for (int i = 0; i < rootList.length; i++) {
 						if(rootList[i].getKind() == IPackageFragmentRoot.K_SOURCE){
-							//System.out.println("Root package name ======> " + i + " is " + rootList[i].getElementName());
 							elmPackList = rootList[i].getChildren();
 							for(int j = 0; j < elmPackList.length; j ++){
-								//System.out.println("Children name ======> " + i + " is " + elmPackList[j].getElementName());
 								allPackList.add(elmPackList[j]);
 							}
 						}
@@ -58,6 +58,7 @@ public class SelectionParser {
 			return allPackList;
 		}
 	
+	//get all the sub packages from selected package
 	public static List<IJavaElement> getSubPackList(List<IJavaElement> allPackList, IPackageFragment selectedPackage){
 			
 			List<IJavaElement> subPackList = new ArrayList<IJavaElement>();
@@ -74,17 +75,17 @@ public class SelectionParser {
 				}
 				subPackList.add((IJavaElement)selectedPackage);
 			}
-			//System.out.println("The sub package size is =========> " + subPackList.size());
 			return subPackList;
 	}
 	
+	//get all compilation units from the selection point(single file, package or project)
 	public static List<ICompilationUnit> getAllCompilationUnits(List<IJavaElement> packageList){
 		
 		List<ICompilationUnit> unitList = new ArrayList<ICompilationUnit>();
 		
 		for(IJavaElement tmpJavaElement : packageList){
 			
-			//packageList.
+			//packageList
 			if(tmpJavaElement.getElementType() == IJavaElement.PACKAGE_FRAGMENT){
 				IPackageFragment tmpPackage = (IPackageFragment)tmpJavaElement;
 				
@@ -104,6 +105,7 @@ public class SelectionParser {
 		return unitList;
 	}
 
+	//check if the class given by fully qualified name is a helper class
 	public static boolean isHelperClass(List<ICompilationUnit> allUnitList, String helperClassName) throws JavaModelException{
 		
 		if(allUnitList != null && allUnitList.size() > 0){
@@ -118,12 +120,14 @@ public class SelectionParser {
 		return false;
 	}
 	
+	//get fully qualified name for Class
 	public static String getUnitQualifiedName(ICompilationUnit tmpUnit) throws JavaModelException{
 		
 		IType[] tmpTypeList = tmpUnit.getTypes();
 		return tmpTypeList[0].getFullyQualifiedName();
 	}
 	
+	//find out helper class for TC
 	public static Set<String> listHelperClassForUnit(ICompilationUnit unit, List<ICompilationUnit> allUnitList){
 		
 		CompilationUnit comUnit = parse(unit);
@@ -146,10 +150,13 @@ public class SelectionParser {
 					if(!tmpClassName.equals(currentClassName) && SelectionParser.isHelperClass(allUnitList,tmpClassName)){
 						System.out.println("Helper Class =======> " + tmpClassName);
 					}
+					else{
+						objectList.remove(tmpClassName);
+					}
 				}
 			}
 			
-			visitor.removeTestClassAnnotation(comUnit);
+			//visitor.removeTestClassAnnotation(comUnit);
 		
 		} catch (JavaModelException e) {
 			// TODO Auto-generated catch block
@@ -159,6 +166,7 @@ public class SelectionParser {
 		return objectList;
 	}
 	
+	//parse CompilationUnit info for visitor to collect 
 	public static CompilationUnit parse(ICompilationUnit unit) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
