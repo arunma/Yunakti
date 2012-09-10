@@ -24,6 +24,7 @@ import org.eclipse.text.edits.TextEdit;
 
 public class CompilationUnitVisitor extends ASTVisitor{
 	
+	//using visitor pattern to collection different types of elements from AST
 	private List<TypeDeclaration> types = new ArrayList<TypeDeclaration>();
 	@Override
 	public boolean visit(TypeDeclaration node) {
@@ -85,7 +86,7 @@ public class CompilationUnitVisitor extends ASTVisitor{
 		return annoList;
 	}
 	
-	
+	//get all Classes from AST
 	public Set<String> getInvokedObjects(){
 		
 		Set<String> objectList = new TreeSet<String>();
@@ -94,9 +95,7 @@ public class CompilationUnitVisitor extends ASTVisitor{
         if(nameList != null && nameList.size() > 0){
         	for(SimpleName tmpName : nameList){
         		
-        		//System.out.println("Printing simple name =====> " + tmpName.getFullyQualifiedName());
         		if(tmpName.resolveTypeBinding() != null && tmpName.resolveTypeBinding().isClass()){
-        			//System.out.println("Printing simple name =====> " + tmpName.getFullyQualifiedName() + " / " + tmpName.resolveTypeBinding().getQualifiedName());
         			objectList.add(tmpName.resolveTypeBinding().getQualifiedName());
         		}
         	}
@@ -104,92 +103,11 @@ public class CompilationUnitVisitor extends ASTVisitor{
 		
 		
 		return objectList;
-		
-		/*
-		List<FieldDeclaration> fieldList = getFields();
-		if(fieldList != null && fieldList.size() > 0){
-			
-			for(FieldDeclaration tmpField : fieldList){
-				
-				Type tmpType = tmpField.getType();
-				if(!tmpType.isPrimitiveType()){
-					objectList.add(tmpType.getClass().getName());
-					//System.out.println("Field class ====> " + tmpType.toString());
-				}
-			}
-		}
-		
-		List<MethodDeclaration> methodList = getMethods();
-		if(methodList != null && methodList.size() > 0){
-			
-			for(MethodDeclaration tmpMethod : methodList){
-				System.out.println(tmpMethod.getName());
-				
-				IMethodBinding methodBind = tmpMethod.resolveBinding(); 
-				//System.out.println("Qulified name for return type ======> " + methodBind.getReturnType().getQualifiedName());
-				ITypeBinding[] tmpTypeBinding = methodBind.getParameterTypes();
-				for(int i = 0; i < tmpTypeBinding.length; i ++){
-					
-					if(tmpTypeBinding[i].isClass()){
-						//System.out.println("Param Type ======> " + tmpTypeBinding[i].getQualifiedName());
-						objectList.add(tmpTypeBinding[i].getQualifiedName());
-					}
-				}
-				
-				ITypeBinding tmpReturnType = methodBind.getReturnType();
-				if(tmpReturnType.isClass()){
-					//System.out.println("Return Type ======> " + tmpReturnType.getQualifiedName());
-				}
-				
-				
-				List statements = tmpMethod.getBody().statements();
-				Iterator iter=statements.iterator();
-	            while(iter.hasNext()){
-	            	Statement stmt=(Statement)iter.next();
-	            }
-	        }
-		}
-		
-		
-
-		if(annoList != null && annoList.size() > 0){
-			
-			for(SingleMemberAnnotation tmpAnno : annoList){
-				System.out.println("Annotation Name ===> " + tmpAnno.resolveAnnotationBinding().getName());
-				System.out.println("Annotation Value ===> " + tmpAnno.resolveAnnotationBinding().getDeclaredMemberValuePairs()[0].getValue());
-				if("TC".equals(tmpAnno.resolveAnnotationBinding().getName())){
-					tmpAnno.delete();
-					System.out.println("TC deleted");
-				}
-			}
-		}
-		else{
-			
-			System.out.println("Annotation is empty!!!");
-			if(types != null && types.size() > 0){
-				
-				for(TypeDeclaration tmpType : types){
-					System.out.println("Types =====> " + tmpType.getName());
-					AST ast = tmpType.getAST();
-					//ASTRewrite rewriter = ASTRewrite.create(ast);
-					SingleMemberAnnotation testClassAnnotation = ast.newSingleMemberAnnotation();
-					testClassAnnotation.setTypeName(ast.newSimpleName("TC"));
-					testClassAnnotation.setValue(ast.newSimpleName("Class"));
-					System.out.println("Modifiers ====> " + tmpType.modifiers().size() + " / " + tmpType.modifiers().get(0));
-					tmpType.modifiers().add(0,testClassAnnotation);
-					System.out.println("Modifiers after ====> " + tmpType.modifiers().size() + " / " + tmpType.modifiers().get(0));
-					
-					System.out.println("method annotated");
-				}
-			}
-			
-		}
-		*/
         
         
 	}
 	
-	
+	//add annotation from TC(Class level)
 	public String markTestClassAnnotation(CompilationUnit comUnit, String CUTQualifiedName){
 		
 		AST ast = comUnit.getAST();
@@ -225,6 +143,7 @@ public class CompilationUnitVisitor extends ASTVisitor{
 		return doc.get();
 	}
 	
+	//remove annotation from TC(class level)
 	public String removeTestClassAnnotation(CompilationUnit comUnit){
 		
 		AST ast = comUnit.getAST();

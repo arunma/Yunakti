@@ -139,6 +139,7 @@ public class YSearch {
 		public ResultSetMapperImpl(List<String> allClassNames) {
 			this.allClassNames=allClassNames;
 		}
+		
 		@Override
 		public void acceptSearchMatch(SearchMatch eachSearchMatch) throws CoreException {
 
@@ -152,10 +153,7 @@ public class YSearch {
 					
 					ICompilationUnit testCaseElementCompilationUnit=(ICompilationUnit) testCaseElement.getAncestor(IJavaElement.COMPILATION_UNIT);
 					
-					YModelVisitor visitor = new YModelVisitor(model, testCaseElementCompilationUnit, allClassNames);
-					
-					CompilationUnit comUnit = ParserUtils.parse(testCaseElementCompilationUnit);
-					comUnit.accept(visitor);
+					mapSearchCompilationUnitToModel(testCaseElementCompilationUnit, model, allClassNames);
 					
 					
 					
@@ -165,6 +163,14 @@ public class YSearch {
 			streamUtil.println("Adding model...... to models");
 			//streamUtil.print("Model record : "+model.toString());
 			models.add(model);
+		}
+
+		public void mapSearchCompilationUnitToModel(ICompilationUnit testCaseElementCompilationUnit, YModel model, List<String> allClassNames) {
+			
+			YModelVisitor visitor = new YModelVisitor(model, testCaseElementCompilationUnit, allClassNames);
+			
+			CompilationUnit comUnit = ParserUtils.parse(testCaseElementCompilationUnit);
+			comUnit.accept(visitor);
 		}
 	
 	}

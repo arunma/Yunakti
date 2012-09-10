@@ -48,7 +48,6 @@ public class PackageExplorer extends AbstractHandler {
 
 		}else if(firstElement instanceof ICompilationUnit){
 			
-			//System.out.println("You have chosen a JAVA file");
 			SelectionParser.listHelperClassForUnit((ICompilationUnit)firstElement, allUnitList);
 			
 		}else {
