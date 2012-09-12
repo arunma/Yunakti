@@ -1,9 +1,12 @@
 package sg.edu.nus.iss.yunakti.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YMethod {
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+@JsonIgnoreProperties(value={ "parentClass" ,"modifiers","returnType","parameters","members","exceptions","annotations"})
+public class YMethod implements Serializable{
 
 	private YClass parentClass =null;
 	private List<YMODIFIER> modifiers=new ArrayList<YMODIFIER>();
