@@ -174,9 +174,7 @@ public class MethodDialog extends TitleAreaDialog {
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
-		tableViewer.getControl().setLayoutData(gridData);
-
-		
+		tableViewer.getControl().setLayoutData(gridData);		
 
 		return parent;
 
@@ -184,7 +182,7 @@ public class MethodDialog extends TitleAreaDialog {
 
 	public void setTableData(List<YMethod> testMethods) {
 		if (testMethods != null && testMethods.size() != 0) {
-			tableViewer.setInput(testMethods);
+			tableViewer.setInput(testMethods);			
 			this.refresh();
 		}
 	}
