@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.yunakti.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,9 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+@JsonIgnoreProperties(value={ "yClassType" ,"accessModifiers","members","annotations","methodsToBeAnnotated","deleteFlag","fullyQualifiedName" ,"path"})
 @SuppressWarnings("serial")
-public class YClass extends YJavaElement{
+public class YClass extends YJavaElement implements Serializable{
 	
 	private YTYPE yClassType; //test/helper/cut
 	@Override
