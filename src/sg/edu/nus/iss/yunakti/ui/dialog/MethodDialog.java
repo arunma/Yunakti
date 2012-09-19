@@ -147,7 +147,7 @@ public class MethodDialog extends TitleAreaDialog {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		int[] columnAlignments = new int[] { SWT.LEFT, SWT.LEFT };
+		int[] columnAlignments = new int[] { SWT.RIGHT_TO_LEFT };
 		String[] tableColumns = new String[] { "MethodName" };
 
 		for (int i = 0; i < 1; i++) {
@@ -174,17 +174,7 @@ public class MethodDialog extends TitleAreaDialog {
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
-		tableViewer.getControl().setLayoutData(gridData);
-
-		searchText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				filter.setSearchText(searchText.getText());
-				tableViewer.refresh();
-			}
-		});
-		filter = new TestCaseFilter();
-		tableViewer.addFilter(filter);
+		tableViewer.getControl().setLayoutData(gridData);		
 
 		return parent;
 
@@ -192,7 +182,7 @@ public class MethodDialog extends TitleAreaDialog {
 
 	public void setTableData(List<YMethod> testMethods) {
 		if (testMethods != null && testMethods.size() != 0) {
-			tableViewer.setInput(testMethods);
+			tableViewer.setInput(testMethods);			
 			this.refresh();
 		}
 	}

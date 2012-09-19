@@ -118,7 +118,11 @@ public class TestCaseDialog extends TitleAreaDialog {
 			TableColumn tableColumn = new TableColumn(table,
 					columnAlignments[i]);
 			tableColumn.setText(tableColumns[i]);
-			tableColumn.setWidth(100);
+			if (i == 1) {
+				tableColumn.setWidth(150);
+			}else{
+				tableColumn.setWidth(100);
+			}
 
 		}
 
@@ -225,7 +229,8 @@ public class TestCaseDialog extends TitleAreaDialog {
 								// Refreshing will happen only after clicking
 								TestCaseDialog.this.setTableData(model);
 								TestCaseDialog.this.tableViewer.refresh();
-								TestCaseDialog.this.gridView.updateGridView(model);
+								TestCaseDialog.this.gridView
+										.updateGridView(model);
 								break;
 
 							} catch (Exception ex) {

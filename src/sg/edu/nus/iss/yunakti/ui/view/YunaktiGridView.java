@@ -28,11 +28,14 @@ import org.eclipse.ui.part.PageBookView;
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
 
 import sg.edu.nus.iss.yunakti.model.YClass;
+import sg.edu.nus.iss.yunakti.model.YMethod;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
+import sg.edu.nus.iss.yunakti.model.YTYPE;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewContentProvider1;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
+import sg.edu.nus.iss.yunakti.ui.dialog.MethodDialog;
 import sg.edu.nus.iss.yunakti.ui.dialog.TestCaseDialog;
 import sg.edu.nus.iss.yunakti.ui.util.YModelListParser;
 
@@ -120,9 +123,6 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            	  className = selection[i].getText();
 	              System.out.println("DefaultSelection={" + className + "}");
 	              
-	              
-	                       
-	              
 	              Point p = new Point(event.x, event.y);
 	              ViewerCell cell = viewer.getCell(p);
 	              
@@ -135,13 +135,24 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	              
 	              
 	              if(columnIndex == 1){	            	 
-	            	  System.out.println(yModels);	            	  
+	            	  System.out.println(yModels);	         
 	            	  
-	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),getTestCasses(className, columnIndex), engineCore.getAllClassesInWorkspace(), gridView);
+	            	  YModel yModel = getTestCasses(className, columnIndex); 
+	            	  
+	            	  if(yModel != null){
+	            	  
+	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),yModel, engineCore.getAllClassesInWorkspace(), gridView);
+	            	 caseDialog.create();
+		  				
+		  				caseDialog.open();
+	            	  }
 						
-	  				caseDialog.create();
+	            	  else{
+	            	  MethodDialog methodDialog = new MethodDialog(parent.getShell(), getMethodFromString(cell.getText()));
+	            	  methodDialog.create();
+	            	  methodDialog.open();
+	            	  }
 	  				
-	  				caseDialog.open();
 	            	  
 	            	  
 	              }
@@ -347,6 +358,88 @@ public void updateGridView(YModel model){
 		
 		
 	}
+	
+	
+}
+
+
+
+
+private List<YModel>	 getModel(){
+	
+	
+	//helper classes
+			YClass hc1 = new YClass();
+			hc1.setFullyQualifiedName("HelperClass1");
+			YClass hc2 = new YClass();
+			hc2.setFullyQualifiedName("HelperClass2");
+			List<YClass> helperClassList = new ArrayList<YClass>();
+			helperClassList.add(hc1);
+			helperClassList.add(hc2);
+			
+			
+			//test classes
+					YClass tc1 = new YClass();
+					tc1.setFullyQualifiedName("TestClass1");
+					tc1.addMember(hc1);
+					tc1.addMember(hc2);
+					
+					tc1.setyClassType(YTYPE.TEST_CASE);
+					YClass tc2 = new YClass();
+					tc2.setFullyQualifiedName("TestClass2");
+					tc2.addMember(hc1);
+					tc2.addMember(hc2);
+					tc2.setyClassType(YTYPE.TEST_CASE);
+					List<YClass> testClassList = new ArrayList<YClass>();
+					testClassList.add(tc1);
+					testClassList.add(tc2);
+									
+					
+					//classes
+					YClass c1 = new YClass();
+					c1.setFullyQualifiedName("Class1");
+					c1.addMember(tc1);
+					c1.addMember(tc2);
+					YClass c2 = new YClass();
+					c2.setFullyQualifiedName("Class2");
+					c2.addMember(tc1);
+					c2.addMember(tc2);
+					
+				
+					// model
+					YModel yModel1 = new YModel();
+					yModel1.setClassUnderTest(c1);
+					//yModel1.setTestCases(testClassList);
+					
+					// model
+					YModel yModel2 = new YModel();
+					yModel2.setClassUnderTest(c2);
+					//yModel2.setTestCases(testClassList);
+					
+					List<YModel> yModels = new ArrayList<YModel>();
+					yModels.add(yModel1);
+					yModels.add(yModel2);
+					
+					
+					return yModels;
+			
+	
+	
+}
+
+
+private List<YMethod> getMethodFromString(String yMethods){
+	
+	List<YMethod> yMethodList = new ArrayList<YMethod>();
+	
+	YMethod method = new YMethod();
+	
+	method.setMethodName(yMethods);
+	
+	yMethodList.add(method);
+	
+	
+	return yMethodList;
 	
 	
 }

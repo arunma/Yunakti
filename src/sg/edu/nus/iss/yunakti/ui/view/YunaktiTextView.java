@@ -1,9 +1,13 @@
 package sg.edu.nus.iss.yunakti.ui.view;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -225,17 +229,39 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	{
 		logger.fine("ymodels"+yModels);
 		logger.fine("lstModel"+lstModel);
+		String[] objMapper=null;
 		printString=new StringBuilder();
 		if (yModels != null && !yModels.isEmpty()) {
-			List<StringBuilder> sb= YModelListParser.parseListYModelToString(yModels);
+			ObjectMapper mapper=new ObjectMapper();
+			try {
+				//System.out.println("objMapper first"+mapper.writeValueAsString(yModels));
+				objMapper=new String[1];
+			objMapper[0]=mapper.writeValueAsString(yModels);
+				System.out.println("objMapper"+objMapper[0]);
+			} catch (JsonGenerationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		/*	List<StringBuilder> sb= YModelListParser.parseListYModelToString(yModels);
 			String[] str = new String[sb.size()];
 			int i = 0;
 			for (StringBuilder s : sb) {
 				str[i] = s.toString();
 				i++;
 				printString.append(s);
+			}*/
+		
+			if(objMapper!=null && objMapper.length>0)
+			{
+			printString.append(objMapper[0]);
+			lstModel.setItems(objMapper);
 			}
-			lstModel.setItems(str);
 			
 		}
 		else

@@ -52,7 +52,7 @@ public class EngineCore {
 			e.printStackTrace();
 		}
 		
-		ConsoleStreamUtil.print("Printing....xxxxx"+(searchResults.get(0).toString()));
+		//ConsoleStreamUtil.print("Printing....xxxxx"+(searchResults.get(0).toString()));
 		
 		
 		/*for (YModel yModel : searchResults) {
