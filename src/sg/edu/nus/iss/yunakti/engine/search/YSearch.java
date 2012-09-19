@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
@@ -83,14 +85,73 @@ public class YSearch {
 		return fqNames;
 	}
 
-	public List<YModel> getResults() {
+	public List<YModel> getResults(List<IJavaElement> allSearchElements, boolean fullScan) {
 		
 		models=groupModels(models);
+		models=filterModels(models, allSearchElements, fullScan);
+		
 		ConsoleStreamUtil.println("Returning results :"+models);
 		return models;
 	}
 
 
+	/**
+	 * 
+	 * In case of full scan (when the non-annotated class under tests are selected), 
+	 * the unrelated classes should be filtered out.
+	 * For normal scan (when the actual test cases are selected), we can ignore this method
+	 * @param allSearchElements 
+	 * @return 
+	 */
+	private List<YModel> filterModels(List<YModel> models, List<IJavaElement> allSearchElements, boolean fullScan) {
+		if (!fullScan){
+			return models;
+		}
+		
+		HashMap<String, YModel> cutModelMap = getYModelsAsCUTYModelMap(models);
+		filterSearchElementsFromModels(allSearchElements, cutModelMap);
+		
+		
+		return models;
+		//return filteredYModels;
+	}
+
+
+	private HashMap<String,YModel> getYModelsAsCUTYModelMap(List<YModel> models){
+		HashMap<String,YModel> cutModelMap=new HashMap<String,YModel>();
+		for (YModel eachModel : models) {
+			cutModelMap.put(eachModel.getClassUnderTest().getFullyQualifiedName(), eachModel);	
+		}
+		
+		return cutModelMap;
+		
+	}
+	
+	private void filterSearchElementsFromModels(List<IJavaElement> allSearchElements, HashMap<String, YModel> cutModelMap) {
+		
+		List<YModel> filteredModels=new ArrayList<YModel>();
+		
+		ICompilationUnit compilationUnit=null;
+		for (IJavaElement eachSearchElement : allSearchElements) {
+			
+			ConsoleStreamUtil.println(" Each element name "+eachSearchElement.getElementName());
+			if (eachSearchElement instanceof ICompilationUnit){
+				compilationUnit = (ICompilationUnit)eachSearchElement;
+				IType mainType =null;
+				try {
+					mainType = compilationUnit.getAllTypes()[0];
+				} catch (JavaModelException e) {
+					e.printStackTrace();
+				}
+				ConsoleStreamUtil.println(" AWESOME BEFORE "+mainType.getFullyQualifiedName());	
+				if (cutModelMap.containsKey(mainType.getFullyQualifiedName())){
+					ConsoleStreamUtil.println(" AWESOME !!!! "+mainType.getFullyQualifiedName());	
+					filteredModels.add(cutModelMap.get(mainType.getFullyQualifiedName()));
+				}
+			}
+		}
+	}
+	
 	/**
 	 * The input list of models have one model per testcase and the class under tests are duplicated. 
 	 * 

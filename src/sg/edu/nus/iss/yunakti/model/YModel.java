@@ -16,7 +16,6 @@ public class YModel implements Serializable{
 		return testCases;
 	}
 
-
 	public YClass getClassUnderTest() {
 		return classUnderTest;
 	}

@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.yunakti.engine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -40,7 +42,10 @@ public class EngineCore {
 			YSearch search=new YSearch();
 			List<IJavaElement> allSearchElements = search.gatherAllSearchElementsFromSelection(selection);
 			search.search(allSearchElements);
-			searchResults = search.getResults();
+			searchResults = search.getResults(allSearchElements,false);
+			if (searchResults.size()==0){
+				searchResults = doFullScanOfProject(search, allSearchElements);
+			}
 			//logger.fine("Search results:"+searchResults);
 		} catch (Exception e) {
 			ConsoleStreamUtil.print(e);
@@ -50,14 +55,24 @@ public class EngineCore {
 		ConsoleStreamUtil.print("Printing....xxxxx"+(searchResults.get(0).toString()));
 		
 		
-		for (YModel yModel : searchResults) {
+		/*for (YModel yModel : searchResults) {
 			writeAnnotation(yModel);
-		}
+		}*/
 		
 		return searchResults;
 		
 		
 		
+	}
+
+	private List<YModel> doFullScanOfProject(YSearch search, List<IJavaElement> allSearchElements) throws JavaModelException, CoreException {
+		List<YModel> searchResults;
+		ConsoleStreamUtil.print("**************************Full scan**************************");
+		//No Search results. Let's search the entire project for class references
+		IJavaProject javaProject = allSearchElements.get(0).getJavaProject();
+		search.search(Arrays.asList(javaProject.getChildren()));
+		searchResults = search.getResults(allSearchElements, true);
+		return searchResults;
 	}
 
 	public Set<YClass> getUniqueTestCases(List<YModel> models) {
