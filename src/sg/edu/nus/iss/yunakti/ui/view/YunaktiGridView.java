@@ -118,10 +118,80 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	             	              // Open the shell and run until a close event is detected
 	              String className = null;
 	              
+	              
+	              Point p = new Point(event.x, event.y);
+	              ViewerCell cell = viewer.getCell(p);
+	              
+	              int columnIndex = 0;
+	              
+	              if(cell != null)
+	              {
+	              
+	            	  columnIndex = cell.getColumnIndex();
+	              }
+	              
 	              TreeItem[] selection = tree.getSelection();
-	              for (int i = 0; i < selection.length; i++)
-	            	  className = selection[i].getText();
-	              System.out.println("DefaultSelection={" + className + "}");
+	              for (int i = 0; i < selection.length; i++){
+	            	  
+	            	  Object selObj = selection[i].getData();
+	            	  
+	            	  if(selObj instanceof YClass){
+	            		  
+	            		  if(columnIndex == 1){
+	            			  
+	            			  YClass yClass = (YClass) selObj;
+	            			  
+	            			  YModel yModel = getYModelFromTestCase(yClass.getName());
+	            			  
+	            			  if(yModel != null){
+	        	            	  
+	         	            	 TestCaseDialog caseDialog = new TestCaseDialog(parent.getShell(),yModel, engineCore.getAllClassesInWorkspace(), gridView);
+	         	            	 caseDialog.create();
+	         		  				
+	         		  				caseDialog.open();
+	         	            	  }
+	            			  
+	            			  
+	            			  
+	            		  }
+	            		  
+	            	  }
+	            	  else
+	            		  if(selObj instanceof YMethod){
+	            			  
+	            			  if(columnIndex == 1){
+		            			  
+	            				  YMethod yMethod = (YMethod) selObj;
+	            				  
+	            				  MethodDialog methodDialog = new MethodDialog(parent.getShell(), getMethodFromString(yMethod.getMethodName()));
+	        	            	  methodDialog.create();
+	        	            	  methodDialog.open();
+		            			  
+		            		  }
+	            			  
+	            		  }
+	            		  else
+	            			  if(selObj instanceof YModel){
+	            				  
+	            				  if(columnIndex == 2){
+			            			  
+	            					  YModel yModel = (YModel) selObj;
+			            			  
+	            					  HelperDialog dialog = new HelperDialog(parent.getShell());
+	        	    	              
+	        	    	              dialog.setListItems(getHelperClasses(yModel.getClassUnderTest().getName()));
+			            		  }
+	            				  
+	            			  }
+	            	  
+	            	  
+	              }
+	              
+	              
+	              
+	              
+	              
+	              /*System.out.println("DefaultSelection={" + className + "}");
 	              
 	              Point p = new Point(event.x, event.y);
 	              ViewerCell cell = viewer.getCell(p);
@@ -152,9 +222,6 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            	  methodDialog.create();
 	            	  methodDialog.open();
 	            	  }
-	  				
-	            	  
-	            	  
 	              }
 	              else
 	            	  if(columnIndex == 2){
@@ -168,7 +235,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            	  }
 	              
 	              }	       
-	            
+	*/            
 			}
 			 }); 
 		
@@ -228,7 +295,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 		return false;
 	}
 	
-	private YModel getTestCasses(String className, int colNum){
+	private YModel getTestCasses(String className){
 		
 		YModel returnModel = null;
 		
@@ -250,12 +317,48 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	}
 	
 	
-private List<String> getHelperClasses(String className, int colNum){
+private YModel getYModelFromTestCase(String testClassName){
+		
+		YModel returnModel = null;
+		
+		List<YParentModel> yParentModels =  packageList;
+		
+		boolean breakFlag = false;
+		
+		for(YParentModel yParentModel: yParentModels){
+			
+			for(YModel yModel: yParentModel.getClassList()){
+				
+				for(YClass yClass : yModel.getTestCases()){
+					
+					if(testClassName.equals(yClass.getName())){
+						
+						returnModel =yModel;
+						
+						breakFlag = true;
+						
+						break;
+						
+					}
+					
+				}
+				if(breakFlag){
+					break;
+				}
+				
+			}
+		}
+		
+		return returnModel;
+	}
+	
+	
+private List<String> getHelperClasses(String className){
 	
 	List<String> helperClasses = new ArrayList<String>();
 	
 	
-	List<YClass> testCases = getTestCasses(className, colNum).getTestCases();
+	List<YClass> testCases = getTestCasses(className).getTestCases();
 	
 	
 	for(YClass yClass: testCases){
@@ -363,81 +466,29 @@ public void updateGridView(YModel model){
 }
 
 
-
-
-private List<YModel>	 getModel(){
-	
-	
-	//helper classes
-			YClass hc1 = new YClass();
-			hc1.setFullyQualifiedName("HelperClass1");
-			YClass hc2 = new YClass();
-			hc2.setFullyQualifiedName("HelperClass2");
-			List<YClass> helperClassList = new ArrayList<YClass>();
-			helperClassList.add(hc1);
-			helperClassList.add(hc2);
-			
-			
-			//test classes
-					YClass tc1 = new YClass();
-					tc1.setFullyQualifiedName("TestClass1");
-					tc1.addMember(hc1);
-					tc1.addMember(hc2);
-					
-					tc1.setyClassType(YTYPE.TEST_CASE);
-					YClass tc2 = new YClass();
-					tc2.setFullyQualifiedName("TestClass2");
-					tc2.addMember(hc1);
-					tc2.addMember(hc2);
-					tc2.setyClassType(YTYPE.TEST_CASE);
-					List<YClass> testClassList = new ArrayList<YClass>();
-					testClassList.add(tc1);
-					testClassList.add(tc2);
-									
-					
-					//classes
-					YClass c1 = new YClass();
-					c1.setFullyQualifiedName("Class1");
-					c1.addMember(tc1);
-					c1.addMember(tc2);
-					YClass c2 = new YClass();
-					c2.setFullyQualifiedName("Class2");
-					c2.addMember(tc1);
-					c2.addMember(tc2);
-					
-				
-					// model
-					YModel yModel1 = new YModel();
-					yModel1.setClassUnderTest(c1);
-					//yModel1.setTestCases(testClassList);
-					
-					// model
-					YModel yModel2 = new YModel();
-					yModel2.setClassUnderTest(c2);
-					//yModel2.setTestCases(testClassList);
-					
-					List<YModel> yModels = new ArrayList<YModel>();
-					yModels.add(yModel1);
-					yModels.add(yModel2);
-					
-					
-					return yModels;
-			
-	
-	
-}
-
-
 private List<YMethod> getMethodFromString(String yMethods){
 	
 	List<YMethod> yMethodList = new ArrayList<YMethod>();
 	
-	YMethod method = new YMethod();
+	YMethod method =  null;
 	
-	method.setMethodName(yMethods);
+	
+	
+	String[] methodArray = yMethods.split(",");
+	
+	if(methodArray == null){
+		methodArray = new String[] {yMethods};
+	}
+	
+	
+	for(String methodName : methodArray){
+	
+	method =  new YMethod();	
+	
+	method.setMethodName(methodName.trim());
 	
 	yMethodList.add(method);
-	
+	}
 	
 	return yMethodList;
 	

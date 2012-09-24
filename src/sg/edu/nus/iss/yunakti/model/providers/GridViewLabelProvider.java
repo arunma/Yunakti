@@ -44,14 +44,44 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
-		
-if(element instanceof YClass){
-			
 
-			YClass yClass = (YClass) element;
+		
+		if(element instanceof YParentModel){
+			
 			switch (columnIndex) {
 			case 0:
-				return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PUBLIC);
+				return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PACKAGE);
+			case 1:				
+				return null;
+			case 2:				
+				return null;
+			}
+			
+		}
+		
+		else
+			if(element instanceof YModel)
+			{
+			
+			switch (columnIndex) {
+			case 0:
+				return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_CLASS);
+			case 1:
+				
+				return null;
+			case 2:
+				
+				return PlatformUI.getWorkbench().getSharedImages()
+						.getImage(ISharedImages.IMG_OBJ_FILE);
+			}
+			
+			}
+	else
+		if(element instanceof YClass){
+			
+			switch (columnIndex) {
+			case 0:
+				return null;
 			case 1:
 				
 				return Activator.getImageDescriptor("icons/search.gif").createImage();
@@ -60,94 +90,32 @@ if(element instanceof YClass){
 				return null;
 			}
 			
-			
-			
 		}
-else
-		
-		if(element instanceof YModel)
-		{
-		YModel yModel = (YModel) element;
-		switch (columnIndex) {
-		case 0:
-			
-			return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_CLASS);
-					
-		case 1:
-		   return	Activator.getImageDescriptor("icons/search.gif").createImage();
-			
-			//return 
-					//PlatformUI.getWorkbench().getSharedImages()
-					//.getImage(ISharedImages.IMG_OBJ_FOLDER);
-		case 2:
-			
-			if(getHelperClasses(yModel)==null){
-				return null;
-			}
-			
-			return PlatformUI.getWorkbench().getSharedImages()
-					.getImage(ISharedImages.IMG_OBJ_FILE);
-		}
-		
-		}
-		else{
-			if(element instanceof YParentModel){
+		else
+			if(element instanceof YMethod){
 				
-								
+
 				switch (columnIndex) {
 				case 0:
-					return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PACKAGE);
+					
+					return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PUBLIC);
 				case 1:
 					
-					return null;
+					return Activator.getImageDescriptor("icons/search.gif").createImage();
 				case 2:
 					
 					return null;
-				}
+				}			
 				
-			}
-		}
+			}	
+	
+	return null;
 		
-		return null;
 	}
 
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
-		if(element instanceof YClass){
-			
-
-			YClass yClass = (YClass) element;
-			switch (columnIndex) {
-			case 0:
-				return getCUTMethod(yClass);
-			case 1:
-				
-				return getTestClassMethods(yClass);
-			case 2:
-				
-				return "";
-			}
-			
-			
-			
-		}
-		else
-		if(element instanceof YModel)
-		{
-		YModel yModel = (YModel) element;
-		switch (columnIndex) {
-		case 0:
-			return yModel.getClassUnderTest().getName();
-		case 1:
-			
-			return getTestClasses(yModel);
-		case 2:
-			
-			return getHelperClasses(yModel);
-		}
 		
-		}
-		else{
 			if(element instanceof YParentModel){
 				
 				YParentModel yParentModel = (YParentModel) element;
@@ -165,7 +133,68 @@ else
 				
 			}
 			
-		}
+			else
+				if(element instanceof YModel)
+				{
+				YModel yModel = (YModel) element;
+				switch (columnIndex) {
+				case 0:
+					return yModel.getClassUnderTest().getName();
+				case 1:
+					
+					//return getTestClasses(yModel);
+					return "";
+				case 2:
+					
+					//return 
+					return getHelperClasses(yModel);
+				}
+				
+				}
+		else
+			if(element instanceof YClass){
+				
+
+				YClass yClass = (YClass) element;
+				switch (columnIndex) {
+				case 0:
+					//return getCUTMethod(yClass);
+					return "";
+				case 1:
+					
+					//return getTestClassMethods(yClass);
+					return yClass.getName();
+				case 2:
+					
+					return "";
+				}
+				
+				
+				
+			}
+			else
+				if(element instanceof YMethod){
+					
+
+					YMethod yMethod = (YMethod) element;
+					switch (columnIndex) {
+					case 0:
+						
+						return yMethod.getCallees().get(0).getMethodName();
+					case 1:
+						
+						return yMethod.getMethodName();
+					case 2:
+						
+						return "";
+					}
+					
+					
+					
+				}
+			
+			
+		
 		
 		return null;
 	}
