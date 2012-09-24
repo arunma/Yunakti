@@ -140,19 +140,12 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		String methodName=methodDeclaration.getName();
 		
 		
-		YMethod testMethod=getTestClassMethodIfAvailable(callerMethod);
-		testMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
-		YMethod calleeMethod=new YMethod(methodName);
-		calleeMethod.setParentClass(new YClass(className));
+		YMethod testMethod=getTestClassMethodIfAvailable(callerMethod, className);
 		
-		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), className)){
-			classUnderTest.addMethod(calleeMethod);
+		if (testMethod!=null){
+			testCase.addMethod(testMethod);
 		}
 		
-		testMethod.addCallee(calleeMethod);
-		
-		
-		testCase.addMethod(testMethod);
 		
 		if (StringUtils.equalsIgnoreCase(className, model.getClassUnderTest().getFullyQualifiedName())){
 			ConsoleStreamUtil.println("Adding method to be annotated : "+testMethod);
@@ -164,9 +157,18 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	}
 	
 
-	private YMethod getTestClassMethodIfAvailable(String callerMethod) {
+	private YMethod getTestClassMethodIfAvailable(String callerMethod, String className) {
 
-		YMethod returnYMethod=null;
+		
+		if (allClassNames.contains(callerMethod)){
+			return null;
+		}
+		YMethod returnYMethod=new YMethod();
+		
+		returnYMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
+		
+		YMethod calleeMethod=new YMethod(callerMethod);
+		
 		if (allTestCaseMethods.contains(callerMethod)){
 			
 			for (YMethod eachTestCaseMethod : testCase.getMethods()) {
@@ -181,6 +183,14 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 			returnYMethod=new YMethod(callerMethod);
 		}
 		
+		//add Parent class and callee information
+		calleeMethod.setParentClass(new YClass(className));
+		
+		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), className)){
+			classUnderTest.addMethod(calleeMethod);
+		}
+		
+		returnYMethod.addCallee(calleeMethod);
 		
 		return returnYMethod;
 	}
