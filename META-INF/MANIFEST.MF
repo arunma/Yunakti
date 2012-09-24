@@ -20,4 +20,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.ui.forms.widgets
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/jackson-all-1.9.0.jar,
- .
+ .,
+ lib/xpp3_min-1.1.4c.jar,
+ lib/xstream-1.4.2.jar

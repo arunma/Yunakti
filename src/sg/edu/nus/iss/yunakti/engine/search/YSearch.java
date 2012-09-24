@@ -89,7 +89,7 @@ public class YSearch {
 		models=groupModels(models);
 		models=filterModels(models, allSearchElements, fullScan);
 		
-		ConsoleStreamUtil.println("Returning results :"+models);
+		ConsoleStreamUtil.classToString("Returning results :",models);
 		return models;
 	}
 
@@ -168,7 +168,7 @@ public class YSearch {
 		classUnderTest.setFullyQualifiedName(mainType.getFullyQualifiedName());
 		yModel.setClassUnderTest(classUnderTest);
 		
-		ConsoleStreamUtil.println("Another Class under test YModel : "+yModel);
+		ConsoleStreamUtil.classToString("Filtered YModels : ",yModel);
 		return yModel;
 		
 		

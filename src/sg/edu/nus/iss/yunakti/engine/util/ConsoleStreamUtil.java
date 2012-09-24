@@ -8,6 +8,8 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
+import com.thoughtworks.xstream.XStream;
+
 public class ConsoleStreamUtil {
 	
 	private static final ConsoleStreamUtil INSTANCE = new ConsoleStreamUtil();
@@ -52,6 +54,18 @@ public class ConsoleStreamUtil {
 		outputStream.print(message);
 		
 	}
+	
+	public static void classToString(String metaInfo, Object object){
+		if(object == null)	{
+			return;
+		}
+		
+		XStream xs = new XStream();
+		xs.alias(object.getClass().getName(), object.getClass());
+		String xml = xs.toXML(object);
+		outputStream.print(metaInfo + "\n" + xml);
+	}
+
 	
 	public static void print(Exception exception){
 		StringWriter stringWriter = new StringWriter(); 
