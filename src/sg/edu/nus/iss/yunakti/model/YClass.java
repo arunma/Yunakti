@@ -9,7 +9,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-@JsonIgnoreProperties(value={ "yClassType" ,"accessModifiers","members","annotations","methodsToBeAnnotated","deleteFlag","fullyQualifiedName" ,"path"})
+import org.codehaus.jackson.annotate.JsonProperty;
+
+
+@JsonIgnoreProperties(value={ "yClassType" ,"accessModifiers","annotations","methodsToBeAnnotated","deleteFlag","fullyQualifiedName" ,"path"})
+
 @SuppressWarnings("serial")
 public class YClass extends YJavaElement implements Serializable{
 	
@@ -21,6 +25,7 @@ public class YClass extends YJavaElement implements Serializable{
 
 	private List<YMODIFIER> accessModifiers;
 	private List<YMethod> methods=new ArrayList<YMethod>();
+	@JsonProperty("helperclass")
 	private Set<YClass> members=new HashSet<YClass>(); //common name for helpers/instance primitives in testcases and instance variables in normal classes
 	private List<YAnnotation> annotations=new ArrayList<YAnnotation>();
 	private List<YMethod> methodsToBeAnnotated=new ArrayList<YMethod>();

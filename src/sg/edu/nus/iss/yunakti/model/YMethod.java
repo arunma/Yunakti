@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonMethod;
 @JsonIgnoreProperties(value={ "parentClass" ,"modifiers","returnType","parameters","members","exceptions","annotations"})
+@JsonAutoDetect(value=JsonMethod.GETTER)
 public class YMethod implements Serializable{
 
 	private YClass parentClass =null;
