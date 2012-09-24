@@ -4,13 +4,11 @@ public interface YConstants {
 
 	public static final String TEST_CASE_ANNOTATION="TC";
 	public static final String METHOD_ANNOTATION="MUT";
-	public static final String JAVA = "java";
 	public static final String ANNOTATION_PROPERTY_CLASS_UNDER_TEST="classUnderTest";
 	public static final String ANNOTATION_PROPERTY_HELPER_CLASSES="helperClasses";
 	public static final String ANNOTATION_PROPERTY_METHOD_UNDER_TEST="methodUnderTest";
 	
 	//Move this to a preference page or something
-	public static final String[] FILTER_PACKAGES=new String[]{JAVA};
 	public static final String DOT = ".";
 	public static final String COMMA = ",";
 	public static final String COLON = ";";

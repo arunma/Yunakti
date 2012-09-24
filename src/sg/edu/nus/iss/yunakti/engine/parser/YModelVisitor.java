@@ -4,7 +4,9 @@ import static sg.edu.nus.iss.yunakti.engine.util.YConstants.ANNOTATION_PROPERTY_
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.TEST_CASE_ANNOTATION;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
@@ -41,9 +43,9 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	private String currentClassName;
 	private YClass testCase;
 	private YClass classUnderTest=null;
-	
 	private ICompilationUnit testCaseCompilationUnit;
 
+	private Set<String> allTestCaseMethods=new HashSet<String>();
 	private List<String> allClassNames;
 
 	public YModelVisitor(YModel model, ICompilationUnit testCaseElementCompilationUnit, List<String> allClassNames) {
@@ -138,19 +140,12 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		String methodName=methodDeclaration.getName();
 		
 		
-		YMethod testMethod=new YMethod(callerMethod);
-		testMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
-		YMethod calleeMethod=new YMethod(methodName);
-		calleeMethod.setParentClass(new YClass(className));
+		YMethod testMethod=getTestClassMethodIfAvailable(callerMethod, className);
 		
-		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), className)){
-			classUnderTest.addMethod(calleeMethod);
+		if (testMethod!=null){
+			testCase.addMethod(testMethod);
 		}
 		
-		testMethod.addCallee(calleeMethod);
-		
-		
-		testCase.addMethod(testMethod);
 		
 		if (StringUtils.equalsIgnoreCase(className, model.getClassUnderTest().getFullyQualifiedName())){
 			ConsoleStreamUtil.println("Adding method to be annotated : "+testMethod);
@@ -161,6 +156,45 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		return super.visit(node);
 	}
 	
+
+	private YMethod getTestClassMethodIfAvailable(String callerMethod, String className) {
+
+		
+		if (allClassNames.contains(callerMethod)){
+			return null;
+		}
+		YMethod returnYMethod=new YMethod();
+		
+		returnYMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
+		
+		YMethod calleeMethod=new YMethod(callerMethod);
+		
+		if (allTestCaseMethods.contains(callerMethod)){
+			
+			for (YMethod eachTestCaseMethod : testCase.getMethods()) {
+				if (StringUtils.equalsIgnoreCase(eachTestCaseMethod.getMethodName(), callerMethod)){
+					returnYMethod=eachTestCaseMethod;
+					break;
+				}
+			}
+		}
+		else{
+			allTestCaseMethods.add(callerMethod);
+			returnYMethod=new YMethod(callerMethod);
+		}
+		
+		//add Parent class and callee information
+		calleeMethod.setParentClass(new YClass(className));
+		
+		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), className)){
+			classUnderTest.addMethod(calleeMethod);
+		}
+		
+		returnYMethod.addCallee(calleeMethod);
+		
+		return returnYMethod;
+	}
+
 
 	private String getCallerMethod(MethodInvocation node) {
 
