@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
@@ -109,7 +108,7 @@ public class YSearch {
 		}
 		
 		HashMap<String, YModel> cutModelMap = getYModelsAsCUTYModelMap(models);
-		filterSearchElementsFromModels(allSearchElements, cutModelMap);
+		models=filterSearchElementsFromModels(allSearchElements, cutModelMap);
 		
 		
 		return models;
@@ -127,7 +126,7 @@ public class YSearch {
 		
 	}
 	
-	private void filterSearchElementsFromModels(List<IJavaElement> allSearchElements, HashMap<String, YModel> cutModelMap) {
+	private List<YModel> filterSearchElementsFromModels(List<IJavaElement> allSearchElements, HashMap<String, YModel> cutModelMap) {
 		
 		List<YModel> filteredModels=new ArrayList<YModel>();
 		
@@ -140,18 +139,41 @@ public class YSearch {
 				IType mainType =null;
 				try {
 					mainType = compilationUnit.getAllTypes()[0];
+				
+					ConsoleStreamUtil.println(" AWESOME BEFORE "+mainType.getFullyQualifiedName());	
+					if (cutModelMap.containsKey(mainType.getFullyQualifiedName())){
+						ConsoleStreamUtil.println(" AWESOME !!!! "+mainType.getFullyQualifiedName());	
+						filteredModels.add(cutModelMap.get(mainType.getFullyQualifiedName()));
+					}
+					else{
+						//Construct a dummy YModel. Why did i do it here?  Optionally, I could have done it in the engine core.
+						//However, there could be a time when a non-mapped class and a mapped class is selected under the same selection
+						YModel dummyYModelForSelection = createDummyYModelForSelection(compilationUnit);
+						filteredModels.add(dummyYModelForSelection);
+					}
 				} catch (JavaModelException e) {
 					e.printStackTrace();
 				}
-				ConsoleStreamUtil.println(" AWESOME BEFORE "+mainType.getFullyQualifiedName());	
-				if (cutModelMap.containsKey(mainType.getFullyQualifiedName())){
-					ConsoleStreamUtil.println(" AWESOME !!!! "+mainType.getFullyQualifiedName());	
-					filteredModels.add(cutModelMap.get(mainType.getFullyQualifiedName()));
-				}
 			}
 		}
+		
+		return filteredModels;
 	}
 	
+	private YModel createDummyYModelForSelection(ICompilationUnit compilationUnit) throws JavaModelException {
+		
+		YModel yModel=new YModel();
+		YClass classUnderTest=new YClass();
+		IType mainType = compilationUnit.getAllTypes()[0];
+		classUnderTest.setFullyQualifiedName(mainType.getFullyQualifiedName());
+		yModel.setClassUnderTest(classUnderTest);
+		
+		ConsoleStreamUtil.println("Another Class under test YModel : "+yModel);
+		return yModel;
+		
+		
+	}
+
 	/**
 	 * The input list of models have one model per testcase and the class under tests are duplicated. 
 	 * 

@@ -43,9 +43,13 @@ public class EngineCore {
 			List<IJavaElement> allSearchElements = search.gatherAllSearchElementsFromSelection(selection);
 			search.search(allSearchElements);
 			searchResults = search.getResults(allSearchElements,false);
+			//if the selection is a class under test, then there wont be any results - do a full scan
+			//if the selection is a class under test and there are not mappings at all, then return a dummy YModel
+			//this is done in the filterModels of the getResults method
 			if (searchResults.size()==0){
 				searchResults = doFullScanOfProject(search, allSearchElements);
 			}
+			
 			//logger.fine("Search results:"+searchResults);
 		} catch (Exception e) {
 			ConsoleStreamUtil.print(e);
