@@ -40,9 +40,11 @@ public class GridViewContentProvider1 implements ITreeContentProvider{
 		
 		if(parentElement instanceof YModel)
 		{
-			if(((YModel) parentElement).getTestCases() != null)
+			if(((YModel) parentElement).getTestCases() != null){
+				Object[] yClasses = ((YModel) parentElement).getTestCases().toArray();
 			
-			return  ((YModel) parentElement).getTestCases().toArray();
+			return  yClasses;
+			}
 		}
 		
 		if(parentElement instanceof YClass){
@@ -75,9 +77,8 @@ public class GridViewContentProvider1 implements ITreeContentProvider{
 		
 		if(element !=null && element instanceof YModel)
 		{
-			if(((YModel) element).getTestCases() !=null)
-			
-		return ((YModel) element).getTestCases().size() > 0;
+						
+		return ((YModel) element).getTestCases() !=null;
 		}
 		
 		if(element !=null && element instanceof YClass)

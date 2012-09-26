@@ -82,7 +82,7 @@ public class YClass extends YJavaElement implements Serializable{
 	
 	@Override
 	public int hashCode() {
-		return fullyQualifiedName.hashCode()*37;
+		return fullyQualifiedName !=null ? fullyQualifiedName.hashCode()*37 : 0;
 	}
 	
 	@Override
@@ -92,6 +92,8 @@ public class YClass extends YJavaElement implements Serializable{
 		}
 		else if (obj instanceof YClass){
 			YClass clzz=(YClass)obj;
+			if(fullyQualifiedName == null)
+				return false;
 			return fullyQualifiedName.equals(clzz.fullyQualifiedName);			
 		}
 		

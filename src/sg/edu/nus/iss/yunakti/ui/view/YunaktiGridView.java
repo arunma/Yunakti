@@ -141,7 +141,7 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            			  
 	            			  YClass yClass = (YClass) selObj;
 	            			  
-	            			  YModel yModel = getYModelFromTestCase(yClass.getName());
+	            			  YModel yModel = getYModelFromTestCase(yClass);
 	            			  
 	            			  if(yModel != null){
 	        	            	  
@@ -317,7 +317,9 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	}
 	
 	
-private YModel getYModelFromTestCase(String testClassName){
+private YModel getYModelFromTestCase(YClass selTestCase){
+	
+	
 		
 		YModel returnModel = null;
 		
@@ -331,7 +333,7 @@ private YModel getYModelFromTestCase(String testClassName){
 				
 				for(YClass yClass : yModel.getTestCases()){
 					
-					if(testClassName.equals(yClass.getName())){
+					if(selTestCase == yClass){
 						
 						returnModel =yModel;
 						
@@ -390,14 +392,23 @@ public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
 		
 		
-		List<YModel> tempYModel = engineCore.populateModel((IStructuredSelection)selection);	
+		List<YModel> tempYModelList = engineCore.populateModel((IStructuredSelection)selection);	
 		
-		 		
+			 		
 		
-		if(tempYModel != null && !tempYModel.isEmpty())
+		if(tempYModelList != null && !tempYModelList.isEmpty())
 		{
+			
+			for(YModel yModel: tempYModelList){
+				if(yModel != null && yModel.getClassUnderTest() != null && yModel.getClassUnderTest().getName() != null && yModel.getTestCases().isEmpty()){
+					
+					List<YClass> testClassList = yModel.getTestCases();
+					testClassList.add(new YClass());
+					
+				}
+			}
 		
-			yModels= tempYModel;
+			yModels= tempYModelList;
 			buildPackageList(engineCore.getModelsByPackageName(yModels));
 			viewer.setInput(packageList.toArray());
 			viewer.expandAll();
