@@ -132,64 +132,64 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		logger.fine("Method invocation :"+node);
 		
 		//get the name of the testcase
-		String callerMethod=getCallerMethod(node);
+		String testCaseMethod=getCallerMethod(node);
 		
 		IMethodBinding methodBinding = node.resolveMethodBinding();
 		ITypeBinding declaringClass = methodBinding.getDeclaringClass();
 		IMethodBinding methodDeclaration = methodBinding.getMethodDeclaration();
 
-		String className=declaringClass.getQualifiedName();
-		String methodName=methodDeclaration.getName();
+		String cutClassName=declaringClass.getQualifiedName();
+		String cutMethodName=methodDeclaration.getName();
 		
 		
-		YMethod testMethod=getTestClassMethodIfAvailable(methodName, className);
+		YMethod testMethod=getTestClassMethodIfAvailable(testCaseMethod, cutClassName, cutMethodName);
 		
 		if (testMethod!=null){
 			testCase.addMethod(testMethod);
 		}
 		
 		
-		if (StringUtils.equalsIgnoreCase(className, model.getClassUnderTest().getFullyQualifiedName())){
+		if (StringUtils.equalsIgnoreCase(cutClassName, model.getClassUnderTest().getFullyQualifiedName())){
 			ConsoleStreamUtil.println("Adding method to be annotated : "+testMethod);
 			testCase.addMethodToBeAnnotated(testMethod);
 		}
 		
-		ConsoleStreamUtil.println("Classname and method name : "+className +"::::"+methodName);
+		ConsoleStreamUtil.println("Classname and method name : "+cutClassName +"::::"+cutMethodName);
 		return super.visit(node);
 	}
 	
 
-	
-	private YMethod getTestClassMethodIfAvailable(String methodName, String className) {
+	private YMethod getTestClassMethodIfAvailable(String testCaseMethod, String cutClassName, String cutMethodName) {
 
 		
-		if (allClassNames.contains(methodName)){
+		/*if (allClassNames.contains(methodName)){
 			return null;
-		}
+		}*/
+		
 		YMethod returnYMethod=new YMethod();
 		
 		returnYMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
 		
-		YMethod calleeMethod=new YMethod(methodName);
+		YMethod calleeMethod=new YMethod(cutMethodName);
 		
-		if (allTestCaseMethods.contains(methodName)){
+		if (allTestCaseMethods.contains(testCaseMethod)){
 			
 			for (YMethod eachTestCaseMethod : testCase.getMethods()) {
-				if (StringUtils.equalsIgnoreCase(eachTestCaseMethod.getMethodName(), methodName)){
+				if (StringUtils.equalsIgnoreCase(eachTestCaseMethod.getMethodName(), testCaseMethod)){
 					returnYMethod=eachTestCaseMethod;
 					break;
 				}
 			}
 		}
 		else{
-			allTestCaseMethods.add(methodName);
-			returnYMethod=new YMethod(methodName);
+			allTestCaseMethods.add(testCaseMethod);
+			returnYMethod=new YMethod(testCaseMethod);
 		}
 		
 		//add Parent class and callee information
-		calleeMethod.setParentClass(new YClass(className));
+		calleeMethod.setParentClass(new YClass(cutClassName));
 		
-		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), className)){
+		if (classUnderTest!=null && StringUtils.equals(classUnderTest.getFullyQualifiedName(), cutClassName)){
 			classUnderTest.addMethod(calleeMethod);
 		}
 		

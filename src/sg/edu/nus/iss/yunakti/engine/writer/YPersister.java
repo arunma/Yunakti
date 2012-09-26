@@ -126,6 +126,7 @@ public class YPersister {
 	}
 	
 
+	//convert the list of annotated methods into a map<methodname, callees>
 	private Map<String, List<YMethod>> convertMethodsToBeAnnotatedToMap(List<YMethod> methodsToBeAnnotated) {
 		Map<String,List<YMethod>> methodAnnotationMap=null;
 		
