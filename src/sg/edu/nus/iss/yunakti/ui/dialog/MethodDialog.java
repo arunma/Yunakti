@@ -199,12 +199,9 @@ public class MethodDialog extends TitleAreaDialog {
 		gridData.horizontalAlignment = SWT.CENTER;
 
 		parent.setLayoutData(gridData);
-		// Create Add button
-		// Own method as we need to overview the SelectionAdapter
-		createOkButton(parent, OK, "Add", true);
 
-		// Create Cancel button
-		Button cancelButton = createButton(parent, CANCEL, "Cancel", false);
+		// Create Close button
+		Button cancelButton = createButton(parent, CANCEL, "Close", false);
 		// Add a SelectionListener
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -213,85 +210,6 @@ public class MethodDialog extends TitleAreaDialog {
 			}
 		});
 
-		// Create Delete button
-		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
-		// Add a SelectionListener
-
-		deleteButton.addSelectionListener(new SelectionAdapter() {
-
-			public void widgetSelected(SelectionEvent e) {
-				IStructuredSelection sel = (IStructuredSelection) tableViewer
-						.getSelection();
-				YMethod selectedYMethod = (YMethod) sel.getFirstElement();
-
-				if (selectedYMethod != null) {
-					for(YMethod method : testMethodsForCUTMethod){
-						if(method.getMethodName().equals(selectedYMethod.getMethodName())){
-							testMethodsForCUTMethod.remove(selectedYMethod);
-							// Refreshing will happen only after clicking
-							MethodDialog.this.setTableData(testMethodsForCUTMethod);
-							MethodDialog.this.tableViewer.refresh();
-							break;
-						}
-					}
-				}
-			}
-		});
-
-	}
-
-	/**
-	 * Button Handler for Ok Button. Adding Click Event Handler for OK Button.
-	 * Calls the pop-up window with all the classes in the project Explorer.
-	 * 
-	 * @param Compsosite
-	 *            parent
-	 * @param int id
-	 * @param String
-	 *            label
-	 * @param boolean defaultButton
-	 * @return
-	 */
-	protected Button createOkButton(Composite parent, int id, String label,
-			boolean defaultButton) {
-		// increment the number of columns in the button bar
-		((GridLayout) parent.getLayout()).numColumns++;
-		Button button = new Button(parent, SWT.PUSH);
-		button.setText(label);
-		button.setFont(JFaceResources.getDialogFont());
-		button.setData(new Integer(id));
-
-		button.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("allMethods " + allTestMethodsInTC);
-				if (allTestMethodsInTC != null) {
-
-					FilteredMethodSelectionDialog dialog = new FilteredMethodSelectionDialog(
-							getShell(), allTestMethodsInTC, MethodDialog.this);
-					dialog.setInitialPattern("?");
-					dialog.open();
-				} else {
-					MessageDialog.openError(getShell(), "Error",
-							"There are no methods in the selected Test Class");
-				}
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-
-			}
-		});
-
-		if (defaultButton) {
-			Shell shell = parent.getShell();
-			if (shell != null) {
-				shell.setDefaultButton(button);
-			}
-		}
-		setButtonLayoutData(button);
-		return button;
 	}
 
 	public void refresh() {
