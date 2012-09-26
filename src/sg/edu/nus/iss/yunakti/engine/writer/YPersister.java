@@ -308,7 +308,7 @@ public class YPersister {
 
 			ConsoleStreamUtil.println("Adding annotation for "+node.resolveBinding().getName());
 			
-			if (methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName())){
+			if (methodsToBeAnnotatedToMap!=null && methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName())){
 				ConsoleStreamUtil.println("Bingoooooo. Found method to annotate : "+node.resolveBinding().getName());
 				
 				NormalAnnotation methodAnnotation = createAnnotation(compilationUnit.getAST(), YConstants.METHOD_ANNOTATION, getCalleesAsMap(methodsToBeAnnotatedToMap.get(node.resolveBinding().getName())));
