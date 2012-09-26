@@ -118,10 +118,11 @@ public class TestCaseDialog extends TitleAreaDialog {
 			TableColumn tableColumn = new TableColumn(table,
 					columnAlignments[i]);
 			tableColumn.setText(tableColumns[i]);
-			if (i == 1) {
-				tableColumn.setWidth(150);
+			
+			if (i == 0) {
+				tableColumn.setWidth(500);
 			}else{
-				tableColumn.setWidth(100);
+				tableColumn.setWidth(10);
 			}
 
 		}
