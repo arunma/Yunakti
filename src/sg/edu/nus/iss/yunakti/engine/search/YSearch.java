@@ -166,6 +166,7 @@ public class YSearch {
 		YClass classUnderTest=new YClass();
 		IType mainType = compilationUnit.getAllTypes()[0];
 		classUnderTest.setFullyQualifiedName(mainType.getFullyQualifiedName());
+		classUnderTest.setName(mainType.getElementName());
 		yModel.setClassUnderTest(classUnderTest);
 		
 		ConsoleStreamUtil.classToString("Filtered YModels : ",yModel);
