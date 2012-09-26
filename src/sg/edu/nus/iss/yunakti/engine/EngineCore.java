@@ -89,6 +89,7 @@ public class EngineCore {
 		return searchResults;
 	}
 
+	//breaks up packages into class elements - compilation units
 	private List<IJavaElement> breakUpAllSearchElements(List<IJavaElement> allSearchElements) throws JavaModelException {
 
 		List<IJavaElement> granularSearchElements=new ArrayList<IJavaElement>(); //10 should be good.

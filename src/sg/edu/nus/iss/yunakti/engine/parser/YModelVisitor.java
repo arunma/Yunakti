@@ -124,12 +124,14 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		return super.visit(simpleName); 
 	}
 
+	//this method will be invoked for all the method invocations by the testcase
 	@Override
 	public boolean visit(MethodInvocation node) {
 		
 		ConsoleStreamUtil.println("Method invocation : "+node);
 		logger.fine("Method invocation :"+node);
 		
+		//get the name of the testcase
 		String callerMethod=getCallerMethod(node);
 		
 		IMethodBinding methodBinding = node.resolveMethodBinding();
@@ -140,7 +142,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		String methodName=methodDeclaration.getName();
 		
 		
-		YMethod testMethod=getTestClassMethodIfAvailable(callerMethod, className);
+		YMethod testMethod=getTestClassMethodIfAvailable(methodName, className);
 		
 		if (testMethod!=null){
 			testCase.addMethod(testMethod);
@@ -157,30 +159,31 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 	}
 	
 
-	private YMethod getTestClassMethodIfAvailable(String callerMethod, String className) {
+	
+	private YMethod getTestClassMethodIfAvailable(String methodName, String className) {
 
 		
-		if (allClassNames.contains(callerMethod)){
+		if (allClassNames.contains(methodName)){
 			return null;
 		}
 		YMethod returnYMethod=new YMethod();
 		
 		returnYMethod.setParentClass(new YClass(testCase.getFullyQualifiedName()));
 		
-		YMethod calleeMethod=new YMethod(callerMethod);
+		YMethod calleeMethod=new YMethod(methodName);
 		
-		if (allTestCaseMethods.contains(callerMethod)){
+		if (allTestCaseMethods.contains(methodName)){
 			
 			for (YMethod eachTestCaseMethod : testCase.getMethods()) {
-				if (StringUtils.equalsIgnoreCase(eachTestCaseMethod.getMethodName(), callerMethod)){
+				if (StringUtils.equalsIgnoreCase(eachTestCaseMethod.getMethodName(), methodName)){
 					returnYMethod=eachTestCaseMethod;
 					break;
 				}
 			}
 		}
 		else{
-			allTestCaseMethods.add(callerMethod);
-			returnYMethod=new YMethod(callerMethod);
+			allTestCaseMethods.add(methodName);
+			returnYMethod=new YMethod(methodName);
 		}
 		
 		//add Parent class and callee information
