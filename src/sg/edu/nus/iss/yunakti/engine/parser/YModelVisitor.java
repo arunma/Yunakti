@@ -79,6 +79,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		logger.fine("Current class name   : "+currentClassName);
 		if (!testCaseConstructed) return;
 		else if (StringUtils.equals(qualifiedName, classUnderTest.getFullyQualifiedName())) return;
+		else if (StringUtils.equals(qualifiedName, currentClassName)) return;
 		
 		YClass member=null;
 		
