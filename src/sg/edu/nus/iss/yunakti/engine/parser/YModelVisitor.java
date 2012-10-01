@@ -99,7 +99,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		
 		return super.visit(node);
 	}
-	
+
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		
@@ -114,7 +114,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		return super.visit(node);
 		
 	}
-	
+
 	
 	@Override
 	public boolean visit(SimpleName simpleName){
@@ -139,24 +139,26 @@ public class YModelVisitor extends ASTVisitor implements YModelSource{
 		IMethodBinding methodBinding = node.resolveMethodBinding();
 		ITypeBinding declaringClass = methodBinding.getDeclaringClass();
 		IMethodBinding methodDeclaration = methodBinding.getMethodDeclaration();
-
-		String cutClassName=declaringClass.getQualifiedName();
-		String cutMethodName=methodDeclaration.getName();
 		
+		String calleeClassName=declaringClass.getQualifiedName();
+		String calleeMethodName=methodDeclaration.getName();
 		
-		YMethod testMethod=getTestClassMethodIfAvailable(testCaseMethod, cutClassName, cutMethodName);
-		
-		if (testMethod!=null){
-			testCase.addMethod(testMethod);
+		if (StringUtils.equals(calleeClassName, classUnderTest.getFullyQualifiedName())) {
+			
+			YMethod testMethod=getTestClassMethodIfAvailable(testCaseMethod, calleeClassName, calleeMethodName);
+			
+			if (testMethod!=null){
+				testCase.addMethod(testMethod);
+			}
+			
+			
+			if (StringUtils.equalsIgnoreCase(calleeClassName, model.getClassUnderTest().getFullyQualifiedName())){
+				ConsoleStreamUtil.println("Adding method to be annotated : "+testMethod);
+				testCase.addMethodToBeAnnotated(testMethod);
+			}
+			
+			ConsoleStreamUtil.println("Classname and method name : "+calleeClassName +"::::"+calleeMethodName);
 		}
-		
-		
-		if (StringUtils.equalsIgnoreCase(cutClassName, model.getClassUnderTest().getFullyQualifiedName())){
-			ConsoleStreamUtil.println("Adding method to be annotated : "+testMethod);
-			testCase.addMethodToBeAnnotated(testMethod);
-		}
-		
-		ConsoleStreamUtil.println("Classname and method name : "+cutClassName +"::::"+cutMethodName);
 		return super.visit(node);
 	}
 	
