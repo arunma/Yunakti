@@ -32,9 +32,10 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	private YModel model;
 	private YunaktiGridView gridView;
 	private TestCaseDialog testCaseDialog;
-	private static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses, YModel model, YunaktiGridView view, TestCaseDialog testCaseDialog) {
+	public FilteredTCSelectionDialog(Shell shell, List<YClass> allTestClasses,
+			YModel model, YunaktiGridView view, TestCaseDialog testCaseDialog) {
 		super(shell);
 		this.parentShell = shell;
 		this.allTestClasses = allTestClasses;
@@ -71,7 +72,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			public boolean matchItem(Object item) {
 				return matches(item.toString());
 			}
-			
+
 			public boolean isConsistentItem(Object item) {
 				return true;
 			}
@@ -82,8 +83,7 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	protected Comparator<String> getItemsComparator() {
 		return new Comparator<String>() {
 			public int compare(String class1, String class2) {
-				return class1.compareTo(
-						class2);
+				return class1.compareTo(class2);
 			}
 		};
 	}
@@ -92,11 +92,10 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	protected void fillContentProvider(AbstractContentProvider contentProvider,
 			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
 			throws CoreException {
-		progressMonitor
-				.beginTask("Searching", allTestClasses.size()); //$NON-NLS-1$
-		for (Iterator<YClass> iter = allTestClasses.iterator(); iter
-				.hasNext();) {
-			contentProvider.add(iter.next().getFullyQualifiedName(), itemsFilter);
+		progressMonitor.beginTask("Searching", allTestClasses.size()); //$NON-NLS-1$
+		for (Iterator<YClass> iter = allTestClasses.iterator(); iter.hasNext();) {
+			contentProvider.add(iter.next().getFullyQualifiedName(),
+					itemsFilter);
 			progressMonitor.worked(1);
 		}
 		progressMonitor.done();
@@ -109,59 +108,70 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 	}
 
 	/**
-	 * When ok is pressed in the Filtered Selection Dialog, add the testcase to 
+	 * When ok is pressed in the Filtered Selection Dialog, add the testcase to
 	 * the model.
 	 */
 	protected void okPressed() {
 		if (this.getSelectedItems() != null
 				&& this.getSelectedItems().size() > 0) {
-			
-//			if(this.model.getTestCases().size() == 1){
-//				 MessageDialog.openError(getShell(), "Error", "Can not add more than one Test Class for a ClassUnderTest");
-//				 return;
-//
-//			}
-			
-			//Set the path while adding new TestClass to YModel.
+
+			// if(this.model.getTestCases().size() == 1){
+			// MessageDialog.openError(getShell(), "Error",
+			// "Can not add more than one Test Class for a ClassUnderTest");
+			// return;
+			//
+			// }
+
+			// Set the path while adding new TestClass to YModel.
 			String fullyQualifiedName = this.getSelectedItems()
 					.getFirstElement().toString();
 			YClass class1 = new YClass(fullyQualifiedName);
 			class1.setyClassType(YTYPE.TEST_CASE);
-		 
+
 			String path = null;
-			for(YClass testClass : allTestClasses){
-				if(fullyQualifiedName.equals(testClass.getFullyQualifiedName())){
+			for (YClass testClass : allTestClasses) {
+				if (fullyQualifiedName
+						.equals(testClass.getFullyQualifiedName())) {
 					path = testClass.getPath();
 				}
 			}
 			class1.setPath(path);
-			
+
 			boolean found = false;
-			
+
 			for (YClass testClass : model.getTestCases()) {
-				if(testClass.getFullyQualifiedName().equals(class1.getFullyQualifiedName())){
-					found = true;
+				if (testClass.getFullyQualifiedName() != null) {
+					if (testClass.getFullyQualifiedName().equals(
+							class1.getFullyQualifiedName())) {
+						found = true;
+					}
+				}else{
+					testClass.setDeleteFlag(false);
+					model.removeTestCase(testClass);
 				}
 			}
+
 			// Dont add duplicate test class again.
-			if(found == false){
-				model.addTestCase(class1);				
+			if (found == false) {
+				model.addTestCase(class1);
 				gridView.updateGridView(model);
-			    this.testCaseDialog.setTableData(model);
-				parentShell.update();				
+				this.testCaseDialog.setTableData(model);
+				parentShell.update();
 				parentShell.forceFocus();
-				try{
-				EngineCore engineCore = new EngineCore();
-				engineCore.writeAnnotation(model);
-				}catch(Exception ex){
+				try {
+					EngineCore engineCore = new EngineCore();
+					engineCore.writeAnnotation(model);
+				} catch (Exception ex) {
 					logger.fine("Error in writing back to model");
 					ex.printStackTrace();
 				}
 				super.okPressed();
-			}else{
-				 MessageDialog.openError(getShell(), "Error", "Duplicate Class: Selected Test Class has been already added");
+			} else {
+				MessageDialog
+						.openError(getShell(), "Error",
+								"Duplicate Class: Selected Test Class has been already added");
 			}
-		
+
 		}
 	}
 

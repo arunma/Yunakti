@@ -67,6 +67,9 @@ public class YPersister {
 			for (YClass eachTestCase : yModel.getTestCases()) {
 					
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				if(eachTestCase.getPath() == null){
+					continue;
+				}
 				logger.fine(eachTestCase.getPath());
 				IPath location = Path.fromOSString(eachTestCase.getPath()); 
 				IFile file = workspace.getRoot().getFileForLocation(location); 
