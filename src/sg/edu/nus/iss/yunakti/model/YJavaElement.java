@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 
 import sg.edu.nus.iss.yunakti.engine.util.YConstants;
 
