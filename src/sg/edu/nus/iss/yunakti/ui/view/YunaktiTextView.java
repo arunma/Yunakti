@@ -91,8 +91,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 
 		// Add a checkbox to toggle filter
 		
-		lstModel = new org.eclipse.swt.widgets.List(composite, SWT.BORDER
-				| SWT.MULTI);
+		lstModel = new org.eclipse.swt.widgets.List(composite, SWT.BORDER| SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 
 		getSite().getPage().addSelectionListener(this);
 		// setTextList(lstYClass);
@@ -137,7 +136,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 				//System.out.println("leftMargin"+leftMargin);
 				
 					Point extent = gc.stringExtent(printString.toString());
-					gc.drawString(printString.toString(), leftMargin,
+					gc.drawText(printString.toString(), leftMargin,
 							topMargin + font.getFontData()[0].getHeight());
 					p.endPage();
 					gc.dispose();
@@ -171,11 +170,19 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		printString=new StringBuilder();
 		if (yModels != null && !yModels.isEmpty()) {
 			ObjectMapper mapper=new ObjectMapper();
-			mapper.configure(SerializationFeature.INDENT_OUTPUT, true); 
+			//mapper.configure(SerializationFeature.INDENT_OUTPUT, true); 
 			try {
 				//System.out.println("objMapper first"+mapper.writeValueAsString(yModels));
-				objMapper=new String[1];
-			objMapper[0]=mapper.writerWithDefaultPrettyPrinter().writeValueAsString(yModels);
+				objMapper=new String[yModels.size()];
+				int cnt=0;
+				for(YModel ym:yModels)
+				{
+					objMapper[cnt]=mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ym);
+					printString.append(objMapper[cnt]);
+					cnt++;
+					
+				}
+			
 				System.out.println("objMapper"+objMapper[0]);
 			} catch (JsonGenerationException e) {
 				// TODO Auto-generated catch block
@@ -198,7 +205,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		
 			if(objMapper!=null && objMapper.length>0)
 			{
-			printString.append(objMapper[0]);
+			//printString.append(objMapper[0]);
 			//lstModel.setItem(0, objMapper[0]);
 		lstModel.setItems(objMapper);
 			}
