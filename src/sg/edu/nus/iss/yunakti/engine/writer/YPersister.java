@@ -3,10 +3,11 @@ package sg.edu.nus.iss.yunakti.engine.writer;
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.METHOD_ANNOTATION;
 import static sg.edu.nus.iss.yunakti.engine.util.YConstants.TEST_CASE_ANNOTATION;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
@@ -99,7 +100,7 @@ public class YPersister {
 					compilationUnit=addTestCaseImport(compilationUnit);
 				}
 				
-				Map<String, List<YMethod>> methodsToBeAnnotatedToMap = convertMethodsToBeAnnotatedToMap(eachTestCase.getMethodsToBeAnnotated());
+				Map<String, Set<YMethod>> methodsToBeAnnotatedToMap = convertMethodsToBeAnnotatedToMap(eachTestCase.getMethodsToBeAnnotated());
 				addMethodLevelAnnotations(methodsToBeAnnotatedToMap, compilationUnit, astRewriter);
 				
 				String updatedUnit = "";
@@ -135,12 +136,12 @@ public class YPersister {
 	
 
 	//convert the list of annotated methods into a map<methodname, callees>
-	private Map<String, List<YMethod>> convertMethodsToBeAnnotatedToMap(List<YMethod> methodsToBeAnnotated) {
-		Map<String,List<YMethod>> methodAnnotationMap=null;
+	private Map<String, Set<YMethod>> convertMethodsToBeAnnotatedToMap(List<YMethod> methodsToBeAnnotated) {
+		Map<String,Set<YMethod>> methodAnnotationMap=null;
 		
 		if (methodsToBeAnnotated!=null && methodsToBeAnnotated.size()>0){
 			
-			methodAnnotationMap=new HashMap<String,List<YMethod>>();
+			methodAnnotationMap=new HashMap<String,Set<YMethod>>();
 			
 			for (YMethod eachTestMethodToBeAnnotated : methodsToBeAnnotated) {
 				
@@ -148,7 +149,7 @@ public class YPersister {
 					methodAnnotationMap.get(eachTestMethodToBeAnnotated.getMethodName()).addAll(eachTestMethodToBeAnnotated.getCallees());
 				}
 				else{
-					List<YMethod> yMethodList=new ArrayList<YMethod>();
+					Set<YMethod> yMethodList=new HashSet<YMethod>();
 					yMethodList.addAll(eachTestMethodToBeAnnotated.getCallees());
 					methodAnnotationMap.put(eachTestMethodToBeAnnotated.getMethodName(), yMethodList);
 				}
@@ -285,7 +286,7 @@ public class YPersister {
 	
 	
 
-	private void addMethodLevelAnnotations(Map<String, List<YMethod>> methodsToBeAnnotatedToMap, CompilationUnit compilationUnit, ASTRewrite rewriter) {
+	private void addMethodLevelAnnotations(Map<String, Set<YMethod>> methodsToBeAnnotatedToMap, CompilationUnit compilationUnit, ASTRewrite rewriter) {
 		compilationUnit.accept(new MethodAnnotationVisitor(methodsToBeAnnotatedToMap, compilationUnit, rewriter));
 		
 	}
@@ -296,10 +297,10 @@ public class YPersister {
 		
 		private ASTRewrite rewriter;
 		private CompilationUnit compilationUnit;
-		private Map<String, List<YMethod>> methodsToBeAnnotatedToMap;
+		private Map<String, Set<YMethod>> methodsToBeAnnotatedToMap;
 		private boolean firstAnnotation=true;
 
-		public MethodAnnotationVisitor(Map<String, List<YMethod>> methodsToBeAnnotatedToMap, CompilationUnit compilationUnit, ASTRewrite rewriter) {
+		public MethodAnnotationVisitor(Map<String, Set<YMethod>> methodsToBeAnnotatedToMap, CompilationUnit compilationUnit, ASTRewrite rewriter) {
 			this.methodsToBeAnnotatedToMap=methodsToBeAnnotatedToMap;
 			this.compilationUnit=compilationUnit;
 			this.rewriter=rewriter;
@@ -340,7 +341,13 @@ public class YPersister {
 		}
 		
 
-		private Map<String, String> getCalleesAsMap(List<YMethod> calleeMethodList) {
+		/**
+		 * Takes a set of callee methods for a testcase and returns a map
+		 * with key as the method under test and values as a comma separated callee names
+		 * @param calleeMethodList
+		 * @return
+		 */
+		private Map<String, String> getCalleesAsMap(Set<YMethod> calleeMethodList) {
 		
 			Map<String,String> calleeMethodProperty=null;
 			
@@ -360,8 +367,6 @@ public class YPersister {
 		
 	}
 	
-	
-
 	
 	private void writeToFile(IDocument document, IFile file) throws CoreException{
 		try {

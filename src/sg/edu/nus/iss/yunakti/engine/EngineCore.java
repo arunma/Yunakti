@@ -45,10 +45,17 @@ public class EngineCore {
 			List<IJavaElement> allSearchElements = search.gatherAllSearchElementsFromSelection(selection);
 			search.search(allSearchElements);
 			searchResults = search.getResults(allSearchElements,false);
+			
 			//if the selection is a class under test, then there wont be any results - do a full scan
 			//if the selection is a class under test and there are not mappings at all, then return a dummy YModel
 			//this is done in the filterModels of the getResults method
+		
 			if (searchResults.size()==0){
+			
+			//Fix on the final sprint - Looks like we should be showing the mapped testclasses along with unmapped ones 
+			//if we select the entire package. So, chuck the getResults method which is target specific (selecting a specific mapped class),
+			//we have to do a full scan anyway
+			
 				searchResults = doFullScanOfProject(search, allSearchElements);
 			}
 			
@@ -79,13 +86,18 @@ public class EngineCore {
 		//class files. We need to split them up for safe filtering
 		allSearchElements=breakUpAllSearchElements(allSearchElements);
 		
-		//No Search results. Let's search the entire project for class references
-		IJavaProject javaProject = allSearchElements.get(0).getJavaProject();
-		IPackageFragment[] packageFragments = javaProject.getPackageFragments();
-		
-		
-		search.search(getAllJavaElementsFromPackageFragments(packageFragments));
-		searchResults = search.getResults(allSearchElements, true);
+		try {
+			//No Search results. Let's search the entire project for class references
+			IJavaProject javaProject = allSearchElements.get(0).getJavaProject();
+			IPackageFragment[] packageFragments = javaProject.getPackageFragments();
+			
+			
+			search.search(getAllJavaElementsFromPackageFragments(packageFragments));
+			searchResults = search.getResults(allSearchElements, true);
+		} catch (IndexOutOfBoundsException e) {
+			searchResults=new ArrayList<YModel>();
+			e.printStackTrace();
+		}
 		return searchResults;
 	}
 
