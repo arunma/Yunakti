@@ -32,6 +32,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
@@ -92,6 +93,7 @@ public class YPersister {
 				
 				if (!eachTestCase.isDeleteFlag()){
 					typeListRewriter.insertAt(testCaseAnnotation, 0, null);
+					compilationUnit=addTestCaseImport(compilationUnit);
 				}
 				
 				Map<String, List<YMethod>> methodsToBeAnnotatedToMap = convertMethodsToBeAnnotatedToMap(eachTestCase.getMethodsToBeAnnotated());
@@ -110,6 +112,9 @@ public class YPersister {
 				Document doc = new Document(updatedUnit);
 				
 				String newSource=doc.get();
+				
+				ConsoleStreamUtil.println("Updated unit String After  \n" + doc.get());
+				
 				iCompilationUnit.getBuffer().setContents(newSource);
 				
 				edits = astRewriter.rewriteAST(doc, null);
@@ -289,6 +294,7 @@ public class YPersister {
 		private ASTRewrite rewriter;
 		private CompilationUnit compilationUnit;
 		private Map<String, List<YMethod>> methodsToBeAnnotatedToMap;
+		private boolean firstAnnotation=true;
 
 		public MethodAnnotationVisitor(Map<String, List<YMethod>> methodsToBeAnnotatedToMap, CompilationUnit compilationUnit, ASTRewrite rewriter) {
 			this.methodsToBeAnnotatedToMap=methodsToBeAnnotatedToMap;
@@ -303,6 +309,14 @@ public class YPersister {
 			return super.visit(node);
 		}
 		
+		private void addMethodImport() {
+			 AST ast = compilationUnit.getAST();
+			 ImportDeclaration id = ast.newImportDeclaration();
+			 String classToImport = "com.test.yunakti.annotation.TC";
+			 id.setName(ast.newName(classToImport.split("\\.")));
+			 compilationUnit.imports().add(id); 
+		}
+
 		private void addAnnotation(MethodDeclaration node) {
 			
 			final ListRewrite methodListRewriter= rewriter.getListRewrite(node,node.getModifiersProperty());
@@ -310,6 +324,11 @@ public class YPersister {
 			ConsoleStreamUtil.println("Adding annotation for "+node.resolveBinding().getName());
 			
 			if (methodsToBeAnnotatedToMap!=null && methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName())){
+				
+				if (firstAnnotation){
+					addMethodImport();
+					firstAnnotation=false;
+				}
 				ConsoleStreamUtil.println("Bingoooooo. Found method to annotate : "+node.resolveBinding().getName());
 				
 				NormalAnnotation methodAnnotation = createAnnotation(compilationUnit.getAST(), YConstants.METHOD_ANNOTATION, getCalleesAsMap(methodsToBeAnnotatedToMap.get(node.resolveBinding().getName())));
@@ -365,5 +384,14 @@ public class YPersister {
 				}
 			}
 		}, ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(file), IResource.NONE, new NullProgressMonitor());
+	}
+	
+	private CompilationUnit addTestCaseImport(CompilationUnit compilationUnit) {
+		 AST ast = compilationUnit.getAST();
+		 ImportDeclaration id = ast.newImportDeclaration();
+		 String classToImport = "com.test.yunakti.annotation.MUT";
+		 id.setName(ast.newName(classToImport.split("\\.")));
+		 compilationUnit.imports().add(id); 
+		 return compilationUnit;
 	}
 }
