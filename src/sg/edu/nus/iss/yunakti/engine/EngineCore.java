@@ -43,21 +43,22 @@ public class EngineCore {
 		try {
 			YSearch search=new YSearch();
 			List<IJavaElement> allSearchElements = search.gatherAllSearchElementsFromSelection(selection);
-			search.search(allSearchElements);
-			searchResults = search.getResults(allSearchElements,false);
+			//search.search(allSearchElements);
+			//searchResults = search.getResults(allSearchElements,false);
 			
 			//if the selection is a class under test, then there wont be any results - do a full scan
 			//if the selection is a class under test and there are not mappings at all, then return a dummy YModel
 			//this is done in the filterModels of the getResults method
 		
-			if (searchResults.size()==0){
+			//if (searchResults.size()==0){
 			
+			//IMPORTANT : You could read the above code for history for why we do a fullScan of Project all the time
 			//Fix on the final sprint - Looks like we should be showing the mapped testclasses along with unmapped ones 
 			//if we select the entire package. So, chuck the getResults method which is target specific (selecting a specific mapped class),
 			//we have to do a full scan anyway
 			
 				searchResults = doFullScanOfProject(search, allSearchElements);
-			}
+			//}
 			
 			//logger.fine("Search results:"+searchResults);
 		} catch (Exception e) {
@@ -95,6 +96,7 @@ public class EngineCore {
 			search.search(getAllJavaElementsFromPackageFragments(packageFragments));
 			searchResults = search.getResults(allSearchElements, true);
 		} catch (IndexOutOfBoundsException e) {
+			//Comes up when you select an empty package.
 			searchResults=new ArrayList<YModel>();
 			e.printStackTrace();
 		}

@@ -117,12 +117,12 @@ public class YPersister {
 				
 				String newSource=doc.get();
 				
-				ConsoleStreamUtil.println("Updated unit String After  \n" + doc.get());
+				//ConsoleStreamUtil.println("Updated unit String After  \n" + doc.get());
 				
 				iCompilationUnit.getBuffer().setContents(newSource);
 				
 				edits = astRewriter.rewriteAST(doc, null);
-				ConsoleStreamUtil.println(edits.toString());
+				//ConsoleStreamUtil.println(edits.toString());
 				edits.apply(doc);
 				writeToFile(doc,file);
 
@@ -325,7 +325,7 @@ public class YPersister {
 			
 			final ListRewrite methodListRewriter= rewriter.getListRewrite(node,node.getModifiersProperty());
 
-			ConsoleStreamUtil.println("Adding annotation for "+node.resolveBinding().getName());
+			//ConsoleStreamUtil.println("Adding annotation for "+node.resolveBinding().getName());
 			
 			if (methodsToBeAnnotatedToMap!=null && methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName())){
 				
@@ -333,7 +333,7 @@ public class YPersister {
 					addMethodImport();
 					firstAnnotation=false;
 				}
-				ConsoleStreamUtil.println("Bingoooooo. Found method to annotate : "+node.resolveBinding().getName());
+				//ConsoleStreamUtil.println("Bingoooooo. Found method to annotate : "+node.resolveBinding().getName());
 				
 				NormalAnnotation methodAnnotation = createAnnotation(compilationUnit.getAST(), YConstants.METHOD_ANNOTATION, getCalleesAsMap(methodsToBeAnnotatedToMap.get(node.resolveBinding().getName())));
 				methodListRewriter.insertAt(methodAnnotation, 0, null);

@@ -109,7 +109,8 @@ public class YSearch {
 		}
 		
 		HashMap<String, YModel> cutModelMap = getYModelsAsCUTYModelMap(models);
-		models=filterSearchElementsFromModels(allSearchElements, cutModelMap);
+		HashMap<String, YModel> tcModelMap = getYModelsAsTCYModelMap(models);
+		models=filterSearchElementsFromModels(allSearchElements, cutModelMap, tcModelMap);
 		
 		
 		return models;
@@ -117,6 +118,15 @@ public class YSearch {
 	}
 
 
+	/**
+	 * This is an utility method for better lookup during filtering. 
+	 * 
+	 * Say, you do a full scan of the project and have a list of ymodels. But you select just a subsection (eg : a package)
+	 * Instead of doing a linear search on YModel list, we could do a constant time search with HashMap
+	 * 
+	 * @param models
+	 * @return
+	 */
 	private HashMap<String,YModel> getYModelsAsCUTYModelMap(List<YModel> models){
 		HashMap<String,YModel> cutModelMap=new HashMap<String,YModel>();
 		for (YModel eachModel : models) {
@@ -127,29 +137,48 @@ public class YSearch {
 		
 	}
 	
-	private List<YModel> filterSearchElementsFromModels(List<IJavaElement> allSearchElements, HashMap<String, YModel> cutModelMap) {
+	//Same as above. just that the key is a testcase
+	private HashMap<String,YModel> getYModelsAsTCYModelMap(List<YModel> models){
+		HashMap<String,YModel> tcModelMap=new HashMap<String,YModel>();
+		//Hail 0(n^2)
+		for (YModel eachModel : models) {
+			for (YClass eachTestCase:eachModel.getTestCases()){
+				tcModelMap.put(eachTestCase.getFullyQualifiedName(), eachModel);	
+			}
+				
+		}
+		
+		return tcModelMap;
+		
+	}
+	
+	private List<YModel> filterSearchElementsFromModels(List<IJavaElement> allSearchElements, HashMap<String, YModel> cutModelMap, HashMap<String, YModel> tcModelMap) {
 		
 		List<YModel> filteredModels=new ArrayList<YModel>();
 		
-		ICompilationUnit compilationUnit=null;
+		ICompilationUnit eachSearchCompilationUnit=null;
 		for (IJavaElement eachSearchElement : allSearchElements) {
 			
 			ConsoleStreamUtil.println(" Each element name "+eachSearchElement.getElementName());
 			if (eachSearchElement instanceof ICompilationUnit){
-				compilationUnit = (ICompilationUnit)eachSearchElement;
-				IType mainType =null;
+				eachSearchCompilationUnit = (ICompilationUnit)eachSearchElement;
+				IType searchMainType =null;
 				try {
-					mainType = compilationUnit.getAllTypes()[0];
+					searchMainType = eachSearchCompilationUnit.getAllTypes()[0];
 				
-					ConsoleStreamUtil.println(" AWESOME BEFORE "+mainType.getFullyQualifiedName());	
-					if (cutModelMap.containsKey(mainType.getFullyQualifiedName())){
-						ConsoleStreamUtil.println(" AWESOME !!!! "+mainType.getFullyQualifiedName());	
-						filteredModels.add(cutModelMap.get(mainType.getFullyQualifiedName()));
+					ConsoleStreamUtil.println(" AWESOME BEFORE "+searchMainType.getFullyQualifiedName());	
+					if (cutModelMap.containsKey(searchMainType.getFullyQualifiedName())){
+						ConsoleStreamUtil.println(" CUT !!!! "+searchMainType.getFullyQualifiedName());	
+						filteredModels.add(cutModelMap.get(searchMainType.getFullyQualifiedName()));
+					}
+					else if (tcModelMap.containsKey(searchMainType.getFullyQualifiedName())){
+						ConsoleStreamUtil.println(" TESTCASE !!!! "+searchMainType.getFullyQualifiedName());	
+						filteredModels.add(tcModelMap.get(searchMainType.getFullyQualifiedName()));
 					}
 					else{
 						//Construct a dummy YModel. Why did i do it here?  Optionally, I could have done it in the engine core.
 						//However, there could be a time when a non-mapped class and a mapped class is selected under the same selection
-						YModel dummyYModelForSelection = createDummyYModelForSelection(compilationUnit);
+						YModel dummyYModelForSelection = createDummyYModelForSelection(eachSearchCompilationUnit);
 						filteredModels.add(dummyYModelForSelection);
 					}
 				} catch (JavaModelException e) {
