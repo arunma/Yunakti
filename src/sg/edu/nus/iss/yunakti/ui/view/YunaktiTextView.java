@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -41,6 +39,10 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
 
@@ -154,6 +156,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		Composite composite = new Composite(parent, SWT.NONE);
 
 		// Add a checkbox to toggle filter
+		
 		lstModel = new org.eclipse.swt.widgets.List(composite, SWT.BORDER
 				| SWT.MULTI);
 
@@ -227,6 +230,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 	}
 	public void setListModel(List<YModel> yModels)
 	{
+		System.out.println("setListModel"+yModels);
 		logger.fine("ymodels"+yModels);
 		logger.fine("lstModel"+lstModel);
 		String[] objMapper=null;

@@ -4,12 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonMethod;
-@JsonIgnoreProperties(value={ "parentClass" ,"modifiers","returnType","parameters","members","exceptions","annotations"})
-@JsonAutoDetect(value=JsonMethod.GETTER)
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
+
+@JsonInclude(value=JsonInclude.Include.NON_EMPTY) 
+@JsonIgnoreProperties(value={ "parentClass" ,"modifiers","returnType","parameters","members","exceptions","annotations","deleteFlag"})
+@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY) 
+
 public class YMethod implements Serializable{
 
 	private YClass parentClass =null;
@@ -19,6 +24,7 @@ public class YMethod implements Serializable{
 	private List<YClass> members=new ArrayList<YClass>();
 	private List<YClass> exceptions=new ArrayList<YClass>();
 	private List<YAnnotation> annotations=new ArrayList<YAnnotation>();
+	@JsonProperty("testmethod")
 	private List<YMethod> callees=new ArrayList<YMethod>();
 	private String methodName;
 	

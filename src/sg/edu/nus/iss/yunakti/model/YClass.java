@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 
 @JsonIgnoreProperties(value={ "yClassType" ,"accessModifiers","annotations","methodsToBeAnnotated","deleteFlag","fullyQualifiedName" ,"path"})
-
+@JsonInclude(value=JsonInclude.Include.NON_EMPTY) 
 @SuppressWarnings("serial")
 public class YClass extends YJavaElement implements Serializable{
 	
