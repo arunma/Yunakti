@@ -137,19 +137,41 @@ public class FilteredTCSelectionDialog extends FilteredItemsSelectionDialog {
 			}
 			class1.setPath(path);
 
+			boolean empty = false;
 			boolean found = false;
-
-			for (YClass testClass : model.getTestCases()) {
-				if (testClass.getFullyQualifiedName() != null) {
-					if (testClass.getFullyQualifiedName().equals(
-							class1.getFullyQualifiedName())) {
-						found = true;
-					}
-				}else{
-					testClass.setDeleteFlag(false);
-					model.removeTestCase(testClass);
+			
+			if(model.getTestCases().size() == 1){
+				if(model.getTestCases().get(0).getFullyQualifiedName()==null){
+					empty = true;
 				}
 			}
+
+			if(empty == true){
+				YClass classUnderTest =  model.getClassUnderTest();
+				model = new YModel();
+				model.setClassUnderTest(classUnderTest);
+			}else{
+				for (YClass testClass : model.getTestCases()) {
+						if (testClass.getFullyQualifiedName().equals(
+								class1.getFullyQualifiedName())) {
+							found = true;
+				  
+					}
+				}
+			}
+			
+			
+//			for (YClass testClass : model.getTestCases()) {
+//				if (testClass.getFullyQualifiedName() != null) {
+//					if (testClass.getFullyQualifiedName().equals(
+//							class1.getFullyQualifiedName())) {
+//						found = true;
+//					}
+//				}else{
+//					testClass.setDeleteFlag(false);
+//					model.removeTestCase(testClass);
+//				}
+//			}
 
 			// Dont add duplicate test class again.
 			if (found == false) {
