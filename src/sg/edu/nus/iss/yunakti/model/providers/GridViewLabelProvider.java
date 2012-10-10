@@ -179,8 +179,24 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 					YMethod yMethod = (YMethod) element;
 					switch (columnIndex) {
 					case 0:
+					{
+						String strMethod="";
+						StringBuilder builder=new StringBuilder();
+						for(YMethod curyMethod : yMethod.getCallees()){
+							
+							builder.append(curyMethod.getMethodName()).append(", ");
+							
+							
 						
-						return yMethod.getCallees().get(0).getMethodName();
+					}
+					
+					strMethod = formatToStr(builder);
+					
+					return strMethod;
+						
+						
+					}
+						//return yMethod.getCallees().get(0).getMethodName();
 					case 1:
 						
 						return yMethod.getMethodName();
