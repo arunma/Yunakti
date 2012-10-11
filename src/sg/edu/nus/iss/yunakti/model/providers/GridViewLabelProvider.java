@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.yunakti.model.providers;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -101,7 +102,7 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 					return JavaUI.getSharedImages().getImage(org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PUBLIC);
 				case 1:
 					
-					return Activator.getImageDescriptor("icons/search.gif").createImage();
+					return Activator.getImageDescriptor("icons/open.gif").createImage();
 				case 2:
 					
 					return null;
@@ -177,9 +178,11 @@ public class GridViewLabelProvider implements ITableLabelProvider {
 					
 
 					YMethod yMethod = (YMethod) element;
+					
 					switch (columnIndex) {
 					case 0:
 					{
+						/*Added By Alphy on 10/10/2012 to display CUT method names together*/
 						String strMethod="";
 						StringBuilder builder=new StringBuilder();
 						for(YMethod curyMethod : yMethod.getCallees()){
@@ -237,12 +240,16 @@ private String getHelperClasses(YModel yModel){
 		
 String strHelperClasses = null;
 
-
+List<String> lstHelperClassname=new ArrayList<String>();
 StringBuilder builder=new StringBuilder();
 for (YClass testCase: yModel.getTestCases()){
-
+/*Added By Alphy on 11/10/2012 to make Helperclass output unique*/
 for (YClass testCaseMember:testCase.getMembers()){
+	if(!lstHelperClassname.contains(testCaseMember.getName()))
+	{
 	builder.append(testCaseMember.getName()).append(", ");
+	lstHelperClassname.add(testCaseMember.getName());
+	}
 }
 }
 	strHelperClasses = formatToStr(builder);

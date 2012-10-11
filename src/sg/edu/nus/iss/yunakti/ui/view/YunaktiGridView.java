@@ -357,7 +357,7 @@ private List<String> getHelperClasses(String className){
 	
 	List<String> helperClasses = new ArrayList<String>();
 	
-	
+	/*Added By Alphy on 11/10/2012 to make helperclass unique*/
 	List<YClass> testCases = getTestCasses(className).getTestCases();
 	
 	
@@ -366,7 +366,10 @@ private List<String> getHelperClasses(String className){
 		for(YClass helperClass: yClass.getMembers()){
 			
 			//helperClasses.add(helperClass.getName());
+			if(!helperClasses.contains(helperClass.getFullyQualifiedName()))
+			{
 			helperClasses.add(helperClass.getFullyQualifiedName());
+			}
 			
 		}
 		
