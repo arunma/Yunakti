@@ -148,9 +148,9 @@ public class YModelVisitor extends ASTVisitor implements YModelSource {
 		IMethodBinding methodBinding = node.resolveMethodBinding();
 		ITypeBinding declaringClass = methodBinding.getDeclaringClass();
 		IMethodBinding methodDeclaration = methodBinding.getMethodDeclaration();
-
 		String calleeClassName = declaringClass.getQualifiedName();
-		String calleeMethodName = methodDeclaration.getName();
+		String param = getMethodParameters(methodBinding);
+		String calleeMethodName = methodDeclaration.getName() + param;
 
 		if (StringUtils.equals(calleeClassName,
 				classUnderTest.getFullyQualifiedName())) {
@@ -159,22 +159,23 @@ public class YModelVisitor extends ASTVisitor implements YModelSource {
 					calleeClassName, calleeMethodName);
 
 			if (testMethod != null) {
-				/*Added By Alphy on 11/10/2012 to remove duplicate testmethod*/
+				/* Added By Alphy on 11/10/2012 to remove duplicate testmethod */
 				if (!testCase.getMethods().contains(testMethod)) {
+					// YClass paramClass=new
 
 					testCase.addMethod(testMethod);
 				}
 			}
-
+		
 			if (StringUtils.equalsIgnoreCase(calleeClassName, model
 					.getClassUnderTest().getFullyQualifiedName())) {
 
 				testCase.addMethodToBeAnnotated(testMethod);
 
 			}
-
 			ConsoleStreamUtil.println("Classname and method name : "
-					+ calleeClassName + "::::" + calleeMethodName);
+					+ calleeClassName + "::::" + testCase.getMethodsToBeAnnotated());
+			
 		}
 		return super.visit(node);
 	}
@@ -213,14 +214,18 @@ public class YModelVisitor extends ASTVisitor implements YModelSource {
 		if (classUnderTest != null
 				&& StringUtils.equals(classUnderTest.getFullyQualifiedName(),
 						cutClassName)) {
-		
-			if (!classUnderTest.getMethods().contains(calleeMethod)) {
-				/*Added By Alphy on 11/10/2012 to remove duplicate callee*/
-				classUnderTest.addMethod(calleeMethod);
-			}
-		}
 
-		returnYMethod.addCallee(calleeMethod);
+			//if (!classUnderTest.getMethods().contains(calleeMethod)) {
+				/* Added By Alphy on 11/10/2012 to remove duplicate callee */
+
+				classUnderTest.addMethod(calleeMethod);
+
+			//}
+		}
+		ConsoleStreamUtil.println("classUnderTest getmethod"+classUnderTest.getMethods());
+		if (returnYMethod.getCallees().isEmpty()) {
+			returnYMethod.addCallee(calleeMethod);
+		}
 
 		return returnYMethod;
 	}
@@ -233,9 +238,45 @@ public class YModelVisitor extends ASTVisitor implements YModelSource {
 			currentNode = currentNode.getParent();
 		}
 		callerMethodNode = (MethodDeclaration) currentNode;
+		// ConsoleStreamUtil.println("callerMethodNode parameter"+callerMethodNode.resolveBinding().getMethodDeclaration().getParameterTypes());
 
+		String param = getMethodParameters(callerMethodNode.resolveBinding());
 		return callerMethodNode.resolveBinding().getMethodDeclaration()
-				.getName();
+				.getName()
+				+ param;
+
+	}
+
+	private String getMethodParameters(IMethodBinding methodBinding) {
+		ITypeBinding[] typeBinding = methodBinding.getParameterTypes();
+		StringBuilder paramType = new StringBuilder();
+		;
+		paramType.append("(");
+		for (ITypeBinding itype : typeBinding) {
+			paramType.append(itype.getName());
+			paramType.append(",");
+		}
+		
+		int indx = paramType.lastIndexOf(",");
+		if (indx > 0) {
+			paramType.deleteCharAt(indx);
+		}
+		paramType.append(")");
+		
+		return paramType.toString();
+
+	}
+
+	private MethodDeclaration getCallerMethodDeclaration(MethodInvocation node) {
+
+		MethodDeclaration callerMethodNode = null;
+		ASTNode currentNode = node;
+		while (currentNode.getNodeType() != ASTNode.METHOD_DECLARATION) {
+			currentNode = currentNode.getParent();
+		}
+		callerMethodNode = (MethodDeclaration) currentNode;
+		// ConsoleStreamUtil.println("callerMethodNode parameter"+callerMethodNode.resolveBinding().getMethodDeclaration().getParameterTypes());
+		return callerMethodNode;
 
 	}
 

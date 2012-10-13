@@ -130,7 +130,9 @@ public class YSearch {
 	private HashMap<String,YModel> getYModelsAsCUTYModelMap(List<YModel> models){
 		HashMap<String,YModel> cutModelMap=new HashMap<String,YModel>();
 		for (YModel eachModel : models) {
-			cutModelMap.put(eachModel.getClassUnderTest().getFullyQualifiedName(), eachModel);	
+			
+			cutModelMap.put(eachModel.getClassUnderTest().getFullyQualifiedName(), eachModel);
+			
 		}
 		
 		return cutModelMap;
@@ -164,6 +166,8 @@ public class YSearch {
 				eachSearchCompilationUnit = (ICompilationUnit)eachSearchElement;
 				IType searchMainType =null;
 				try {
+					if(eachSearchCompilationUnit.getAllTypes()!=null && eachSearchCompilationUnit.getAllTypes().length>0 )
+					{
 					searchMainType = eachSearchCompilationUnit.getAllTypes()[0];
 				
 					ConsoleStreamUtil.println(" AWESOME BEFORE "+searchMainType.getFullyQualifiedName());	
@@ -181,10 +185,14 @@ public class YSearch {
 						YModel dummyYModelForSelection = createDummyYModelForSelection(eachSearchCompilationUnit);
 						filteredModels.add(dummyYModelForSelection);
 					}
-				} catch (JavaModelException e) {
+					}
+				}
+				 catch (JavaModelException e) {
 					e.printStackTrace();
 				}
-			}
+					
+				}
+			
 		}
 		
 		return filteredModels;
@@ -221,7 +229,9 @@ public class YSearch {
 			
 			YModel tempYModel=null;
 			for (YModel yModel : models) {
-				
+				ConsoleStreamUtil.println("yModel.getClassUnderTest()"+yModel.getClassUnderTest());
+				if(yModel.getClassUnderTest()!=null)
+				{
 				if (groupedModels.containsKey(yModel.getClassUnderTest().getFullyQualifiedName())){
 					tempYModel=groupedModels.get(yModel.getClassUnderTest().getFullyQualifiedName());
 					tempYModel.addAllTestCase(yModel.getTestCases());
@@ -229,6 +239,7 @@ public class YSearch {
 				}
 				else{
 					groupedModels.put(yModel.getClassUnderTest().getFullyQualifiedName(), yModel);
+				}
 				}
 				
 			}

@@ -33,6 +33,8 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -108,6 +110,7 @@ public class YPersister {
 				try {
 					updatedUnit = ((ICompilationUnit)compilationUnit.getJavaElement()).getSource();
 					logger.fine("Updated unit String Before =====> \n" + updatedUnit);
+					
 				} catch (JavaModelException e1) {
 					e1.printStackTrace();
 					throw e1;
@@ -126,7 +129,7 @@ public class YPersister {
 				edits.apply(doc);
 				writeToFile(doc,file);
 
-			    
+				
 				logger.fine("Updated unit String After  \n" + doc.get());
 			}
 		}
@@ -138,7 +141,7 @@ public class YPersister {
 	//convert the list of annotated methods into a map<methodname, callees>
 	private Map<String, Set<YMethod>> convertMethodsToBeAnnotatedToMap(List<YMethod> methodsToBeAnnotated) {
 		Map<String,Set<YMethod>> methodAnnotationMap=null;
-		
+		ConsoleStreamUtil.println("methodAnnotationMap before"+methodsToBeAnnotated);
 		if (methodsToBeAnnotated!=null && methodsToBeAnnotated.size()>0){
 			
 			methodAnnotationMap=new HashMap<String,Set<YMethod>>();
@@ -156,6 +159,7 @@ public class YPersister {
 				
 			}
 		}
+		ConsoleStreamUtil.println("methodAnnotationMap"+methodAnnotationMap);
 		return methodAnnotationMap;
 	}
 
@@ -325,9 +329,11 @@ public class YPersister {
 			
 			final ListRewrite methodListRewriter= rewriter.getListRewrite(node,node.getModifiersProperty());
 
-			//ConsoleStreamUtil.println("Adding annotation for "+node.resolveBinding().getName());
-			
-			if (methodsToBeAnnotatedToMap!=null && methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName())){
+			ConsoleStreamUtil.println("Adding annotation for "+node.resolveBinding().getName());
+			/**Added By Alphy to add parameters**/
+			String param=getMethodParameters(node.resolveBinding());
+				
+			if (methodsToBeAnnotatedToMap!=null && methodsToBeAnnotatedToMap.containsKey(node.resolveBinding().getName()+param)){
 				
 				if (firstAnnotation){
 					addMethodImport();
@@ -335,12 +341,30 @@ public class YPersister {
 				}
 				//ConsoleStreamUtil.println("Bingoooooo. Found method to annotate : "+node.resolveBinding().getName());
 				
-				NormalAnnotation methodAnnotation = createAnnotation(compilationUnit.getAST(), YConstants.METHOD_ANNOTATION, getCalleesAsMap(methodsToBeAnnotatedToMap.get(node.resolveBinding().getName())));
+				NormalAnnotation methodAnnotation = createAnnotation(compilationUnit.getAST(), YConstants.METHOD_ANNOTATION, getCalleesAsMap(methodsToBeAnnotatedToMap.get(node.resolveBinding().getName()+param)));
 				methodListRewriter.insertAt(methodAnnotation, 0, null);
 			}
 		}
 		
+		private String getMethodParameters(IMethodBinding methodBinding) {
+			ITypeBinding[] typeBinding = methodBinding.getParameterTypes();
+			StringBuilder paramType = new StringBuilder();
+			;
+			paramType.append("(");
+			for (ITypeBinding itype : typeBinding) {
+				paramType.append(itype.getName());
+				paramType.append(",");
+			}
+		
+			int indx = paramType.lastIndexOf(",");
+			if (indx > 0) {
+				paramType.deleteCharAt(indx);
+			}
+			paramType.append(")");
+		
+			return paramType.toString();
 
+		}
 		/**
 		 * Takes a set of callee methods for a testcase and returns a map
 		 * with key as the method under test and values as a comma separated callee names
