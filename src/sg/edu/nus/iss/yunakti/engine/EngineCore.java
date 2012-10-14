@@ -15,8 +15,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jdt.internal.core.PackageFragment;
+import org.eclipse.jdt.internal.core.PackageFragmentRoot;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -59,7 +62,7 @@ public class EngineCore {
 			
 				searchResults = doFullScanOfProject(search, allSearchElements);
 			//}
-			
+			ConsoleStreamUtil.println("searchResults"+searchResults);
 			//logger.fine("Search results:"+searchResults);
 		} catch (Exception e) {
 			ConsoleStreamUtil.print(e);
@@ -90,8 +93,9 @@ public class EngineCore {
 		try {
 			//No Search results. Let's search the entire project for class references
 			IJavaProject javaProject = allSearchElements.get(0).getJavaProject();
+			//ConsoleStreamUtil.println("javaProject" + javaProject);
 			IPackageFragment[] packageFragments = javaProject.getPackageFragments();
-			
+		//	ConsoleStreamUtil.println("packageFragments" + packageFragments);
 			
 			search.search(getAllJavaElementsFromPackageFragments(packageFragments));
 			searchResults = search.getResults(allSearchElements, true);
@@ -110,16 +114,54 @@ public class EngineCore {
 		
 		if (allSearchElements!=null){
 			for (IJavaElement iJavaElement : allSearchElements) {
+				
 				if (iJavaElement instanceof PackageFragment){
+					
 					IPackageFragment packageFragment=(IPackageFragment)iJavaElement;
 					granularSearchElements.addAll(Arrays.asList(packageFragment.getCompilationUnits()));
 				}
+				else
+					if (iJavaElement instanceof PackageFragmentRoot){
+						/**Added By Alphy to check if seleted element is fragment root **/
+						IPackageFragmentRoot packageFragmentRoot=(IPackageFragmentRoot)iJavaElement;
+						IJavaElement[] iElement=packageFragmentRoot.getChildren();
+						
+						//granularSearchElements.addAll(Arrays.asList(packageFragmentRoot.getCompilationUnits()));
+						for(IJavaElement elem:iElement)
+						{
+							
+							
+							if (elem instanceof PackageFragment){
+							
+								IPackageFragment packageFragment=(IPackageFragment)elem;
+								granularSearchElements.addAll(Arrays.asList(packageFragment.getCompilationUnits()));
+							}
+						}
+					}
+				else
+					if (iJavaElement instanceof JavaProject){
+						/**Added By Alphy to check if seleted element is Project**/
+						IJavaProject javaProject=(IJavaProject)iJavaElement;
+						
+						IPackageFragment[] packageFragmentLst=javaProject.getPackageFragments();
+						
+						for(IPackageFragment packageFragment:packageFragmentLst)
+						{
+							
+						if(!Arrays.asList(packageFragment.getCompilationUnits()).isEmpty())
+						{
+							
+							granularSearchElements.addAll(Arrays.asList(packageFragment.getCompilationUnits()));
+							
+						}
+						}
+					}
 				else{
 					granularSearchElements.add(iJavaElement);
 				}
 			}
 		}
-		ConsoleStreamUtil.println("All granular search elements :" + granularSearchElements);
+		
 		return granularSearchElements;
 	}
 
@@ -129,7 +171,7 @@ public class EngineCore {
 		for (IPackageFragment iPackageFragment : packageFragments) {
 			allCompilationUnits.addAll(Arrays.asList(iPackageFragment.getCompilationUnits()));
 		}
-		ConsoleStreamUtil.println("All compilation units" + allCompilationUnits);
+	
 		return allCompilationUnits;
 	}
 

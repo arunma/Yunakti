@@ -149,6 +149,7 @@ public class YModelVisitor extends ASTVisitor implements YModelSource {
 		ITypeBinding declaringClass = methodBinding.getDeclaringClass();
 		IMethodBinding methodDeclaration = methodBinding.getMethodDeclaration();
 		String calleeClassName = declaringClass.getQualifiedName();
+		/**Added By Alphy to add parameter to method name*/
 		String param = getMethodParameters(methodBinding);
 		String calleeMethodName = methodDeclaration.getName() + param;
 
@@ -169,8 +170,10 @@ public class YModelVisitor extends ASTVisitor implements YModelSource {
 		
 			if (StringUtils.equalsIgnoreCase(calleeClassName, model
 					.getClassUnderTest().getFullyQualifiedName())) {
-
+if(!testCase.getMethodsToBeAnnotated().contains(testMethod))
+{
 				testCase.addMethodToBeAnnotated(testMethod);
+}
 
 			}
 			ConsoleStreamUtil.println("Classname and method name : "
@@ -215,12 +218,12 @@ public class YModelVisitor extends ASTVisitor implements YModelSource {
 				&& StringUtils.equals(classUnderTest.getFullyQualifiedName(),
 						cutClassName)) {
 
-			//if (!classUnderTest.getMethods().contains(calleeMethod)) {
+			if (!classUnderTest.getMethods().contains(calleeMethod)) {
 				/* Added By Alphy on 11/10/2012 to remove duplicate callee */
 
 				classUnderTest.addMethod(calleeMethod);
 
-			//}
+			}
 		}
 		ConsoleStreamUtil.println("classUnderTest getmethod"+classUnderTest.getMethods());
 		if (returnYMethod.getCallees().isEmpty()) {
