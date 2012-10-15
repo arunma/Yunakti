@@ -159,11 +159,11 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            			  
 	            			  if(columnIndex == 1){
 		            			  
-	            				  YMethod yMethod = (YMethod) selObj;
-	            				  
-	            				  MethodDialog methodDialog = new MethodDialog(parent.getShell(), getMethodFromString(yMethod.getMethodName()));
-	        	            	  methodDialog.create();
-	        	            	  methodDialog.open();
+//	            				  YMethod yMethod = (YMethod) selObj;
+//	            				  
+//	            				  MethodDialog methodDialog = new MethodDialog(parent.getShell(), getMethodFromString(yMethod.getMethodName()));
+//	        	            	  methodDialog.create();
+//	        	            	  methodDialog.open();
 		            			  
 		            		  }
 	            			  
