@@ -280,6 +280,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 							.getAllClassesInWorkspace();
 
 					logger.fine("Model ::" + model.toString());
+					allClasses = engineCore.getAllClassesInWorkspace();
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
 							getShell(), allClasses, model, gridView,
 							TestCaseDialog.this);
