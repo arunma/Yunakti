@@ -26,12 +26,10 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
-
 import sg.edu.nus.iss.yunakti.model.YClass;
 import sg.edu.nus.iss.yunakti.model.YMethod;
 import sg.edu.nus.iss.yunakti.model.YModel;
 import sg.edu.nus.iss.yunakti.model.YParentModel;
-import sg.edu.nus.iss.yunakti.model.YTYPE;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewContentProvider1;
 import sg.edu.nus.iss.yunakti.model.providers.GridViewLabelProvider;
 import sg.edu.nus.iss.yunakti.ui.dialog.HelperDialog;
@@ -161,11 +159,11 @@ public class YunaktiGridView extends PageBookView implements  ISelectionListener
 	            			  
 	            			  if(columnIndex == 1){
 		            			  
-	            				  YMethod yMethod = (YMethod) selObj;
-	            				  
-	            				  MethodDialog methodDialog = new MethodDialog(parent.getShell(), getMethodFromString(yMethod.getMethodName()));
-	        	            	  methodDialog.create();
-	        	            	  methodDialog.open();
+//	            				  YMethod yMethod = (YMethod) selObj;
+//	            				  
+//	            				  MethodDialog methodDialog = new MethodDialog(parent.getShell(), getMethodFromString(yMethod.getMethodName()));
+//	        	            	  methodDialog.create();
+//	        	            	  methodDialog.open();
 		            			  
 		            		  }
 	            			  
@@ -359,7 +357,7 @@ private List<String> getHelperClasses(String className){
 	
 	List<String> helperClasses = new ArrayList<String>();
 	
-	
+	/*Added By Alphy on 11/10/2012 to make helperclass unique*/
 	List<YClass> testCases = getTestCasses(className).getTestCases();
 	
 	
@@ -368,7 +366,10 @@ private List<String> getHelperClasses(String className){
 		for(YClass helperClass: yClass.getMembers()){
 			
 			//helperClasses.add(helperClass.getName());
+			if(!helperClasses.contains(helperClass.getFullyQualifiedName()))
+			{
 			helperClasses.add(helperClass.getFullyQualifiedName());
+			}
 			
 		}
 		
@@ -449,7 +450,6 @@ public void buildPackageList(Map<String,List<YModel>> packageMap){
 }
 
 public void updateGridView(YModel model){
-	
 	for(YParentModel parentModel : packageList){
 		
 		for(YModel yModel: parentModel.getClassList())

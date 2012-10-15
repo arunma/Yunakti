@@ -17,6 +17,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class YMethod implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private YClass parentClass =null;
 	private List<YMODIFIER> modifiers=new ArrayList<YMODIFIER>();
 	private YClass returnType;
@@ -97,6 +101,89 @@ public class YMethod implements Serializable{
 		this.methodName = methodName;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((annotations == null) ? 0 : annotations.hashCode());
+		result = prime * result + ((callees == null) ? 0 : callees.hashCode());
+		result = prime * result + (deleteFlag ? 1231 : 1237);
+		result = prime * result
+				+ ((exceptions == null) ? 0 : exceptions.hashCode());
+		result = prime * result + ((members == null) ? 0 : members.hashCode());
+		result = prime * result
+				+ ((methodName == null) ? 0 : methodName.hashCode());
+		result = prime * result
+				+ ((modifiers == null) ? 0 : modifiers.hashCode());
+		result = prime * result
+				+ ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result
+				+ ((parentClass == null) ? 0 : parentClass.hashCode());
+		result = prime * result
+				+ ((returnType == null) ? 0 : returnType.hashCode());
+		return result;
+	}
+	/*Added By Alphy on 11/10/2012 to compare YMethod List */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		YMethod other = (YMethod) obj;
+		if (annotations == null) {
+			if (other.annotations != null)
+				return false;
+		} else if (!annotations.equals(other.annotations))
+			return false;
+		if (callees == null) {
+			if (other.callees != null)
+				return false;
+		} else if (!callees.equals(other.callees))
+			return false;
+		if (deleteFlag != other.deleteFlag)
+			return false;
+		if (exceptions == null) {
+			if (other.exceptions != null)
+				return false;
+		} else if (!exceptions.equals(other.exceptions))
+			return false;
+		if (members == null) {
+			if (other.members != null)
+				return false;
+		} else if (!members.equals(other.members))
+			return false;
+		if (methodName == null) {
+			if (other.methodName != null)
+				return false;
+		} else if (!methodName.equals(other.methodName))
+			return false;
+		if (modifiers == null) {
+			if (other.modifiers != null)
+				return false;
+		} else if (!modifiers.equals(other.modifiers))
+			return false;
+		if (parameters == null) {
+			if (other.parameters != null)
+				return false;
+		} else if (!parameters.equals(other.parameters))
+			return false;
+		if (parentClass == null) {
+			if (other.parentClass != null)
+				return false;
+		} else if (!parentClass.equals(other.parentClass))
+			return false;
+		if (returnType == null) {
+			if (other.returnType != null)
+				return false;
+		} else if (!returnType.equals(other.returnType))
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "Method name : " +getMethodName();

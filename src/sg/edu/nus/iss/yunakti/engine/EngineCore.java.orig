@@ -90,18 +90,27 @@ public class EngineCore {
 		//class files. We need to split them up for safe filtering
 		allSearchElements=breakUpAllSearchElements(allSearchElements);
 		
-		if (allSearchElements.size()>0){
+<<<<<<< HEAD
+			if (allSearchElements.size()>0){
+				//No Search results. Let's search the entire project for class references
+				IJavaProject javaProject = allSearchElements.get(0).getJavaProject();
+				IPackageFragment[] packageFragments = javaProject.getPackageFragments();
+				
+				search.search(getAllJavaElementsFromPackageFragments(packageFragments));
+				searchResults = search.getResults(allSearchElements, true);
+			}
+			else{
+				searchResults=new ArrayList<YModel>();
+			}
+=======
+		try {
 			//No Search results. Let's search the entire project for class references
 			IJavaProject javaProject = allSearchElements.get(0).getJavaProject();
+			//ConsoleStreamUtil.println("javaProject" + javaProject);
 			IPackageFragment[] packageFragments = javaProject.getPackageFragments();
+		//	ConsoleStreamUtil.println("packageFragments" + packageFragments);
+>>>>>>> c4bf9356a16e52b88566be08acabef346b33d7f7
 			
-			
-			search.search(getAllJavaElementsFromPackageFragments(packageFragments));
-			searchResults = search.getResults(allSearchElements, true);
-		} else{
-			//Comes up when you select an empty package.
-			searchResults=new ArrayList<YModel>();
-		}
 		return searchResults;
 	}
 

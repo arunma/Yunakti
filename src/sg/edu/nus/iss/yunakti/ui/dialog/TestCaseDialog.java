@@ -118,10 +118,10 @@ public class TestCaseDialog extends TitleAreaDialog {
 			TableColumn tableColumn = new TableColumn(table,
 					columnAlignments[i]);
 			tableColumn.setText(tableColumns[i]);
-			
+
 			if (i == 0) {
 				tableColumn.setWidth(500);
-			}else{
+			} else {
 				tableColumn.setWidth(10);
 			}
 
@@ -182,19 +182,6 @@ public class TestCaseDialog extends TitleAreaDialog {
 		gridData.horizontalAlignment = SWT.CENTER;
 
 		parent.setLayoutData(gridData);
-		// Create Add button
-		// Own method as we need to overview the SelectionAdapter
-		createOkButton(parent, OK, "Add", true);
-
-		// Create Cancel button
-		Button cancelButton = createButton(parent, CANCEL, "Cancel", false);
-		// Add a SelectionListener
-		cancelButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				setReturnCode(CANCEL);
-				close();
-			}
-		});
 
 		// Create Delete button
 		Button deleteButton = createButton(parent, SWT.PUSH, "Delete", false);
@@ -244,6 +231,21 @@ public class TestCaseDialog extends TitleAreaDialog {
 			}
 		});
 
+		// Create Cancel button
+		Button okButton = createButton(parent, SWT.PUSH, "Ok", false);
+
+		// Add a SelectionListener
+		okButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setReturnCode(CANCEL);
+				close();
+			}
+		});
+		
+		// Create Add button
+		// Own method as we need to overview the SelectionAdapter
+		createOkButton(parent, OK, "Add", true);
+		
 		this.setTableData(model);
 	}
 
@@ -278,6 +280,7 @@ public class TestCaseDialog extends TitleAreaDialog {
 							.getAllClassesInWorkspace();
 
 					logger.fine("Model ::" + model.toString());
+					allClasses = engineCore.getAllClassesInWorkspace();
 					FilteredTCSelectionDialog dialog = new FilteredTCSelectionDialog(
 							getShell(), allClasses, model, gridView,
 							TestCaseDialog.this);

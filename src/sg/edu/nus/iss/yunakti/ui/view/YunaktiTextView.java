@@ -43,6 +43,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import sg.edu.nus.iss.yunakti.engine.EngineCore;
 
@@ -79,73 +80,6 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		super.init(site);
 	}
 
-	/*private void setUpModelData() {
-		lstModelClass = new ArrayList<YModel>();
-		List<YClass> lstTestclasses1 = new ArrayList<YClass>();
-		List<YClass> lstTestclasses2 = new ArrayList<YClass>();
-		YClass tstcls1 = new YClass();
-		tstcls1.setFullyQualifiedName("Test1.class");
-		YClass tstcls2 = new YClass();
-		tstcls2.setFullyQualifiedName("Test2.class");
-		YClass tstcls3 = new YClass();
-		tstcls3.setFullyQualifiedName("Test3.class");
-		YClass tstcls4 = new YClass();
-		tstcls4.setFullyQualifiedName("Test4.class");
-		YClass tstcls5 = new YClass();
-		tstcls5.setFullyQualifiedName("Test5.class");
-		List<YClass> lstHelperClass = new ArrayList<YClass>();
-		YClass cls1 = new YClass();
-		cls1.setFullyQualifiedName("Helper1.class");
-		cls1.setyClassType(YTYPE.TEST_HELPER);
-		YClass cls2 = new YClass();
-		cls2.setFullyQualifiedName("Helper2.class");
-		cls2.setyClassType(YTYPE.TEST_HELPER);
-		YClass cls3 = new YClass();
-		cls3.setFullyQualifiedName("Helper3.class");
-		cls3.setyClassType(YTYPE.TEST_HELPER);
-		YClass cls4 = new YClass();
-		cls4.setFullyQualifiedName("Helper4.class");
-		cls4.setyClassType(YTYPE.TEST_HELPER);
-		YClass cls5 = new YClass();
-		cls5.setFullyQualifiedName("Helper5.class");
-		cls5.setyClassType(YTYPE.TEST_HELPER);
-		lstHelperClass.add(cls1);
-
-		lstHelperClass.add(cls2);
-		tstcls1.addMember(cls1);
-		tstcls1.addMember(cls2);
-		List<YClass> lstHelperClass1 = new ArrayList<YClass>();
-		lstHelperClass1.add(cls3);
-		lstHelperClass1.add(cls4);
-		lstHelperClass1.add(cls5);
-		tstcls2.addMember(cls3);
-		tstcls2.addMember(cls4);
-		tstcls3.addMember(cls4);
-		tstcls3.addMember(cls5);
-		tstcls4.addMember(cls5);
-		tstcls5.addMember(cls5);
-		lstTestclasses1.add(tstcls1);
-		lstTestclasses1.add(tstcls2);
-		lstTestclasses2.add(tstcls3);
-		lstTestclasses2.add(tstcls4);
-		lstTestclasses2.add(tstcls5);
-		YClass modelcls1 = new YClass();
-		modelcls1.setFullyQualifiedName("Class1.class");
-		YClass modelcls2 = new YClass();
-		modelcls2.setFullyQualifiedName("Class2.class");
-		YModel model1 = new YModel();
-		model1.setClassUnderTest(modelcls1);
-		model1.addTestCase(tstcls1);
-		model1.addTestCase(tstcls2);
-		YModel model2 = new YModel();
-		model2.setClassUnderTest(modelcls2);
-		model2.addTestCase(tstcls4);
-		lstModelClass.add(model1);
-		lstModelClass.add(model2);
-
-	}
-*/
-	
 	
 
 	public void createPartControl(Composite parent) {
@@ -157,8 +91,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 
 		// Add a checkbox to toggle filter
 		
-		lstModel = new org.eclipse.swt.widgets.List(composite, SWT.BORDER
-				| SWT.MULTI);
+		lstModel = new org.eclipse.swt.widgets.List(composite, SWT.BORDER| SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 
 		getSite().getPage().addSelectionListener(this);
 		// setTextList(lstYClass);
@@ -203,7 +136,7 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 				//System.out.println("leftMargin"+leftMargin);
 				
 					Point extent = gc.stringExtent(printString.toString());
-					gc.drawString(printString.toString(), leftMargin,
+					gc.drawText(printString.toString(), leftMargin,
 							topMargin + font.getFontData()[0].getHeight());
 					p.endPage();
 					gc.dispose();
@@ -237,10 +170,19 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		printString=new StringBuilder();
 		if (yModels != null && !yModels.isEmpty()) {
 			ObjectMapper mapper=new ObjectMapper();
+			//mapper.configure(SerializationFeature.INDENT_OUTPUT, true); 
 			try {
 				//System.out.println("objMapper first"+mapper.writeValueAsString(yModels));
-				objMapper=new String[1];
-			objMapper[0]=mapper.writeValueAsString(yModels);
+				objMapper=new String[yModels.size()];
+				int cnt=0;
+				for(YModel ym:yModels)
+				{
+					objMapper[cnt]=mapper.writerWithDefaultPrettyPrinter().writeValueAsString(ym);
+					printString.append(objMapper[cnt]);
+					cnt++;
+					
+				}
+			
 				System.out.println("objMapper"+objMapper[0]);
 			} catch (JsonGenerationException e) {
 				// TODO Auto-generated catch block
@@ -263,8 +205,9 @@ public class YunaktiTextView extends ViewPart implements ISelectionListener {
 		
 			if(objMapper!=null && objMapper.length>0)
 			{
-			printString.append(objMapper[0]);
-			lstModel.setItems(objMapper);
+			//printString.append(objMapper[0]);
+			//lstModel.setItem(0, objMapper[0]);
+		lstModel.setItems(objMapper);
 			}
 			
 		}
